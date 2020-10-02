@@ -1,3 +1,6 @@
+/**
+ * Javascript file for handling the navigation bar
+ */
 import React, {useEffect, useState} from 'react';
 import {
     Collapse,
