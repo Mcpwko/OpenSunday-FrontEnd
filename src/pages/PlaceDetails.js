@@ -1,36 +1,36 @@
 import React, { useState, useEffect } from "react";
-import "./LocationDetails.css";
-import Location from "../components/Location";
+import "./PlaceDetails.css";
+import Place from "../components/Place";
 import request from "../utils/request";
 import { useAuth0 } from "@auth0/auth0-react";
 import endpoints from "../endpoints";
 import { Link } from "react-router-dom";
 
-export default function LocationDetails({ match }) {
-  let locationID = +match.params.id;
+export default function PlaceDetails({ match }) {
+  let placeID = +match.params.id;
 
-  let [location, setLocation] = useState(null);
+  let [place, setPlace] = useState(null);
 
   let { loginWithRedirect, getAccessTokenSilently } = useAuth0();
 
   // Get POI details
   useEffect(() => {
     async function getLocation() {
-      let location = await request(
-        `${process.env.REACT_APP_SERVER_URL}${endpoints.locations}/${locationID}`,
+      let place = await request(
+        `${process.env.REACT_APP_SERVER_URL}${endpoints.places}/${placeID}`,
         getAccessTokenSilently,
         loginWithRedirect
       );
 
-      setLocation(location);
+      setPlace(place);
     }
 
     getLocation();
-  }, [locationID, getAccessTokenSilently, loginWithRedirect]);
+  }, [placeID, getAccessTokenSilently, loginWithRedirect]);
 
   return (
     <div>
-      {location ? <Location {...location} /> : <p>Loading details...</p>}
+      {place ? <Place {...place} /> : <p>Loading details...</p>}
       <Link className="App-link" to="/">
         Back
       </Link>
