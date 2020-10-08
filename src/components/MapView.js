@@ -6,7 +6,7 @@ class MapView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentLocation: { lat: 52.52437, lng: 13.41053 },
+            currentLocation: { lat: 46.3, lng: 7.5333 },
             zoom: 12,
         }
     }
