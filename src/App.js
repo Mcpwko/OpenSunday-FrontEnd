@@ -9,6 +9,7 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
+import {SignupForm} from "./components/Form"
 
 function App() {
     let [locations, setLocations] = useState([]);
@@ -54,6 +55,7 @@ function App() {
 
             <Navigation/>
 
+
             <header className="App-header">
                 {isAuthenticated && (
                     <a
@@ -80,6 +82,7 @@ function App() {
                             render={() => (
                                 <>
                                     <h1>Welcome on OpenSunday</h1>
+                                    <SignupForm/>
                                     <a
                                         className="App-link"
                                         href="#"
