@@ -7,7 +7,7 @@ import Loading from "./components/Loading";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
 import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
-import MapView from './components/MapView';
+import MapView from './pages/MapView';
 import About from "./pages/About";
 
 function App() {
@@ -19,6 +19,7 @@ function App() {
         logout,
         getAccessTokenSilently,
         isAuthenticated,
+        user,
     } = useAuth0();
 
     let handleLocationsClick = async (e) => {
@@ -60,6 +61,7 @@ function App() {
                         href="#"
                         onClick={handleLogoutClick}
                     >
+                        {user.name}
                         Logout
                     </a>
                 )}
@@ -103,7 +105,7 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                        <Route path="/map" exact component={MapView}></Route>
+                            <Route path="/map" exact component={MapView}></Route>
                         <Route path="/about" component={About}/>
                     </Switch>
                 </BrowserRouter>

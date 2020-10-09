@@ -29,7 +29,7 @@
   padding: 1em;
 }
 
-.leaflet-container {  width: 100vw;  height: 100vh; }
+.leaflet-container {  width: 90vw;  height: 90vh; }
 
 @keyframes App-logo-spin {
   from {

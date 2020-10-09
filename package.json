@@ -15,7 +15,9 @@
     "react-scripts": "3.4.3",
     "reactstrap": "^8.6.0",
     "react-leaflet": "^2.7.0",
-    "leaflet": "^1.7.1"
+    "leaflet": "^1.7.1",
+    "react-foursquare": "^1.0.3",
+    "react-hook-geolocation": "^1.0.6"
   },
   "scripts": {
     "start": "react-scripts start",
