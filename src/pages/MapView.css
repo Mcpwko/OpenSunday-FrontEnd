@@ -1,0 +1,28 @@
+.mapTab{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+}
+
+.listVenues{
+    flex-basis: 300px;
+    font-size: 15px;
+    overflow-y:auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 90vh;
+}
+
+.buttonsMap{
+    display:flex;
+    width:100%;
+    margin-left: 41%;
+}
+
+@keyframes fade {
+    from { opacity: 0.5; }
+}
+
+.leaflet-yah-icon {
+    animation: fade 1s infinite alternate;
+}

@@ -2,6 +2,7 @@
 
 # Build and compile app
 FROM node:10 as build
+
 # Create app directory
 WORKDIR /usr/src/app
 

@@ -10,10 +10,10 @@ import {
     Nav,
     NavItem,
     NavLink,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
+    // UncontrolledDropdown,
+    // DropdownToggle,
+    // DropdownMenu,
+    // DropdownItem,
     NavbarText
 } from 'reactstrap';
 
@@ -23,7 +23,7 @@ const Navigation = (props) => {
     const toggle = () => setIsOpen(!isOpen);
 
     return (
-        <div>
+        <div id="navigationBar">
             <Navbar color="dark" dark expand="md">
                 <NavbarBrand href="/">OpenSunday</NavbarBrand>
                 <NavbarToggler onClick={toggle}/>
@@ -34,9 +34,6 @@ const Navigation = (props) => {
                         </NavItem>
                         <NavItem>
                             <NavLink href="/map">Map</NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink href="/activities">All activities</NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink href="/about">About</NavLink>
