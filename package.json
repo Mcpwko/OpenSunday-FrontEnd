@@ -19,7 +19,13 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "reactstrap": "^8.6.0",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "@skyeer/react-leaflet-custom-control": "^0.0.6",
+    "@fortawesome/react-fontawesome": "^0.1.11",
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "react-leaflet-search": "^2.0.1",
+    "leaflet-easybutton": "^2.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -4,8 +4,14 @@ import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
 import Markers from '../components/VenueMarkers';
 import Foursquare from "../utils/foursquare";
+import Control from '@skyeer/react-leaflet-custom-control';
 import L from 'leaflet';
 import "./MapView.css";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Search from "react-leaflet-search";
+
+
 
 export const locationIcon = L.icon({
     iconUrl: require('../assets/plusIcon.png'),
@@ -25,7 +31,11 @@ class MapView extends Component {
             currentLocation: {lat: 46.3, lng: 7.5333},
             marker: {lat: 46.3, lng: 7.5333},
             zoom: 12,
-            draggable: true
+            draggable: true,
+            viewport: {
+                center: [46.3, 7.5333],
+                zoom: 12,
+            }
         }
         this.refMarker = React.createRef();
     }
@@ -45,7 +55,7 @@ class MapView extends Component {
     }
 
     render() {
-        const {currentLocation, zoom, marker} = this.state;
+        const {currentLocation, zoom, marker,viewport} = this.state;
         return (
             <>
                 <div className="buttonsMap">
@@ -55,11 +65,42 @@ class MapView extends Component {
 
                 <div className="mapTab">
                     <Foursquare className="listVenues"/>
-                    <Map center={currentLocation} zoom={zoom} className="mapContent">
+                    <Map center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4} className="mapContent">
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                         />
+                        <Control  position="topleft" >
+                            <button
+                                onClick={ () => this.setState({viewport: {
+                                        center: [46.3, 7.5333],
+                                        zoom: 12,
+                                    }}) }
+                            >
+                                <FontAwesomeIcon icon={faHome} />
+                            </button>
+                        </Control>
+                        {/*Search button that allow to find any location from leaflet */}
+                        <Search position="topleft" inputPlaceholder="Search for Places, City" closeResultsOnClick={true} >
+                            {(info) => (
+                                <Marker icon={locationIcon} position={info?.latLng}>{<Popup>
+                                    <div>
+                                        <p>I am a custom popUp</p>
+                                        <p>
+                                            latitude and longitude from search component:{" "}
+                                            {info.latLng.toString().replace(",", " , ")}
+                                        </p>
+                                        <p>Info from search component: {info.info}</p>
+                                        <p>
+                                            {info.raw &&
+                                            info.raw.place_id &&
+                                            JSON.stringify(info.raw.place_id)}
+                                        </p>
+                                    </div>
+                                </Popup>}</Marker>
+                            )}
+                        </Search>
+                        <Control position="topright"><button>Category</button></Control>
                         <Markers venues={data.venues}/>
                         <Marker
                             icon={locationIcon}
