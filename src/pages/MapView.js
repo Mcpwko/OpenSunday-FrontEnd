@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
@@ -6,6 +6,10 @@ import Markers from '../components/VenueMarkers';
 import Foursquare from "../utils/foursquare";
 import L from 'leaflet';
 import "./MapView.css";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
+import VenueMarkers from "../components/VenueMarkers";
+import {useAuth0} from "@auth0/auth0-react";
 
 export const locationIcon = L.icon({
     iconUrl: require('../assets/plusIcon.png'),
@@ -21,14 +25,36 @@ export const locationIcon = L.icon({
 class MapView extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             currentLocation: {lat: 46.3, lng: 7.5333},
             marker: {lat: 46.3, lng: 7.5333},
             zoom: 12,
-            draggable: true
+            draggable: true,
+            locations: props.locations
         }
         this.refMarker = React.createRef();
     }
+
+
+/*
+    getAllPlaces = () => {
+
+        let {
+            getAccessTokenSilently,
+            isAuthenticated,
+        } = useAuth0();
+
+        let locations = request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`, getAccessTokenSilently, isAuthenticated);
+
+        if (locations && locations.length > 0) {
+            console.log(locations);
+            return locations; //this.state.setLocations(locations);
+        }
+    };*/
+
+
 
     toggleDraggable = () => {
         this.setState({draggable: !this.state.draggable})
@@ -43,11 +69,13 @@ class MapView extends Component {
             })
         }
     }
-
+    //<Markers venues={data.venues}/>
     render() {
         const {currentLocation, zoom, marker} = this.state;
         return (
             <>
+
+
                 <div className="buttonsMap">
                     <button>Add new place</button>
                     <h1>{"Draggable -> lat:" + this.state.marker.lat + " - lng:" + this.state.marker.lng}</h1>
@@ -60,7 +88,10 @@ class MapView extends Component {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                         />
-                        <Markers venues={data.venues}/>
+
+
+                        <Markers venues={this.state.locations}/>
+
                         <Marker
                             icon={locationIcon}
                             draggable={this.state.draggable}

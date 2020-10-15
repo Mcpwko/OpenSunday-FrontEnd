@@ -31,9 +31,12 @@ function App() {
             loginWithRedirect
         );
 
+        console.log("salut");
+
         if (locations && locations.length > 0) {
             console.log(locations);
             setLocations(locations);
+
         }
     };
 
@@ -54,7 +57,6 @@ function App() {
         <div className="App">
 
             <Navigation/>
-
 
             <header className="App-header">
                 {isAuthenticated && (
@@ -108,7 +110,7 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                            <Route path="/map" exact component={MapView}></Route>
+                            <Route path="/map" exact component={MapView} render={(props) => <MapView locations={locations} {...props} />}></Route>
                         <Route path="/about" component={About}/>
                     </Switch>
                 </BrowserRouter>
