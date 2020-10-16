@@ -2,7 +2,9 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    text-align: left;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
 }
 
 .listVenues{
@@ -14,16 +16,34 @@
     display: none;
 }
 
+.myDivIcon {
+    text-align: center;
+    /* Horizontally center the text (icon) */
+    line-height: 20px;
+    /* Vertically center the text (icon) */
+}
+
+.toolsBtn{
+    height: 26px;
+    border-radius: 4px;
+    border-color: unset;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-size: 0px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+    border: var(--border-size) solid var(--border-color);
+
+}
+
 .buttonsMap{
-    display:flex;
+    /*display:flex;*/
     width:100%;
-    margin-left: 41%;
+    /*margin-left: 41%;*/
 }
 
 @keyframes fade {
     from { opacity: 0.5; }
 }
 
-.leaflet-yah-icon {
+.fadeIcon {
     animation: fade 1s infinite alternate;
 }

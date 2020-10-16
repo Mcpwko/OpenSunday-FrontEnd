@@ -9,7 +9,7 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-import {SignupForm} from "./components/Form"
+import {FormPlace} from "./components/FormPlace"
 
 function App() {
     let [locations, setLocations] = useState([]);
@@ -34,7 +34,6 @@ function App() {
         if (locations && locations.length > 0) {
             console.log(locations);
             setLocations(locations);
-
         }
     };
 
@@ -55,6 +54,7 @@ function App() {
         <div className="App">
 
             <Navigation/>
+
 
             <header className="App-header">
                 {isAuthenticated && (
@@ -82,7 +82,7 @@ function App() {
                             render={() => (
                                 <>
                                     <h1>Welcome on OpenSunday</h1>
-                                    <SignupForm/>
+                                    {/*<FormPlace/>*/}
                                     <a
                                         className="App-link"
                                         href="#"
@@ -108,7 +108,7 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                            <Route path="/map" exact component={MapView} render={(props) => <MapView locations={locations} {...props} />}></Route>
+                            <Route path="/map" exact component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
                     </Switch>
                 </BrowserRouter>
