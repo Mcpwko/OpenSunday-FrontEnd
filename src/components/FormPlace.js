@@ -1,14 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {Form, Button, Col} from 'react-bootstrap';
 import {Formik, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
+import "./FormPlace.css";
+
+const Modal = styled.div`
+    // display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10000; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+`;
 
 const Container = styled.div`
   // background: #F7F9FA;
   height: auto;
   width: 90%;
   margin: 5em auto;
+  margin-top:0em;
   color: snow;
   // -webkit-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
   // -moz-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
@@ -33,7 +49,8 @@ const Container = styled.div`
   }
   h1 {
     color: #24B9B6;
-    padding-top: .5em;
+    text-align: center;
+    // padding-top: .5em;
   }
   .form-group {
     // margin-bottom: 2.5em;
@@ -123,216 +140,278 @@ const validationSchema = Yup.object().shape({
         .oneOf([true], "You must accept the terms and conditions.")
 });
 
-export const ContactForm = () => {
+// const Search = () => {
+//     const [showResults, setShowResults] = React.useState(false)
+//     const onClick = () => setShowResults(true)
+//     return (
+//         <div>
+//             <input type="submit" value="Search" onClick={onClick}/>
+//             {showResults ? <Results/> : null}
+//         </div>
+//     )
+// }
+//
+// const Results = () => (
+//     <div id="results" className="search-results">
+//         Some Results
+//     </div>
+// )
+
+
+export const ContactForm = (props) => {
+    const [showForm, setShowForm] = useState(false);
+
+    const displayForm = () => {
+        setShowForm(true)
+    }
+
+    console.log(props);
+
     return (
-        <Container>
-            <h1>Add a new place</h1>
-            <Formik
-                initialValues={{
-                    name: "",
-                    type: "", // added for our select
-                    category: "", // added for our select
-                    description: "",
-                    address: "",
-                    zip: "",
-                    city: "",
-                    region: "",
-                    lat: "",
-                    long: "",
-                    email: "",
-                    website: "",
-                    phone: "",
-                    acceptedTerms: false, // added for our checkbox
-                }}
-                validationSchema={validationSchema}
-                onSubmit={(values, {setSubmitting, resetForm}) => {
-                    // When button submits form and form is in the process of submitting, submit button is disabled
-                    setSubmitting(true);
+        <Modal>
+            {/*<Button onClick={displayForm}></Button>*/}
+            {/*{showForm ?*/}
+            <Container>
+                <h1>Add a new place</h1>
+                <Formik
+                    initialValues={{
+                        name: "",
+                        type: "", // added for our select
+                        category: "", // added for our select
+                        description: "",
+                        address: "",
+                        zip: "",
+                        city: "",
+                        region: "",
+                        lat: props.latitude,
+                        long: props.longitude,
+                        email: "",
+                        website: "",
+                        phone: "",
+                        acceptedTerms: false, // added for our checkbox
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={(values, {setSubmitting, resetForm}) => {
+                        // When button submits form and form is in the process of submitting, submit button is disabled
+                        setSubmitting(true);
 
-                    // Simulate submitting to database, shows us values submitted, resets form
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        resetForm();
-                        setSubmitting(false);
-                    }, 500);
-                }}
-            >
-                {({
-                      values,
-                      errors,
-                      touched,
-                      handleChange,
-                      handleBlur,
-                      handleSubmit,
-                      isSubmitting
-                  }) => (
-                    <MyForm onSubmit={handleSubmit} className="mx-auto">
-                        <Form.Group controlId="formName">
-                            <Form.Label>Name of the place:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="name"
-                                placeholder="Name of the place"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.name}
-                                className={touched.name && errors.name ? "has-error" : null}
-                            />
-                            {touched.name && errors.name ? (
-                                <div className="error-message">{errors.name}</div>
-                            ) : null}
-                        </Form.Group>
-
-                        <Form.Group controlId="formType">
-                            <Form.Label>Type of place:</Form.Label>
-                            <Form.Control as="select" name="type">
-                                <option value="">Select a type of place</option>
-                                <option value="restaurant">Restaurant</option>
-                                <option value="bar">Bar</option>
-                                <option value="park">Park</option>
-                                <option value="cinema">Cinema</option>
-                            </Form.Control>
-                            {touched.type && errors.type ? (
-                                <div className="error-message">{errors.type}</div>
-                            ) : null}
-                        </Form.Group>
-
-                        <Form.Group controlId="formCategory">
-                            <Form.Label>Category:</Form.Label>
-                            <Form.Control as="select" name="category">
-                                <option value="">Select a category</option>
-                                <option value="chinese">Chinese</option>
-                                <option value="seafood">Seafood</option>
-                                <option value="indian">Indian</option>
-                                <option value="swiss">Swiss</option>
-                            </Form.Control>
-                            {touched.category && errors.category ? (
-                                <div className="error-message">{errors.category}</div>
-                            ) : null}
-                        </Form.Group>
-
-                        <Form.Group controlId="formDescription">
-                            <Form.Label>Description of the place:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="description"
-                                placeholder="Enter a description of some additional features"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.description}
-                                className={touched.name && errors.name ? "has-error" : null}
-                            />
-                            {touched.name && errors.name ? (
-                                <div className="error-message">{errors.name}</div>
-                            ) : null}
-                        </Form.Group>
-
-                        <Form.Group controlId="formAddress">
-                            <Form.Label>Name of the place:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="address"
-                                placeholder="Address of the place"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.address}
-                                className={touched.address && errors.address ? "has-error" : null}
-                            />
-                            {touched.address && errors.address ? (
-                                <div className="error-message">{errors.address}</div>
-                            ) : null}
-                        </Form.Group>
-
-                        <Form.Row>
-                            <Col>
-                                <Form.Label>Zip of the place:</Form.Label>
+                        // Simulate submitting to database, shows us values submitted, resets form
+                        setTimeout(() => {
+                            alert(JSON.stringify(values, null, 2));
+                            resetForm();
+                            setSubmitting(false);
+                        }, 500);
+                    }}
+                >
+                    {({
+                          values,
+                          errors,
+                          touched,
+                          handleChange,
+                          handleBlur,
+                          handleSubmit,
+                          isSubmitting
+                      }) => (
+                        <MyForm onSubmit={handleSubmit} className="mx-auto">
+                            <Form.Group controlId="formName">
+                                <Form.Label>Name of the place:</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="zip"
-                                    placeholder="Zip of the place"
+                                    name="name"
+                                    placeholder="Name of the place"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.zip}
-                                    className={touched.zip && errors.zip ? "has-error" : null}
+                                    value={values.name}
+                                    className={touched.name && errors.name ? "has-error" : null}
                                 />
-                                {touched.zip && errors.zip ? (
-                                    <div className="error-message">{errors.zip}</div>
+                                {touched.name && errors.name ? (
+                                    <div className="error-message">{errors.name}</div>
                                 ) : null}
-                            </Col>
-                            <Col>
-                                <Form.Label>City of the place:</Form.Label>
+                            </Form.Group>
+
+                            <Form.Group controlId="formType">
+                                <Form.Label>Type of place:</Form.Label>
+                                <Form.Control as="select" name="type">
+                                    <option value="">Select a type of place</option>
+                                    <option value="restaurant">Restaurant</option>
+                                    <option value="bar">Bar</option>
+                                    <option value="park">Park</option>
+                                    <option value="cinema">Cinema</option>
+                                </Form.Control>
+                                {touched.type && errors.type ? (
+                                    <div className="error-message">{errors.type}</div>
+                                ) : null}
+                            </Form.Group>
+
+                            <Form.Group controlId="formCategory">
+                                <Form.Label>Category:</Form.Label>
+                                <Form.Control as="select" name="category">
+                                    <option value="">Select a category</option>
+                                    <option value="chinese">Chinese</option>
+                                    <option value="seafood">Seafood</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="swiss">Swiss</option>
+                                </Form.Control>
+                                {touched.category && errors.category ? (
+                                    <div className="error-message">{errors.category}</div>
+                                ) : null}
+                            </Form.Group>
+
+                            <Form.Group controlId="formDescription">
+                                <Form.Label>Description of the place:</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    name="city"
-                                    placeholder="City of the place"
+                                    name="description"
+                                    placeholder="Enter a description of some additional features"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.city}
-                                    className={touched.city && errors.city ? "has-error" : null}
+                                    value={values.description}
+                                    className={touched.name && errors.name ? "has-error" : null}
                                 />
-                                {touched.city && errors.city ? (
-                                    <div className="error-message">{errors.city}</div>
+                                {touched.name && errors.name ? (
+                                    <div className="error-message">{errors.name}</div>
                                 ) : null}
-                            </Col>
-                        </Form.Row>
+                            </Form.Group>
+
+                            <Form.Group controlId="formAddress">
+                                <Form.Label>Name of the place:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="address"
+                                    placeholder="Address of the place"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.address}
+                                    className={touched.address && errors.address ? "has-error" : null}
+                                />
+                                {touched.address && errors.address ? (
+                                    <div className="error-message">{errors.address}</div>
+                                ) : null}
+                            </Form.Group>
+
+                            <Form.Row>
+                                <Col>
+                                    <Form.Label>Zip of the place:</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="zip"
+                                        placeholder="Zip of the place"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.zip}
+                                        className={touched.zip && errors.zip ? "has-error" : null}
+                                    />
+                                    {touched.zip && errors.zip ? (
+                                        <div className="error-message">{errors.zip}</div>
+                                    ) : null}
+                                </Col>
+                                <Col>
+                                    <Form.Label>City of the place:</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="city"
+                                        placeholder="City of the place"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.city}
+                                        className={touched.city && errors.city ? "has-error" : null}
+                                    />
+                                    {touched.city && errors.city ? (
+                                        <div className="error-message">{errors.city}</div>
+                                    ) : null}
+                                </Col>
+                            </Form.Row>
+
+                            <Form.Row>
+                                <Col>
+                                    <Form.Label>Latitude</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="lat"
+                                        placeholder="Latitude"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.lat}
+                                        className={touched.lat && errors.lat ? "has-error" : null}
+                                        disabled
+                                    />
+                                    {touched.lat && errors.lat ? (
+                                        <div className="error-message">{errors.lat}</div>
+                                    ) : null}
+                                </Col>
+                                <Col>
+                                    <Form.Label>Longitude</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        name="long"
+                                        placeholder="Longitude"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.long}
+                                        className={touched.long && errors.long ? "has-error" : null}
+                                        disabled
+                                    />
+                                    {touched.long && errors.long ? (
+                                        <div className="error-message">{errors.long}</div>
+                                    ) : null}
+                                </Col>
+                            </Form.Row>
 
 
-
-
-
-
-                        <Form.Group controlId="formEmail">
-                            <Form.Label>Email :</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="email"
-                                placeholder="Email"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.email}
-                                className={touched.email && errors.email ? "has-error" : null}
-                            />
-                            {touched.email && errors.email ? (
-                                <div className="error-message">{errors.email}</div>
-                            ) : null}
-                        </Form.Group>
-                        <Form.Group controlId="formPhone">
-                            <Form.Label>Phone :</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="phone"
-                                placeholder="Phone"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.phone}
-                                className={touched.phone && errors.phone ? "has-error" : null}
-                            />
-                            {touched.phone && errors.phone ? (
-                                <div className="error-message">{errors.phone}</div>
-                            ) : null}
-                        </Form.Group>
-                        <Form.Group controlId="formBlog">
-                            <Form.Label>Blog :</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="blog"
-                                placeholder="Blog URL"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.blog}
-                                className={touched.blog && errors.blog ? "has-error" : null}
-                            />
-                            {touched.blog && errors.blog ? (
-                                <div className="error-message">{errors.blog}</div>
-                            ) : null}
-                        </Form.Group>
-                        {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-                        <MyButton variant="primary" type="submit" disabled={isSubmitting}>
-                            Submit
-                        </MyButton>
-                    </MyForm>
-                )}
-            </Formik>
-        </Container>
+                            <Form.Group controlId="formEmail">
+                                <Form.Label>Email :</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="email"
+                                    placeholder="Email"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.email}
+                                    className={touched.email && errors.email ? "has-error" : null}
+                                />
+                                {touched.email && errors.email ? (
+                                    <div className="error-message">{errors.email}</div>
+                                ) : null}
+                            </Form.Group>
+                            <Form.Group controlId="formPhone">
+                                <Form.Label>Phone :</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="phone"
+                                    placeholder="Phone"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.phone}
+                                    className={touched.phone && errors.phone ? "has-error" : null}
+                                />
+                                {touched.phone && errors.phone ? (
+                                    <div className="error-message">{errors.phone}</div>
+                                ) : null}
+                            </Form.Group>
+                            <Form.Group controlId="formBlog">
+                                <Form.Label>Blog :</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="blog"
+                                    placeholder="Blog URL"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.blog}
+                                    className={touched.blog && errors.blog ? "has-error" : null}
+                                />
+                                {touched.blog && errors.blog ? (
+                                    <div className="error-message">{errors.blog}</div>
+                                ) : null}
+                            </Form.Group>
+                            {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
+                            <MyButton variant="primary" type="submit" disabled={isSubmitting}>
+                                Submit
+                            </MyButton>
+                        </MyForm>
+                    )}
+                </Formik>
+            </Container>
+            {/*: null}*/}
+        </Modal>
     );
 }

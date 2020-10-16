@@ -42,6 +42,6 @@
     from { opacity: 0.5; }
 }
 
-.leaflet-yah-icon {
+.fadeIcon {
     animation: fade 1s infinite alternate;
 }

@@ -7,17 +7,16 @@ import Foursquare from "../utils/foursquare";
 import Control from '@skyeer/react-leaflet-custom-control';
 import L from 'leaflet';
 import "./MapView.css";
-import {faHome} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
 import {usePosition} from 'use-position';
+import {ContactForm} from "../components/FormPlace";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
 import {Link} from "react-router-dom";
-
-
 
 export const locationIcon = L.icon({
     iconUrl: require('../assets/plusIcon.png'),
@@ -27,7 +26,7 @@ export const locationIcon = L.icon({
     shadowSize: null,
     shadowAnchor: null,
     iconSize: [30, 35],
-    className: 'leaflet-yah-icon'
+    // className: 'fadeIcon'
 });
 
 function MapView(props) {
@@ -36,6 +35,7 @@ function MapView(props) {
     const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
     const [marker, setMarker] = useState({lat: 46.3, lng: 7.5333});
     const [zoom, setZoom] = useState(12);
+    const [opacity, setOpacity] = useState(0);
     const [draggable, setDraggable] = useState(true);
     const [viewport, setViewPort] = useState({
         center: [45.3, 7.5333],
@@ -43,6 +43,7 @@ function MapView(props) {
     });
     const [places, setPlaces] = useState([]);
     const refMarker = useRef();
+    const refMap = useRef();
 
     const {
         latitude,
@@ -64,6 +65,7 @@ function MapView(props) {
 
     const toggleDraggable = () => {
         setDraggable(!draggable)
+        setShowForm(true)
     }
 
     useEffect(() => {
@@ -75,16 +77,17 @@ function MapView(props) {
                 loginWithRedirect
             );
 
-            console.log(places);
-            places.map((place) => (
-                console.log(place.locationSet.lat)
-            ))
+            // console.log(places);
+            // places.map((place) => (
+            //     console.log(place.locationSet.lat)
+            // ))
 
             if (places && places.length > 0) {
-                console.log(places);
+                // console.log(places);
                 setPlaces(places);
             }
         }
+
         getPlaces();
     }, []);
 
@@ -98,6 +101,27 @@ function MapView(props) {
         }
     }
 
+    const setDraggableMarker = () => {
+        if (opacity === 0) {
+            setOpacity(1)
+        } else {
+            setOpacity(0)
+        }
+        getMapCenter();
+    }
+
+    const getMapCenter = () => {
+        const center = refMap.current;
+        // console.log(center.leafletElement.getCenter().toString());
+        setMarker(center.leafletElement.getCenter())
+    }
+
+    const [showForm, setShowForm] = useState(false);
+
+    // const displayForm = () => {
+    //     setShowForm(true)
+    // }
+
     return (
         <>
             <div className="buttonsMap">
@@ -106,8 +130,10 @@ function MapView(props) {
             </div>
 
             <div className="mapTab">
+                {showForm ? <ContactForm latitude={marker.lat} longitude={marker.lng}/> : null}
                 <Foursquare className="listVenues"/>
-                <Map center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4} className="mapContent">
+                <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
+                     className="mapContent">
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -120,6 +146,13 @@ function MapView(props) {
                                 })}
                         >
                             <FontAwesomeIcon icon={faHome}/>
+                        </button>
+                    </Control>
+                    <Control position="topleft">
+                        <button className="toolsBtn"
+                                onClick={setDraggableMarker}
+                        >
+                            <FontAwesomeIcon size={"lg"} icon={faMapMarkerAlt}/>
                         </button>
                     </Control>
                     {/*Search button that allow to find any location from leaflet */}
@@ -150,17 +183,18 @@ function MapView(props) {
                         <button>Category</button>
                     </Control>
                     <Markers venues={data.venues}/>
-                    {places===null ? null : <PlacesMarkers venues={places}/>}
+                    {places === null ? null : <PlacesMarkers venues={places}/>}
                     <Marker
                         icon={locationIcon}
                         draggable={draggable}
                         onDragend={updatePosition}
                         position={marker}
                         ref={refMarker}
+                        opacity={opacity}
                     >
                         <Popup minWidth={90}>
                         <span onClick={toggleDraggable}>
-                            {draggable ? 'DRAG MARKER' : 'MARKER FIXED'}
+                            {draggable ? 'Create place' : "Fixed"}
                         </span>
                         </Popup>
                     </Marker>
