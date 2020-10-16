@@ -9,7 +9,6 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-import {SignupForm} from "./components/Old_Form"
 import {ContactForm} from "./components/FormPlace"
 
 function App() {
@@ -109,7 +108,7 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                            <Route path="/map" exact component={MapView}></Route>
+                            <Route path="/map" exact component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
                     </Switch>
                 </BrowserRouter>

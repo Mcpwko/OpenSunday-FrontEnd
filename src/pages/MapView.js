@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
@@ -11,6 +11,12 @@ import {faHome} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
 import {usePosition} from 'use-position';
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
+import {useAuth0} from "@auth0/auth0-react";
+import PlacesMarkers from '../components/PlacesMarkers';
+import {Link} from "react-router-dom";
+
 
 
 export const locationIcon = L.icon({
@@ -35,6 +41,7 @@ function MapView(props) {
         center: [45.3, 7.5333],
         zoom: 12,
     });
+    const [places, setPlaces] = useState([]);
     const refMarker = useRef();
 
     const {
@@ -45,10 +52,41 @@ function MapView(props) {
         error,
     } = usePosition();
 
+    let {
+        loading,
+        loginWithRedirect,
+        logout,
+        getAccessTokenSilently,
+        isAuthenticated,
+        user,
+    } = useAuth0();
+
 
     const toggleDraggable = () => {
         setDraggable(!draggable)
     }
+
+    useEffect(() => {
+        async function getPlaces() {
+
+            let places = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
+                getAccessTokenSilently,
+                loginWithRedirect
+            );
+
+            console.log(places);
+            places.map((place) => (
+                console.log(place.locationSet.lat)
+            ))
+
+            if (places && places.length > 0) {
+                console.log(places);
+                setPlaces(places);
+            }
+        }
+        getPlaces();
+    }, []);
 
     // Update the position of the draggable marker
     const updatePosition = () => {
@@ -112,6 +150,7 @@ function MapView(props) {
                         <button>Category</button>
                     </Control>
                     <Markers venues={data.venues}/>
+                    {places===null ? null : <PlacesMarkers venues={places}/>}
                     <Marker
                         icon={locationIcon}
                         draggable={draggable}
