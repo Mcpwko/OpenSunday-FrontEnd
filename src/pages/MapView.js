@@ -11,7 +11,7 @@ import {faHome, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
 import {usePosition} from 'use-position';
-import {ContactForm} from "../components/FormPlace";
+import {FormPlace} from "../components/FormPlace";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
@@ -64,7 +64,11 @@ function MapView(props) {
 
 
     const toggleDraggable = () => {
-        setDraggable(!draggable)
+        // In case of draggable marker
+        if (opacity === 1) {
+            setDraggable(!draggable)
+        }
+
         setShowForm(true)
     }
 
@@ -122,15 +126,21 @@ function MapView(props) {
     //     setShowForm(true)
     // }
 
+    const refresh = () => {
+        setTimeout(function () {
+            setZoom(25);
+        }, 100)
+    }
+
     return (
         <>
             <div className="buttonsMap">
-                <button>Add new place</button>
-                <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
+                <button onClick={toggleDraggable}>Add new place</button>
             </div>
+            <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
 
             <div className="mapTab">
-                {showForm ? <ContactForm latitude={marker.lat} longitude={marker.lng}/> : null}
+                {showForm ? <FormPlace latitude={marker.lat} longitude={marker.lng}/> : null}
                 <Foursquare className="listVenues"/>
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                      className="mapContent">
@@ -156,7 +166,7 @@ function MapView(props) {
                         </button>
                     </Control>
                     {/*Search button that allow to find any location from leaflet */}
-                    <Search position="topleft" inputPlaceholder="Search for Places, City" zoom={25}
+                    <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
                             closeResultsOnClick={true}>
                         {(info) => (
                             <Marker icon={locationIcon} position={info?.latLng}>{<Popup>
@@ -176,8 +186,17 @@ function MapView(props) {
                                         JSON.stringify(info.raw.place_id)}
                                     </p>
                                 </div>
+                                {/*****/}
+                                {/*Actualise the map*/}
+                                {/*****/}
+                                {
+                                    setTimeout(function () {
+                                        setZoom(25);
+                                    }, 100)
+                                }
                             </Popup>}</Marker>
                         )}
+
                     </Search>
                     <Control position="topright">
                         <button>Category</button>
@@ -194,7 +213,7 @@ function MapView(props) {
                     >
                         <Popup minWidth={90}>
                         <span onClick={toggleDraggable}>
-                            {draggable ? 'Create place' : "Fixed"}
+                            {draggable ? 'Create place' : "Complete the form"}
                         </span>
                         </Popup>
                     </Marker>

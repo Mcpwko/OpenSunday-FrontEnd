@@ -9,7 +9,7 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-import {ContactForm} from "./components/FormPlace"
+import {FormPlace} from "./components/FormPlace"
 
 function App() {
     let [locations, setLocations] = useState([]);
@@ -82,7 +82,7 @@ function App() {
                             render={() => (
                                 <>
                                     <h1>Welcome on OpenSunday</h1>
-                                    <ContactForm/>
+                                    {/*<FormPlace/>*/}
                                     <a
                                         className="App-link"
                                         href="#"

@@ -67,13 +67,34 @@ const MyForm = styled(Form)`
   }
 `;
 
-const MyButton = styled(Button)`
+const SubmitButton = styled(Button)`
   background: #1863AB;
   border: none;
   font-size: 1.2em;
   font-weight: 400;
   &:hover {
     background: #1D3461;
+  }
+  margin-right: 2em;
+`;
+
+const CancelButton = styled(Button)`
+  background: red;
+  border: none;
+  font-size: 1.2em;
+  font-weight: 400;
+  &:hover {
+    background: darkred;
+  }
+`;
+
+const GetButton = styled(Button)`
+  background: darkgreen;
+  border: none;
+  font-size: 0.8em;
+  font-weight: 300;
+  &:hover {
+    background: darkolivegreen;
   }
 `;
 
@@ -158,7 +179,7 @@ const validationSchema = Yup.object().shape({
 // )
 
 
-export const ContactForm = (props) => {
+export const FormPlace = (props) => {
     const [showForm, setShowForm] = useState(false);
 
     const displayForm = () => {
@@ -267,6 +288,7 @@ export const ContactForm = (props) => {
                                     onBlur={handleBlur}
                                     value={values.description}
                                     className={touched.name && errors.name ? "has-error" : null}
+                                    rows="10"
                                 />
                                 {touched.name && errors.name ? (
                                     <div className="error-message">{errors.name}</div>
@@ -321,6 +343,12 @@ export const ContactForm = (props) => {
                                     ) : null}
                                 </Col>
                             </Form.Row>
+
+                            <div className="Buttons">
+                                <GetButton variant="secondary" type="getCoordinates">
+                                    Get coordinates
+                                </GetButton>
+                            </div>
 
                             <Form.Row>
                                 <Col>
@@ -403,10 +431,16 @@ export const ContactForm = (props) => {
                                     <div className="error-message">{errors.blog}</div>
                                 ) : null}
                             </Form.Group>
-                            {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-                            <MyButton variant="primary" type="submit" disabled={isSubmitting}>
-                                Submit
-                            </MyButton>
+
+                            <div className="Buttons">
+                                {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
+                                <SubmitButton variant="primary" type="submit" disabled={isSubmitting}>
+                                    Submit
+                                </SubmitButton>
+                                <CancelButton variant="secondary" type="cancel" className="cancel">
+                                    Cancel
+                                </CancelButton>
+                            </div>
                         </MyForm>
                     )}
                 </Formik>
