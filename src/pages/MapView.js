@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useRef, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
@@ -10,7 +10,7 @@ import "./MapView.css";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
-
+import { usePosition } from 'use-position';
 
 
 export const locationIcon = L.icon({
@@ -24,43 +24,47 @@ export const locationIcon = L.icon({
     className: 'leaflet-yah-icon'
 });
 
-class MapView extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentLocation: {lat: 46.3, lng: 7.5333},
-            marker: {lat: 46.3, lng: 7.5333},
-            zoom: 12,
-            draggable: true,
-            viewport: {
-                center: [46.3, 7.5333],
-                zoom: 12,
-            }
-        }
-        this.refMarker = React.createRef();
-    }
+function MapView(props) {
 
-    toggleDraggable = () => {
-        this.setState({draggable: !this.state.draggable})
+
+    const [currentLocation,setCurrentLocation] = useState({lat: 46, lng: 7.5333});
+    const [marker,setMarker] = useState({lat: 46.3, lng: 7.5333});
+    const [zoom,setZoom] = useState(12);
+    const [draggable,setDraggable] = useState(true);
+    const [viewport,setViewPort] = useState({
+        center: [45.3, 7.5333],
+        zoom: 12,
+    });
+    const refMarker = useRef();
+
+    const {
+        latitude,
+        longitude,
+        timestamp,
+        accuracy,
+        error,
+    } = usePosition();
+
+
+    const toggleDraggable = () => {
+        setDraggable(!draggable)
     }
 
     // Update the position of the draggable marker
-    updatePosition = () => {
-        const marker = this.refMarker.current
+    const updatePosition = () => {
+        const marker = refMarker.current
         if (marker != null) {
-            this.setState({
-                marker: marker.leafletElement.getLatLng()
-            })
+            setMarker(
+                marker.leafletElement.getLatLng()
+            )
         }
     }
 
-    render() {
-        const {currentLocation, zoom, marker,viewport} = this.state;
         return (
             <>
                 <div className="buttonsMap">
                     <button>Add new place</button>
-                    <h1>{"Draggable -> lat:" + this.state.marker.lat + " - lng:" + this.state.marker.lng}</h1>
+                    <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
                 </div>
 
                 <div className="mapTab">
@@ -71,26 +75,29 @@ class MapView extends Component {
                             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                         />
                         <Control  position="topleft" >
-                            <button
-                                onClick={ () => this.setState({viewport: {
-                                        center: [46.3, 7.5333],
-                                        zoom: 12,
-                                    }}) }
+                            <button className="toolsBtn"
+                                    onClick={ () => setViewPort({
+                                            center: [latitude, longitude],
+                                            zoom: 12,
+                                        }) }
                             >
                                 <FontAwesomeIcon icon={faHome} />
                             </button>
                         </Control>
                         {/*Search button that allow to find any location from leaflet */}
-                        <Search position="topleft" inputPlaceholder="Search for Places, City" closeResultsOnClick={true} >
+                        <Search position="topleft" inputPlaceholder="Search for Places, City" zoom={25} closeResultsOnClick={true} >
                             {(info) => (
-                                <Marker icon={locationIcon} position={info?.latLng}>{<Popup>
+                                <Marker icon={locationIcon}  position={info?.latLng}>{<Popup>
                                     <div>
-                                        <p>I am a custom popUp</p>
+                                        <h1>{info.raw[0].address.amenity}</h1>
+                                        <h2>{info.raw[0].type}</h2>
+                                        <p>{info.raw[0].address.road} {info.raw[0].address.house_number}</p>
+                                        <p>{info.raw[0].address.state}</p>
+                                        <p>{info.raw[0].address.postcode} {info.raw[0].address.town}</p>
                                         <p>
-                                            latitude and longitude from search component:{" "}
                                             {info.latLng.toString().replace(",", " , ")}
                                         </p>
-                                        <p>Info from search component: {info.info}</p>
+                                        <p>Info from search component:{info.info}</p>
                                         <p>
                                             {info.raw &&
                                             info.raw.place_id &&
@@ -104,14 +111,14 @@ class MapView extends Component {
                         <Markers venues={data.venues}/>
                         <Marker
                             icon={locationIcon}
-                            draggable={this.state.draggable}
-                            onDragend={this.updatePosition}
+                            draggable={draggable}
+                            onDragend={updatePosition}
                             position={marker}
-                            ref={this.refMarker}
+                            ref={refMarker}
                         >
                             <Popup minWidth={90}>
-                        <span onClick={this.toggleDraggable}>
-                            {this.state.draggable ? 'DRAG MARKER' : 'MARKER FIXED'}
+                        <span onClick={toggleDraggable}>
+                            {draggable ? 'DRAG MARKER' : 'MARKER FIXED'}
                         </span>
                             </Popup>
                         </Marker>
@@ -119,7 +126,6 @@ class MapView extends Component {
                 </div>
             </>
         );
-    }
 }
 
 export default MapView;

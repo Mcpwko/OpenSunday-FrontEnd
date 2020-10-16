@@ -27,7 +27,8 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "react-leaflet-search": "^2.0.1",
-    "leaflet-easybutton": "^2.4.0"
+    "leaflet-easybutton": "^2.4.0",
+    "use-position": "^0.0.7"
   },
   "scripts": {
     "start": "react-scripts start",
