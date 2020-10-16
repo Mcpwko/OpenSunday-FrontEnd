@@ -46,25 +46,6 @@ class MapView extends Component {
     }
 
 
-/*
-    getAllPlaces = () => {
-
-        let {
-            getAccessTokenSilently,
-            isAuthenticated,
-        } = useAuth0();
-
-        let locations = request(
-            `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`, getAccessTokenSilently, isAuthenticated);
-
-        if (locations && locations.length > 0) {
-            console.log(locations);
-            return locations; //this.state.setLocations(locations);
-        }
-    };*/
-
-
-
     toggleDraggable = () => {
         this.setState({draggable: !this.state.draggable})
     }
@@ -126,8 +107,6 @@ class MapView extends Component {
                             )}
                         </Search>
                         <Control position="topright"><button>Category</button></Control>
-                        <Markers venues={data.venues}/>
-
 
                         <Markers venues={this.state.locations}/>
 

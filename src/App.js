@@ -31,8 +31,6 @@ function App() {
             loginWithRedirect
         );
 
-        console.log("salut");
-
         if (locations && locations.length > 0) {
             console.log(locations);
             setLocations(locations);
