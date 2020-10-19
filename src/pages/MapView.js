@@ -169,6 +169,7 @@ function MapView(props) {
                     <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
                             closeResultsOnClick={true}>
                         {(info) => (
+                            setMarker(info.latLng),
                             <Marker icon={locationIcon} position={info?.latLng}>{<Popup>
                                 <div>
                                     <h1>{info.raw[0].address.amenity}</h1>
@@ -185,6 +186,8 @@ function MapView(props) {
                                         info.raw.place_id &&
                                         JSON.stringify(info.raw.place_id)}
                                     </p>
+                                    <br/>
+                                    <button style={{marginLeft:10}} className="toolsBtn" onClick={toggleDraggable}>ADD ME</button>
                                 </div>
                                 {/*****/}
                                 {/*Actualise the map*/}
@@ -215,6 +218,8 @@ function MapView(props) {
                         <span onClick={toggleDraggable}>
                             {draggable ? 'Create place' : "Complete the form"}
                         </span>
+                        <br/>
+                            <button style={{marginLeft:10}} className="toolsBtn" onClick={toggleDraggable}>ADD ME</button>
                         </Popup>
                     </Marker>
                 </Map>
