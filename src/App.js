@@ -82,6 +82,7 @@ function App() {
                             render={() => (
                                 <>
                                     <h1>Welcome on OpenSunday</h1>
+                                    {/*<ContactForm/>*/}
                                     {/*<FormPlace/>*/}
                                     <a
                                         className="App-link"
