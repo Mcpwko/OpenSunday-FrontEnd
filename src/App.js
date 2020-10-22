@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
@@ -12,12 +12,14 @@ import About from "./pages/About";
 import {FormPlace} from "./components/FormPlace";
 import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
+import {get} from "leaflet/src/dom/DomUtil";
 
 
 
 function App() {
 
     let [locations, setLocations] = useState([]);
+
 
     let {
         loading,
@@ -27,6 +29,10 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
+
+
+
+    let count = 0;
 
     //let auth = this.context;
 
@@ -56,27 +62,41 @@ function App() {
             loginWithRedirect
         );
 
-        if (users != null) {
 
-        //POST user
+    };
+
+    let fetchUser = async () => {
+
+        let token = await getAccessTokenSilently();
+        console.log(token);
+
         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}`, {
             method: 'POST',
             headers: {
                 Accept: "application/json",
-                Authorization: `Bearer ${getAccessTokenSilently}`,
+                Authorization: `Bearer ${token}`,
+                'Content-Type': "application/json",
             }, body: JSON.stringify({
                 email: user.name,
                 createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
-                status: 0,
+                status: "0",
                 idAuth0: user.sub,
-                idUserType: 1
+                idUserType: "1"
             })
         });
-
-    }
-
-
+        count = 1;
     };
+
+    useEffect(() => {
+
+        if(isAuthenticated && count == 0){
+            //POST user
+            console.log("user", user);
+            fetchUser();
+
+        }
+
+    });
 
     let handleLogoutClick = async (e) => {
         e.preventDefault();
