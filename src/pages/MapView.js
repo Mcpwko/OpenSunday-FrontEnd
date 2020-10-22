@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useRef, useState} from 'react';
+import React, {Fragment, useContext, useEffect, useRef, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
@@ -7,20 +7,25 @@ import Foursquare from "../utils/foursquare";
 import Control from '@skyeer/react-leaflet-custom-control';
 import L from 'leaflet';
 import "./MapView.css";
-import {faHome, faMapMarkerAlt, faSearch, faWindowClose} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCertificate, faCheckCircle,
+    faCross, faEdit,
+    faHome,
+    faMapMarkerAlt,
+    faSearch,
+    faWindowClose
+} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
 import {usePosition} from 'use-position';
 import {FormPlace} from "../components/FormPlace";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
-import {useAuth0} from "@auth0/auth0-react";
+import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
 import {Link} from "react-router-dom";
-import {Sidebar, Tab} from "react-leaflet-sidetabs";
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {VenueLocationIcon} from "../components/VenueLocationIcon";
-import PlacesPopup from "../components/PlacesPopup";
 import styled from "styled-components";
 
 export const locationIcon = L.icon({
@@ -66,6 +71,7 @@ function MapView(props) {
 
     const refMarker = useRef();
     const refMap = useRef();
+    const authContext = useContext(Auth0Context);
 
     const {
         latitude,
@@ -74,24 +80,6 @@ function MapView(props) {
         accuracy,
         error,
     } = usePosition();
-
-
-    let {
-        loading,
-        loginWithRedirect,
-        logout,
-        getAccessTokenSilently,
-        isAuthenticated,
-        user,
-    } = useAuth0();
-
-    const onClose = () => {
-        setCollapsed(true);
-    }
-    const onOpen = (id) => {
-        setCollapsed(false);
-        setSelected(id);
-    }
 
 
     const toggleDraggable = (props) => {
@@ -117,23 +105,17 @@ function MapView(props) {
     const closeForm = () => {
         setShowForm(false)
     }
-
+    //Get places for DB
     useEffect(() => {
         async function getPlaces() {
 
             let places = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
-                getAccessTokenSilently,
-                loginWithRedirect
+                authContext.getAccessTokenSilently,
+                authContext.loginWithRedirect
             );
 
-            // console.log(places);
-            // places.map((place) => (
-            //     console.log(place.locationSet.lat)
-            // ))
-
             if (places && places.length > 0) {
-                // console.log(places);
                 setPlaces(places);
             }
         }
@@ -150,7 +132,7 @@ function MapView(props) {
             )
         }
     }
-
+    //Display the sidebar where are the information of a specific Place
     const showDetails = () => {
         if (visible) {
             setVisible(false)
@@ -158,15 +140,12 @@ function MapView(props) {
             setVisible(true)
         }
     }
-
+    //Indicate which place has been selected
     const select = (info) => {
         setSelected(info)
     }
 
-
-    // const map = refMap.current.leafletElement;
-    //refMap.current.addControl(sidebar);
-
+    //Show Draggable Marker
     const setDraggableMarker = () => {
         if (opacity === 0) {
             setOpacity(1)
@@ -176,6 +155,7 @@ function MapView(props) {
         getMapCenter();
     }
 
+    //Get middle position of the visible map
     const getMapCenter = () => {
         const center = refMap.current;
         // console.log(center.leafletElement.getCenter().toString());
@@ -217,19 +197,63 @@ function MapView(props) {
             <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
 
             <div className="mapTab">
-                {/*{showForm ? <FormPlace latitude={marker.lat} longitude={marker.lng}/> : null}*/}
-                {/*<Foursquare className="listVenues"/>*/}
+                {/*Sidebar with information about the place which has been selected*/}
+                <div  className={`listVenues ${visible ? "in" : ""}`} >
+                    {visible &&
+                        <>
+                            <button className="toolsBtn" onClick={showDetails}>
+                                <span>❌</span>
+                            </button>
+                            <h1>{places[selected].name} {places[selected].isVerified ?
+                                <FontAwesomeIcon icon={faCheckCircle}/> :
+                                <button>
+                                    <FontAwesomeIcon icon={faEdit}/>
+                                </button>}
+                            </h1>
 
-                {visible && <div className="listVenues">
-                    <h1>{console.log("SALUT " + selected)}{places[selected].name}</h1>
-                    <ul>
-                        {places != null && places.map((place, index) => (
-                            <li key={index}>
-                                {place.name}
-                            </li>
-                        ))}
-                    </ul>
-                </div>}
+                            <h2>{places[selected].categorySet.name}</h2>
+                            <h2>{places[selected].typeSet.name}</h2>
+                            <p>
+                                Open on sundays : {
+                                places[selected].isOpenSunday ?
+                                    <span>✔</span> : <span>❌</span>
+                            }
+                            </p>
+                            <p>
+                                Open on Special Days : {
+                                places[selected].isOpenSpecialDay ?
+                                    <span>✔</span> : <span>❌</span>
+                            }
+                            </p>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td style={{align:"center"}}>{places[selected].description}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{places[selected].locationSet.address}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{places[selected].locationSet.regionSet.name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{places[selected].locationSet.citySet.name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{places[selected].email}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{places[selected].website}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{places[selected].phoneNumber}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <h1>Reviews</h1>
+                    </>}
+                </div>
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
@@ -242,6 +266,7 @@ function MapView(props) {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
+                    {/* button to return to the Device Location */}
                     <Control position="topleft">
                         <button className="toolsBtn"
                                 onClick={() => setViewPort({
@@ -252,6 +277,7 @@ function MapView(props) {
                             <FontAwesomeIcon icon={faHome}/>
                         </button>
                     </Control>
+                    {/* button to add a new Marker on the map*/}
                     <Control position="topleft">
                         <button className="toolsBtn"
                                 onClick={setDraggableMarker}
@@ -317,26 +343,6 @@ function MapView(props) {
                             </button>
                         </Popup>
                     </Marker>
-                    {/*<Sidebar*/}
-                    {/*    id="sidebar"*/}
-                    {/*    position="right"*/}
-                    {/*    collapsed={collapsed}*/}
-                    {/*    closeIcon={<FiChevronRight />}*/}
-                    {/*    selected={selected}*/}
-                    {/*    onOpen={onOpen}*/}
-                    {/*    onClose={onClose}*/}
-                    {/*    style={{height:20}}*/}
-                    {/*>*/}
-                    {/*    <Tab id="home" header="Home" icon={<FiHome />}>*/}
-                    {/*        <p>Salut</p>*/}
-                    {/*    </Tab>*/}
-                    {/*    <Tab id="filter" header="Filter" icon={<FiFilter/>}>*/}
-                    {/*        <p>Filters Category</p>*/}
-                    {/*    </Tab>*/}
-                    {/*    <Tab id="select" header="Select" icon={<FiFilter/>}>*/}
-                    {/*        <p>Filters Category</p>*/}
-                    {/*    </Tab>*/}
-                    {/*</Sidebar>*/}
                 </Map>
             </div>
         </>

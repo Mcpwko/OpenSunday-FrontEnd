@@ -1,4 +1,5 @@
 {
   "places": "/api/places",
-  "user": "/api/users"
+  "user": "/api/users",
+  "review": "/api/reviews"
 }

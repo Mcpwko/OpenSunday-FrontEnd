@@ -37,7 +37,8 @@
     "yup": "^0.29.3",
     "react-leaflet-sidetabs": "^1.0.1",
     "react-icons": "^3.11.0",
-    "leaflet-sidebar": "^0.2.0"
+    "leaflet-sidebar": "^0.2.0",
+    "react-transition-group": "^4.4.1"
   },
   "scripts": {
     "start": "react-scripts start",

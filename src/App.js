@@ -16,9 +16,9 @@ import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
 
 function App() {
-
+    //List of all places
     let [locations, setLocations] = useState([]);
-
+    //Variables for Auth0
     let {
         loading,
         loginWithRedirect,
@@ -27,14 +27,9 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
-
-
+    //Temporarly variable for Testing
     let count = 0;
-
-    //let auth = this.context;
-
-    //console.log('AUTH', AuthContext);
-
+    //Handle click for "Get Locations" button
     let handleLocationsClick = async (e) => {
         e.preventDefault();
         let locations = await request(
@@ -49,11 +44,10 @@ function App() {
             setLocations(locations);
         }
     };
-
+    //Handle click on "Login" to open Auth0 Popup Login
     let handleLoginClick = async (e) => {
         e.preventDefault();
-
-        let users = await request(
+         await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.user}`,
             getAccessTokenSilently,
             loginWithRedirect
@@ -61,7 +55,7 @@ function App() {
 
 
     };
-
+    //Method to POST the user in the DB
     let fetchUser = async () => {
 
         let token = await getAccessTokenSilently();
@@ -84,17 +78,18 @@ function App() {
         count = 1;
     };
 
+    //Hooks which checks if user is connected to POST Check
     useEffect(() => {
 
         if (isAuthenticated && count == 0) {
             //POST user
             console.log("user", user);
-            fetchUser();
+            // fetchUser();
 
         }
 
     });
-
+    //Handle click on "Logout"
     let handleLogoutClick = async (e) => {
         e.preventDefault();
         /*
