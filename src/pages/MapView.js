@@ -112,7 +112,6 @@ function MapView(props) {
             let places = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
                 authContext.getAccessTokenSilently,
-                authContext.loginWithRedirect
             );
 
             if (places && places.length > 0) {
