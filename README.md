@@ -1,3 +1,29 @@
+# 1 - OpenSunday: Front-end
+
+This project is part of the "645-1 - School's option 3" module at the HES-SO Valais-Wallis.
+
+## Description and goal
+To be completed.
+
+## Functionalities
+### Connect or create an account
+To be completed.
+
+### Add a place
+You can add a place by:
+* Drag a pin of the location and enter the information
+* Search a location with leaflet and add necessary information
+* Manually enter the information and location and get the coordinates
+
+### Rate a place and see ratings
+To be completed.
+
+
+## Notes :
+* The project has been developed in English
+
+# 2 - React information
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -16,6 +16,7 @@
     display: none;
 }
 
+
 .myDivIcon {
     text-align: center;
     /* Horizontally center the text (icon) */
@@ -46,4 +47,22 @@
 
 .fadeIcon {
     animation: fade 1s infinite alternate;
+}
+
+/* The Close Button */
+#close {
+    color: red;
+    position: absolute;
+    top: 60px;
+    right: 16px;
+    font-size: 66px;
+    /*padding-right: 10%;*/
+    font-weight: bold;
+}
+
+#close:hover,
+#close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
 }

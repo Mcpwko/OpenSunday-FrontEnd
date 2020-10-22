@@ -18,6 +18,7 @@
     "history": "^5.0.0",
     "leaflet": "^1.7.1",
     "leaflet-easybutton": "^2.4.0",
+    "axios": "^0.20.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "react": "^16.13.1",
@@ -33,7 +34,10 @@
     "reactstrap": "^8.6.0",
     "styled-components": "^5.2.0",
     "use-position": "^0.0.7",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "react-leaflet-sidetabs": "^1.0.1",
+    "react-icons": "^3.11.0",
+    "leaflet-sidebar": "^0.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
