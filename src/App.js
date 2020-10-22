@@ -9,9 +9,14 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-import {FormPlace} from "./components/FormPlace"
+import {FormPlace} from "./components/FormPlace";
+import moment from "moment";
+import {forEach} from "react-bootstrap/ElementChildren";
+
+
 
 function App() {
+
     let [locations, setLocations] = useState([]);
 
     let {
@@ -23,6 +28,10 @@ function App() {
         user,
     } = useAuth0();
 
+    //let auth = this.context;
+
+    //console.log('AUTH', AuthContext);
+
     let handleLocationsClick = async (e) => {
         e.preventDefault();
         let locations = await request(
@@ -31,10 +40,42 @@ function App() {
             loginWithRedirect
         );
 
+
         if (locations && locations.length > 0) {
             console.log(locations);
             setLocations(locations);
         }
+    };
+
+    let handleLoginClick = async (e) => {
+        e.preventDefault();
+
+        let users = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.user}`,
+            getAccessTokenSilently,
+            loginWithRedirect
+        );
+
+        if (users != null) {
+
+        //POST user
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}`, {
+            method: 'POST',
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${getAccessTokenSilently}`,
+            }, body: JSON.stringify({
+                email: user.name,
+                createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
+                status: 0,
+                idAuth0: user.sub,
+                idUserType: 1
+            })
+        });
+
+    }
+
+
     };
 
     let handleLogoutClick = async (e) => {
@@ -81,6 +122,11 @@ function App() {
                             exact
                             render={() => (
                                 <>
+                                    <a className="App-link"
+                                        href="#"
+                                        onClick={handleLoginClick}>
+                                        login
+                                    </a>
                                     <h1>Welcome on OpenSunday</h1>
                                     {/*<ContactForm/>*/}
                                     {/*<FormPlace/>*/}
