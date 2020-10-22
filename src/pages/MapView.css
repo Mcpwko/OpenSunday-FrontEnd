@@ -13,7 +13,8 @@
     overflow-y:auto;
     -webkit-overflow-scrolling: touch;
     max-height: 90vh;
-    display: none;
+    height: 100vh;
+    background-color: green;
 }
 
 
@@ -34,6 +35,8 @@
     border: var(--border-size) solid var(--border-color);
 
 }
+
+
 
 .buttonsMap{
     /*display:flex;*/

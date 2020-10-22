@@ -61,7 +61,7 @@ function MapView(props) {
     });
     const [places, setPlaces] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
-    const [selected , setSelected] = useState("home");
+    const [selected , setSelected] = useState(0);
 
     const refMarker = useRef();
     const refMap = useRef();
@@ -142,6 +142,19 @@ function MapView(props) {
         }
     }
 
+    const showDetails = () => {
+        if(visible){
+        setVisible(false)
+        }
+        else{
+            setVisible(true)
+        }
+    }
+
+    const select = (info) => {
+        setSelected(info)
+    }
+
 
     // const map = refMap.current.leafletElement;
     //refMap.current.addControl(sidebar);
@@ -199,15 +212,22 @@ function MapView(props) {
                 {/*{showForm ? <FormPlace latitude={marker.lat} longitude={marker.lng}/> : null}*/}
                 {/*<Foursquare className="listVenues"/>*/}
 
-                {!visible && <div className="listVenues">
-                    <div>Items:</div>
+                {visible && <div className="listVenues">
+                    <h1>{console.log("SALUT " + selected)}{places[selected].name}</h1>
+                    <ul>
+                        {places!=null && places.map((place, index) => (
+                                <li key={index}>
+                                    {place.name}
+                                </li>
+                            ))}
+                    </ul>
                 </div>}
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
                     <FormPlace latitude={marker.lat} longitude={marker.lng} show={showLatLong}/>
                 </Modal> : null}
-                <Foursquare className="listVenues"/>
+                {/*<Foursquare className="listVenues"/>*/}
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                      className="mapContent">
                     <TileLayer
@@ -270,7 +290,7 @@ function MapView(props) {
 
                     </Search>
                     <Markers venues={data.venues}/>
-                    {places === null ? null : <PlacesMarkers venues={places} onOpen={setVisible}/>}
+                    {places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}
                     <Marker
                         icon={locationIcon}
                         draggable={draggable}
@@ -288,26 +308,26 @@ function MapView(props) {
                             </button>
                         </Popup>
                     </Marker>
-                    <Sidebar
-                        id="sidebar"
-                        position="right"
-                        collapsed={collapsed}
-                        closeIcon={<FiChevronRight />}
-                        selected={selected}
-                        onOpen={onOpen}
-                        onClose={onClose}
-                        style={{height:20}}
-                    >
-                        <Tab id="home" header="Home" icon={<FiHome />}>
-                            <p>Salut</p>
-                        </Tab>
-                        <Tab id="filter" header="Filter" icon={<FiFilter/>}>
-                            <p>Filters Category</p>
-                        </Tab>
-                        <Tab id="select" header="Select" icon={<FiFilter/>}>
-                            <p>Filters Category</p>
-                        </Tab>
-                    </Sidebar>
+                    {/*<Sidebar*/}
+                    {/*    id="sidebar"*/}
+                    {/*    position="right"*/}
+                    {/*    collapsed={collapsed}*/}
+                    {/*    closeIcon={<FiChevronRight />}*/}
+                    {/*    selected={selected}*/}
+                    {/*    onOpen={onOpen}*/}
+                    {/*    onClose={onClose}*/}
+                    {/*    style={{height:20}}*/}
+                    {/*>*/}
+                    {/*    <Tab id="home" header="Home" icon={<FiHome />}>*/}
+                    {/*        <p>Salut</p>*/}
+                    {/*    </Tab>*/}
+                    {/*    <Tab id="filter" header="Filter" icon={<FiFilter/>}>*/}
+                    {/*        <p>Filters Category</p>*/}
+                    {/*    </Tab>*/}
+                    {/*    <Tab id="select" header="Select" icon={<FiFilter/>}>*/}
+                    {/*        <p>Filters Category</p>*/}
+                    {/*    </Tab>*/}
+                    {/*</Sidebar>*/}
                 </Map>
             </div>
         </>

@@ -22,14 +22,15 @@ export function GetLocation(props) {
     let latitude=null;
     let longitude=null;
 
-    const fetchData = async () => {
-        const response = await axios.get(
-            // myRequest
-        );
-
-        setLocation(response.data);
-        // console.log(location.toString());
-    };
+    //UNCOMMENT
+    // const fetchData = async () => {
+    //     const response = await axios.get(
+    //         // myRequest
+    //     );
+    //
+    //     setLocation(response.data);
+    //     // console.log(location.toString());
+    // };
 
     function transformData () {
         // {location.data[0].lat}
@@ -64,7 +65,7 @@ export function GetLocation(props) {
         })}
     };
 
-    fetchData();
+    // fetchData();
     transformData();
 
     return latitude + "," + longitude;

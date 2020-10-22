@@ -1,8 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Popup} from 'react-leaflet';
 
-const PlacesPopup = (props) => {
+function PlacesPopup  (props)  {
     const data = props.data;
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        console.log("depuis POPUP : " + data.idPlace)
+        props.select(data.idPlace-1);
+        props.onOpen();
+    }
+
     return (
         <Popup>
             <h1 className='popup-text'>{data.name}</h1>
@@ -10,7 +18,7 @@ const PlacesPopup = (props) => {
             <div>{data.typeSet.name && "Type : "+ data.typeSet.name}</div>
             <div>{data.categorySet.name!=null &&  "Category : " + data.categorySet.name}</div>
             <br/>
-            <button className="toolsBtn" onClick={props.setVisible}>See more information</button>
+            <button className="toolsBtn" onClick={handleClick}>See more information</button>
         </Popup>
     );
 };

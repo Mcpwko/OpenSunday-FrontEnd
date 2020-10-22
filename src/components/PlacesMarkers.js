@@ -1,9 +1,10 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {Marker} from 'react-leaflet';
 import {VenueLocationIcon} from './VenueLocationIcon';
 import PlacesPopup from "./PlacesPopup";
 
-const PlacesMarkers = (props) => {
+function PlacesMarkers  (props)  {
+
     const {venues} = props;
     const markers = venues.map((place, index) => (
         <Marker
@@ -14,7 +15,7 @@ const PlacesMarkers = (props) => {
             ]}
             icon={VenueLocationIcon}
         >
-            <PlacesPopup data={place} onOpen={props.setVisible}/>
+            <PlacesPopup data={place} onOpen={props.onOpen} select={props.select}/>
         </Marker>
     ));
     return <Fragment>{markers}</Fragment>
