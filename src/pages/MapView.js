@@ -61,7 +61,8 @@ function MapView(props) {
     });
     const [places, setPlaces] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
-    const [selected , setSelected] = useState(0);
+    const [buttonGC, setButtonGC] = useState(false);
+    const [selected, setSelected] = useState(0);
 
     const refMarker = useRef();
     const refMap = useRef();
@@ -88,13 +89,21 @@ function MapView(props) {
         setCollapsed(true);
     }
     const onOpen = (id) => {
-        setCollapsed( false);
+        setCollapsed(false);
         setSelected(id);
     }
 
 
     const toggleDraggable = (props) => {
-        setShowLatLong(props)
+
+        // If it is a manually entry reset value of lat and long
+        if (props) {
+            setMarker({lat: 0, lng: 0});
+            setButtonGC(true);
+        } else {
+            setButtonGC(false);
+        }
+
 
         // In case of draggable marker
         if (opacity === 1) {
@@ -143,10 +152,9 @@ function MapView(props) {
     }
 
     const showDetails = () => {
-        if(visible){
-        setVisible(false)
-        }
-        else{
+        if (visible) {
+            setVisible(false)
+        } else {
             setVisible(true)
         }
     }
@@ -204,7 +212,7 @@ function MapView(props) {
     return (
         <>
             <div className="buttonsMap">
-                <button onClick={() => toggleDraggable(false)}>Add new place</button>
+                <button onClick={() => toggleDraggable(true)}>Add new place</button>
             </div>
             <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
 
@@ -215,17 +223,17 @@ function MapView(props) {
                 {visible && <div className="listVenues">
                     <h1>{console.log("SALUT " + selected)}{places[selected].name}</h1>
                     <ul>
-                        {places!=null && places.map((place, index) => (
-                                <li key={index}>
-                                    {place.name}
-                                </li>
-                            ))}
+                        {places != null && places.map((place, index) => (
+                            <li key={index}>
+                                {place.name}
+                            </li>
+                        ))}
                     </ul>
                 </div>}
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
-                    <FormPlace latitude={marker.lat} longitude={marker.lng} show={showLatLong}/>
+                    <FormPlace latitude={marker.lat} longitude={marker.lng} gcButton={buttonGC}/>
                 </Modal> : null}
                 {/*<Foursquare className="listVenues"/>*/}
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
@@ -304,7 +312,8 @@ function MapView(props) {
                             {draggable ? 'Create place' : "Complete the form"}
                         </span>
                             <br/>
-                            <button style={{marginLeft: 10}} className="toolsBtn" onClick={() => toggleDraggable(false)}>ADD ME
+                            <button style={{marginLeft: 10}} className="toolsBtn"
+                                    onClick={() => toggleDraggable(false)}>ADD ME
                             </button>
                         </Popup>
                     </Marker>

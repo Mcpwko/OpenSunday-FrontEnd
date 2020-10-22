@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {Form, Button, Col} from 'react-bootstrap';
 import {Formik, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import "./FormPlace.css";
 import {string} from "yup/lib/locale";
-import {GetLocation} from "./GetLocation";
-
+import axios from "axios";
+import Place from "./Place";
 
 const Container = styled.div`
   // background: #F7F9FA;
@@ -152,61 +152,43 @@ const validationSchema = Yup.object().shape({
         .oneOf([true], "You must accept the terms and conditions.")
 });
 
-// const Search = () => {
-//     const [showResults, setShowResults] = React.useState(false)
-//     const onClick = () => setShowResults(true)
-//     return (
-//         <div>
-//             <input type="submit" value="Search" onClick={onClick}/>
-//             {showResults ? <Results/> : null}
-//         </div>
-//     )
-// }
-//
-// const Results = () => (
-//     <div id="results" className="search-results">
-//         Some Results
-//     </div>
-// )
-
-
 export const FormPlace = (props) => {
     const [showForm, setShowForm] = useState(false);
 
     const [latitude, setLatitude] = useState(props.latitude);
     const [longitude, setLongitude] = useState(props.longitude);
 
-    const [showLatLong, setShowLatLong] = useState(props.show);
+    const [visible, setVisible] = useState(props.gcButton);
 
-    // if(showLatLong){
-    //     setShowLatLong
-    // }
 
-    const displayForm = () => {
-        setShowForm(true)
+    let url = "https://us1.locationiq.com/v1/search.php?key=pk.a9fb192a815fa6985b189ffe5138383b&q=";
+    let endUrl = "&format=json";
+    // let add = "Ch.%20des%20An%C3%A9mones%206%2C%203960%20Sierre"
+
+    // API - locationiq.com - 5000 requests/day - 2 requests / second
+    async function SearchPosition(adr, city, zip) {
+
+        const fullAddress = encodeURIComponent(adr + "," + city + "," + zip);
+
+        const request = url + fullAddress + endUrl;
+
+        const response = await axios.get(request).catch(err => console.log(err))
+        const data = response.data
+        // console.log(data[0].lat);
+
+        // console.log(props.toString());
+
+        setLatitude(data[0].lat);
+        setLongitude(data[0].lon);
+
+        console.log(data[0].lat);
+        console.log(data[0].lon);
+        // console.log(latitude);
+        // console.log(longitude);
     }
-
-    console.log(props);
-
-
-    const searchPosition = (adr, zip, city) => {
-        let loc = GetLocation(adr, zip, city);
-
-        //Extract lat & long
-        let separator = loc.indexOf(',');
-        let lat = loc.substring(0, separator - 1);
-        let lon = loc.substring(separator + 1, loc.length);
-
-        //Set formik lat long
-        // value.
-
-        // TRY TO SET STATE AS DYNAMIC INTO INITIALVALUES, SEEMS TO HAVE NOTHING WRONG WITH THAT
-    }
-
 
     return (
         // <Modal>
-
         <Container>
             {/*<Button onClick={displayForm}></Button>*/}
             {/*{showForm ?*/}
@@ -221,8 +203,8 @@ export const FormPlace = (props) => {
                     zip: "",
                     city: "",
                     region: "",
-                    lat: latitude,
-                    long: longitude,
+                    lat: "",
+                    long: "",
                     email: "",
                     website: "",
                     phone: "",
@@ -362,9 +344,10 @@ export const FormPlace = (props) => {
                         </Form.Row>
 
                         <div className="buttons">
-                            <GetButton variant="secondary" type="button" onClick={searchPosition}>
+                            {visible ? <GetButton variant="secondary" type="button"
+                                                  onClick={() => SearchPosition(values.address, values.zip, values.city)}>
                                 Get coordinates
-                            </GetButton>
+                            </GetButton> : null}
                         </div>
 
                         <Form.Row>
@@ -376,7 +359,7 @@ export const FormPlace = (props) => {
                                     placeholder="Latitude"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.lat}
+                                    value={latitude}
                                     className={touched.lat && errors.lat ? "has-error" : null}
                                     disabled
                                 />
@@ -392,7 +375,7 @@ export const FormPlace = (props) => {
                                     placeholder="Longitude"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={values.long}
+                                    value={longitude}
                                     className={touched.long && errors.long ? "has-error" : null}
                                     disabled
                                 />

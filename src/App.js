@@ -9,18 +9,15 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-import {FormPlace} from "./components/FormPlace"
-import {GetLocation} from "./components/GetLocation"
+// import {FormPlace} from "./components/FormPlace"
+// import {GetLocation} from "./components/GetLocation"
 import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
 
-
-
 function App() {
 
     let [locations, setLocations] = useState([]);
-
 
     let {
         loading,
@@ -30,7 +27,6 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
-
 
 
     let count = 0;
@@ -90,7 +86,7 @@ function App() {
 
     useEffect(() => {
 
-        if(isAuthenticated && count == 0){
+        if (isAuthenticated && count == 0) {
             //POST user
             console.log("user", user);
             fetchUser();
@@ -116,9 +112,6 @@ function App() {
         <div className="App">
 
             <Navigation/>
-
-            <GetLocation address="Ch. des Anémones 6" zip="3960" city="Sierre"/>
-
 
             <header className="App-header">
                 {isAuthenticated && (
@@ -146,8 +139,8 @@ function App() {
                             render={() => (
                                 <>
                                     <a className="App-link"
-                                        href="#"
-                                        onClick={handleLoginClick}>
+                                       href="#"
+                                       onClick={handleLoginClick}>
                                         login
                                     </a>
                                     <h1>Welcome on OpenSunday</h1>
@@ -178,7 +171,7 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                            <Route path="/map" exact component={MapView} props={locations}></Route>
+                        <Route path="/map" exact component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
                     </Switch>
                 </BrowserRouter>
