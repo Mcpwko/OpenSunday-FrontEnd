@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import {Marker} from 'react-leaflet';
 import {VenueLocationIcon} from './VenueLocationIcon';
+import PlacesPopup from "./PlacesPopup";
 
 const PlacesMarkers = (props) => {
     const {venues} = props;
@@ -13,7 +14,7 @@ const PlacesMarkers = (props) => {
             ]}
             icon={VenueLocationIcon}
         >
-            {/*<MarkerPopup data={place}/>*/}
+            <PlacesPopup data={place} onOpen={props.setVisible}/>
         </Marker>
     ));
     return <Fragment>{markers}</Fragment>

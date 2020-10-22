@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
@@ -7,7 +7,7 @@ import Foursquare from "../utils/foursquare";
 import Control from '@skyeer/react-leaflet-custom-control';
 import L from 'leaflet';
 import "./MapView.css";
-import {faHome, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faMapMarkerAlt, faSearch, faWindowClose} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
 import {usePosition} from 'use-position';
@@ -17,6 +17,10 @@ import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
 import {Link} from "react-router-dom";
+import {Sidebar, Tab} from "react-leaflet-sidetabs";
+import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
+import {VenueLocationIcon} from "../components/VenueLocationIcon";
+import PlacesPopup from "../components/PlacesPopup";
 
 export const locationIcon = L.icon({
     iconUrl: require('../assets/plusIcon.png'),
@@ -37,11 +41,15 @@ function MapView(props) {
     const [zoom, setZoom] = useState(12);
     const [opacity, setOpacity] = useState(0);
     const [draggable, setDraggable] = useState(true);
+    const [visible, setVisible] = useState(false);
     const [viewport, setViewPort] = useState({
         center: [45.3, 7.5333],
         zoom: 12,
     });
     const [places, setPlaces] = useState([]);
+    const [collapsed, setCollapsed] = useState(true);
+    const [selected , setSelected] = useState("home");
+
     const refMarker = useRef();
     const refMap = useRef();
 
@@ -53,6 +61,7 @@ function MapView(props) {
         error,
     } = usePosition();
 
+
     let {
         loading,
         loginWithRedirect,
@@ -61,6 +70,14 @@ function MapView(props) {
         isAuthenticated,
         user,
     } = useAuth0();
+
+    const onClose = () => {
+        setCollapsed(true);
+    }
+    const onOpen = (id) => {
+        setCollapsed( false);
+        setSelected(id);
+    }
 
 
     const toggleDraggable = () => {
@@ -105,6 +122,10 @@ function MapView(props) {
         }
     }
 
+
+    // const map = refMap.current.leafletElement;
+    //refMap.current.addControl(sidebar);
+
     const setDraggableMarker = () => {
         if (opacity === 0) {
             setOpacity(1)
@@ -141,7 +162,12 @@ function MapView(props) {
 
             <div className="mapTab">
                 {showForm ? <FormPlace latitude={marker.lat} longitude={marker.lng}/> : null}
-                <Foursquare className="listVenues"/>
+                {/*<Foursquare className="listVenues"/>*/}
+
+                {!visible && <div className="listVenues">
+                    <div>Items:</div>
+                </div>}
+
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                      className="mapContent">
                     <TileLayer
@@ -201,11 +227,8 @@ function MapView(props) {
                         )}
 
                     </Search>
-                    <Control position="topright">
-                        <button>Category</button>
-                    </Control>
                     <Markers venues={data.venues}/>
-                    {places === null ? null : <PlacesMarkers venues={places}/>}
+                    {places === null ? null : <PlacesMarkers venues={places} onOpen={setVisible}/>}
                     <Marker
                         icon={locationIcon}
                         draggable={draggable}
@@ -222,6 +245,26 @@ function MapView(props) {
                             <button style={{marginLeft:10}} className="toolsBtn" onClick={toggleDraggable}>ADD ME</button>
                         </Popup>
                     </Marker>
+                    <Sidebar
+                        id="sidebar"
+                        position="right"
+                        collapsed={collapsed}
+                        closeIcon={<FiChevronRight />}
+                        selected={selected}
+                        onOpen={onOpen}
+                        onClose={onClose}
+                        style={{height:20}}
+                    >
+                        <Tab id="home" header="Home" icon={<FiHome />}>
+                            <p>Salut</p>
+                        </Tab>
+                        <Tab id="filter" header="Filter" icon={<FiFilter/>}>
+                            <p>Filters Category</p>
+                        </Tab>
+                        <Tab id="select" header="Select" icon={<FiFilter/>}>
+                            <p>Filters Category</p>
+                        </Tab>
+                    </Sidebar>
                 </Map>
             </div>
         </>
