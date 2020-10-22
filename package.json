@@ -18,6 +18,7 @@
     "history": "^5.0.0",
     "leaflet": "^1.7.1",
     "leaflet-easybutton": "^2.4.0",
+    "axios": "^0.20.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "react": "^16.13.1",

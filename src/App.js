@@ -9,7 +9,8 @@ import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-import {FormPlace} from "./components/FormPlace";
+import {FormPlace} from "./components/FormPlace"
+import {GetLocation} from "./components/GetLocation"
 import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 
@@ -95,6 +96,8 @@ function App() {
         <div className="App">
 
             <Navigation/>
+
+            <GetLocation address="Ch. des Anémones 6" zip="3960" city="Sierre"/>
 
 
             <header className="App-header">
