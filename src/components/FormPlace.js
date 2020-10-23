@@ -1,19 +1,13 @@
-import React, {useState, useEffect, useContext, Fragment} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
-import {Form, Button, Col} from 'react-bootstrap';
-import {Formik, ErrorMessage} from 'formik';
+import {Button, Col, Form} from 'react-bootstrap';
+import {Formik} from 'formik';
 import * as Yup from 'yup';
 import "./FormPlace.css";
-import {string} from "yup/lib/locale";
 import axios from "axios";
-import Place from "./Place";
-import {Auth0Context} from "@auth0/auth0-react";
-import request from "../utils/request";
-import endpoints from "../endpoints.json";
 import GetCategories from "../database/GetCategories";
 import GetTypes from "../database/GetTypes";
 import GetRegions from "../database/GetRegions";
-
 
 const Container = styled.div`
   // background: #F7F9FA;
@@ -63,6 +57,13 @@ const Container = styled.div`
      font-weight: 400;
       padding: 0.8em;
      color: #24B9B6;
+  }
+  sub{
+  color: darkred;
+  background: grey;
+  text-align: center;
+  }
+  
 `;
 
 const MyForm = styled(Form)`
@@ -76,7 +77,6 @@ const MyForm = styled(Form)`
 `;
 
 const SubmitButton = styled(Button)`
-
   background: #1863AB;
   border: none;
   font-size: 1.2em;
@@ -183,35 +183,7 @@ export const FormPlace = (props) => {
             setErrorGC(true);
         }
         // console.log(data[0].lat);
-        // console.log(props.toString());
-        // console.log(data[0].lat);
         // console.log(data[0].lon);
-        // console.log(latitude);
-        // console.log(longitude);
-    }
-
-    // API - locationiq.com - 5000 requests/day - 2 requests / second
-    async function SearchAddress(address, zip, city) {
-
-        const latLong = encodeURIComponent(address + "," + zip + "," + city);
-
-        const request = url + latLong + endUrl;
-
-        const response = await axios.get(request)
-            .catch(err => console.log(err))
-
-        // If an error occurs, the latitude and longitude are not modified
-        if (response !== undefined) {
-
-        }
-        //     setErrorGC(false);
-        //     const data = response.data;
-        //     setLatitude(data[0].lat);
-        //     setLongitude(data[0].lon);
-        // } else {
-        //     setErrorGC(true);
-        // }
-
     }
 
     return (
@@ -250,9 +222,9 @@ export const FormPlace = (props) => {
                     setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));
                         resetForm();
-                        setLongitude()
                         setSubmitting(false);
                     }, 500);
+                    return true;
                 }}
             >
                 {({
@@ -421,7 +393,7 @@ export const FormPlace = (props) => {
 
                         <Form.Row>
                             <Col>
-                                <Form.Label className={"show"}> Latitude </Form.Label>
+                                <Form.Label className={"show"}>Latitude</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="lat"
@@ -506,9 +478,9 @@ export const FormPlace = (props) => {
 
                         <div className="buttons">
                             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-                            <SubmitButton variant="primary" type="submit" disabled={isSubmitting}>
+                            {latitude !== 0 ? <SubmitButton variant="primary" type="submit" disabled={isSubmitting}>
                                 Submit
-                            </SubmitButton>
+                            </SubmitButton> : <sub>Latitude and longitude are needed for submitting</sub>}
                             {/*<CancelButton variant="secondary" type="cancel" className="cancel">*/}
                             {/*    Cancel*/}
                             {/*</CancelButton>*/}
