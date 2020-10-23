@@ -1,5 +1,8 @@
 {
   "places": "/api/places",
   "user": "/api/users",
-  "review": "/api/reviews"
+  "review": "/api/reviews",
+  "types": "/api/types",
+  "categories": "/api/categories",
+  "regions": "/api/regions"
 }

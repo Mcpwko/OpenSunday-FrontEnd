@@ -95,7 +95,7 @@ function MapView(props) {
 
         // In case of draggable marker
         if (opacity === 1) {
-            setDraggable(!draggable)
+            setDraggable(draggable)
         }
 
         setShowForm(true)
