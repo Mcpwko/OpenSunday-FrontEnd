@@ -111,7 +111,6 @@ margin-top:2em;
 // RegEx for phone number validation
 const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
 
-
 // Schema for yup
 const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -134,34 +133,17 @@ const validationSchema = Yup.object().shape({
         .max(20, "Must be 8 characters or less")
         .required("Required"),
     region: Yup.string()
-        // specify the set of valid values for job type
-        // @see http://bit.ly/yup-mixed-oneOf
-        // .notOneOf(
-        //     ["designer", "development", "product", "other"],
-        //     "Invalid Region"
-        // )
         .required("Required"),
     lat: Yup.number()
-        // .notOneOf([0], 'Cannot be 0'),
-        // .typeError('Cannot be 0'),
-        // .test('lat', 'Cannot be 0', num => num !== 0),
         .required("Required latitude"),
     long: Yup.number()
         .required("Required longitude"),
     email: Yup.string()
         .email("Invalid email address"),
-    // .required("Required"),
-    website: Yup.string()
-        .url("Invalid url"),
-    // .required("Required"),
     phone: Yup.string()
         .matches(phoneRegExp, 'Phone number is not valid'),
-    // .required("Required"),
-    location: Yup.string()
-        .required("Required"),
-    acceptedTerms: Yup.boolean()
-        .required("Required")
-        .oneOf([true], "You must accept the terms and conditions.")
+    website: Yup.string()
+        .url("Invalid url")
 });
 
 
@@ -209,9 +191,9 @@ export const FormPlace = (props) => {
     }
 
     // API - locationiq.com - 5000 requests/day - 2 requests / second
-    async function SearchAddress(lat, long) {
+    async function SearchAddress(address, zip, city) {
 
-        const latLong = encodeURIComponent(lat + "," + long);
+        const latLong = encodeURIComponent(address + "," + zip + "," + city);
 
         const request = url + latLong + endUrl;
 
@@ -248,22 +230,27 @@ export const FormPlace = (props) => {
                     zip: "",
                     city: "",
                     region: "",
-                    lat: "",
-                    long: "",
+                    lat: latitude,
+                    long: longitude,
                     email: "",
-                    website: "",
                     phone: "",
-                    acceptedTerms: false, // added for our checkbox
+                    website: ""
+                    // acceptedTerms: false, // added for our checkbox
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, {setSubmitting, resetForm}) => {
                     // When button submits form and form is in the process of submitting, submit button is disabled
                     setSubmitting(true);
 
+                    // This is a douille
+                    values.lat = latitude;
+                    values.long = longitude;
+
                     // Simulate submitting to database, shows us values submitted, resets form
                     setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));
                         resetForm();
+                        setLongitude()
                         setSubmitting(false);
                     }, 500);
                 }}
@@ -439,10 +426,11 @@ export const FormPlace = (props) => {
                                     type="text"
                                     name="lat"
                                     placeholder="Latitude"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
+                                    // onChange={handleChange}
+                                    // onBlur={handleBlur}
                                     value={latitude}
-                                    className={touched.lat && errors.lat ? "has-error" : null}
+
+                                    // className={touched.lat && errors.lat ? "has-error" : null}
                                     disabled
                                 />
                                 {touched.lat && errors.lat ? (
@@ -455,10 +443,10 @@ export const FormPlace = (props) => {
                                     type="text"
                                     name="long"
                                     placeholder="Longitude"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
+                                    // onChange={handleChange}
+                                    // onBlur={handleBlur}
                                     value={longitude}
-                                    className={touched.long && errors.long ? "has-error" : null}
+                                    // className={touched.long && errors.long ? "has-error" : null}
                                     disabled
                                 />
                                 {touched.long && errors.long ? (

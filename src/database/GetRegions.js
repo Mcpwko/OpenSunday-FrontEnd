@@ -38,7 +38,7 @@ function GetRegions(props) {
         <>
             <option>Choose a region</option>
             {regionsDB.map((regionDB) => (
-                <option value={regionDB.idCategory} key={regionDB.idCategory}>
+                <option value={regionDB.idRegion} key={regionDB.idRegion}>
                     {regionDB.name}
                 </option>
             ))}
