@@ -23,10 +23,11 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {Link} from "react-router-dom";
+import { BrowserRouter, Link, Route } from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {VenueLocationIcon} from "../components/VenueLocationIcon";
 import styled from "styled-components";
+import Details from "../components/Details";
 
 export const locationIcon = L.icon({
     iconUrl: require('../assets/plusIcon.png'),
@@ -189,70 +190,87 @@ function MapView(props) {
 
 
     return (
-        <>
+        <BrowserRouter>
             <div className="buttonsMap">
                 <button onClick={() => toggleDraggable(true)}>Add new place</button>
             </div>
             <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
 
             <div className="mapTab">
-                {/*Sidebar with information about the place which has been selected*/}
-                <div  className={`listVenues ${visible ? "in" : ""}`} >
-                    {visible &&
-                        <>
-                            <button className="toolsBtn" onClick={showDetails}>
-                                <span>❌</span>
-                            </button>
-                            <h1>{places[selected].name} {places[selected].isVerified ?
-                                <FontAwesomeIcon icon={faCheckCircle}/> :
-                                <button>
-                                    <FontAwesomeIcon icon={faEdit}/>
-                                </button>}
-                            </h1>
+                {/*TEST DU ROUTING POUR LES PLACES*/}
+                <Route
+                    path="/map/:id"
+                    render={(routeParams) => (
 
-                            <h2>{places[selected].categorySet.name}</h2>
-                            <h2>{places[selected].typeSet.name}</h2>
-                            <p>
-                                Open on sundays : {
-                                places[selected].isOpenSunday ?
-                                    <span>✔</span> : <span>❌</span>
-                            }
-                            </p>
-                            <p>
-                                Open on Special Days : {
-                                places[selected].isOpenSpecialDay ?
-                                    <span>✔</span> : <span>❌</span>
-                            }
-                            </p>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td style={{align:"center"}}>{places[selected].description}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{places[selected].locationSet.address}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{places[selected].locationSet.regionSet.name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{places[selected].locationSet.citySet.name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{places[selected].email}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{places[selected].website}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{places[selected].phoneNumber}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <br/>
-                            <h1>Reviews</h1>
-                    </>}
-                </div>
+                        <Details
+                            {...places.find(
+                                (place) => place.idPlace === +routeParams.match.params.id
+                            )}
+                            onOpen={visible}
+                            onClose={showDetails}
+                            /* Pass the new method for toggling to the Book */
+                            // toggleLike={handleToggleLike}
+                        />
+                    )}
+                />
+
+                {/*Sidebar with information about the place which has been selected*/}
+                {/*<div  className={`listVenues ${visible ? "in" : ""}`} >*/}
+                {/*    {visible &&*/}
+                {/*        <>*/}
+                {/*            <button className="toolsBtn" onClick={showDetails}>*/}
+                {/*                <span>❌</span>*/}
+                {/*            </button>*/}
+                {/*            <h1>{places[selected].name} {places[selected].isVerified ?*/}
+                {/*                <FontAwesomeIcon icon={faCheckCircle}/> :*/}
+                {/*                <button>*/}
+                {/*                    <FontAwesomeIcon icon={faEdit}/>*/}
+                {/*                </button>}*/}
+                {/*            </h1>*/}
+
+                {/*            <h2>{places[selected].categorySet.name}</h2>*/}
+                {/*            <h2>{places[selected].typeSet.name}</h2>*/}
+                {/*            <p>*/}
+                {/*                Open on sundays : {*/}
+                {/*                places[selected].isOpenSunday ?*/}
+                {/*                    <span>✔</span> : <span>❌</span>*/}
+                {/*            }*/}
+                {/*            </p>*/}
+                {/*            <p>*/}
+                {/*                Open on Special Days : {*/}
+                {/*                places[selected].isOpenSpecialDay ?*/}
+                {/*                    <span>✔</span> : <span>❌</span>*/}
+                {/*            }*/}
+                {/*            </p>*/}
+                {/*            <table>*/}
+                {/*                <tbody>*/}
+                {/*                    <tr>*/}
+                {/*                        <td style={{align:"center"}}>{places[selected].description}</td>*/}
+                {/*                    </tr>*/}
+                {/*                    <tr>*/}
+                {/*                        <td>{places[selected].locationSet.address}</td>*/}
+                {/*                    </tr>*/}
+                {/*                    <tr>*/}
+                {/*                        <td>{places[selected].locationSet.regionSet.name}</td>*/}
+                {/*                    </tr>*/}
+                {/*                    <tr>*/}
+                {/*                        <td>{places[selected].locationSet.citySet.name}</td>*/}
+                {/*                    </tr>*/}
+                {/*                    <tr>*/}
+                {/*                        <td>{places[selected].email}</td>*/}
+                {/*                    </tr>*/}
+                {/*                    <tr>*/}
+                {/*                        <td>{places[selected].website}</td>*/}
+                {/*                    </tr>*/}
+                {/*                    <tr>*/}
+                {/*                        <td>{places[selected].phoneNumber}</td>*/}
+                {/*                    </tr>*/}
+                {/*                </tbody>*/}
+                {/*            </table>*/}
+                {/*            <br/>*/}
+                {/*            <h1>Reviews</h1>*/}
+                {/*    </>}*/}
+                {/*</div>*/}
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
@@ -344,7 +362,7 @@ function MapView(props) {
                     </Marker>
                 </Map>
             </div>
-        </>
+        </BrowserRouter>
     );
 }
 

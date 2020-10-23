@@ -1,8 +1,9 @@
 {
   "places": "/api/places",
   "user": "/api/users",
-  "review": "/api/reviews",
   "types": "/api/types",
   "categories": "/api/categories",
-  "regions": "/api/regions"
+  "regions": "/api/regions",
+  "review": "/api/reviews/place/",
+  "rate": "/api/places/Rating/"
 }

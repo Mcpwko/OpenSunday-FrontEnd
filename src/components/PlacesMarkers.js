@@ -6,9 +6,9 @@ import PlacesPopup from "./PlacesPopup";
 function PlacesMarkers  (props)  {
 
     const {venues} = props;
-    const markers = venues.map((place, index) => (
+    const markers = venues.map((place) => (
         <Marker
-            key={index}
+            key={place.idPlace}
             position={[
                 place.locationSet.lat,
                 place.locationSet.long

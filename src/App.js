@@ -27,6 +27,7 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
+
     //Temporarly variable for Testing
     let count = 0;
     //Handle click for "Get Locations" button
