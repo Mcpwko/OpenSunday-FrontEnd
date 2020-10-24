@@ -23,7 +23,7 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import { BrowserRouter, Link, Route } from 'react-router-dom';
+import {BrowserRouter, Link, Route} from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {VenueLocationIcon} from "../components/VenueLocationIcon";
 import styled from "styled-components";
@@ -55,14 +55,16 @@ const Modal = styled.div`
 `;
 
 function MapView(props) {
-    const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
+    // const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
+    const [currentLocation, setCurrentLocation] = useState({lat: 46.2333, lng: 7.35});
     const [marker, setMarker] = useState({lat: 46.3, lng: 7.5333});
     const [zoom, setZoom] = useState(12);
     const [opacity, setOpacity] = useState(0);
     const [draggable, setDraggable] = useState(true);
     const [visible, setVisible] = useState(false);
     const [viewport, setViewPort] = useState({
-        center: [45.3, 7.5333],
+        // center: [45.3, 7.5333],
+        center: [46.2333, 7.35],
         zoom: 12,
     });
     const [places, setPlaces] = useState([]);
@@ -192,9 +194,9 @@ function MapView(props) {
     return (
         <BrowserRouter>
             <div className="buttonsMap">
-                <button onClick={() => toggleDraggable(true)}>Add new place</button>
+                <button className="add" onClick={() => toggleDraggable(true)}>Add new place</button>
             </div>
-            <h1>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h1>
+            <h5>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h5>
 
             <div className="mapTab">
                 {/*TEST DU ROUTING POUR LES PLACES*/}

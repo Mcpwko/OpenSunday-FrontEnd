@@ -33,15 +33,18 @@ function GetCategories(props) {
 
     const categoriesDB = GetAllCategories();
 
+
     // Default - Return values/options for a select in Formik
     return (
         <>
-            <option>Choose a category</option>
-            {categoriesDB.map((categoryDB) => (
-                <option value={categoryDB.idCategory} key={categoryDB.idCategory}>
-                    {categoryDB.name}
-                </option>
-            ))}
+            <option>Choose a category*</option>
+            {categoriesDB
+                .sort((a, b) => a.name > b.name ? 1 : -1)
+                .map((categoryDB) => (
+                    <option value={categoryDB.idCategory} key={categoryDB.idCategory}>
+                        {categoryDB.name}
+                    </option>
+                ))}
         </>
     )
 

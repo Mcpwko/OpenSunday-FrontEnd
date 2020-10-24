@@ -1,4 +1,4 @@
-.mapTab{
+.mapTab {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -7,25 +7,24 @@
     justify-content: center;
 }
 
-.listVenues{
+.listVenues {
     -webkit-transition: width 1s ease;
     -moz-transition: width 1s ease;
     -o-transition: width 1s ease;
     transition: width 1s ease;
     /*flex-basis: 300px;*/
     font-size: 15px;
-    overflow-y:auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     max-height: 90vh;
     height: 100vh;
-    background-color: rgba(0,12,21,0.4);
-    width:0;
+    background-color: rgba(0, 12, 21, 0.4);
+    width: 0;
 }
 
-.listVenues.in{
+.listVenues.in {
     width: 20%;
 }
-
 
 
 .myDivIcon {
@@ -35,7 +34,7 @@
     /* Vertically center the text (icon) */
 }
 
-.toolsBtn{
+.toolsBtn {
     height: 26px;
     border-radius: 4px;
     border-color: unset;
@@ -46,16 +45,32 @@
 
 }
 
+.add {
+    padding: 0.5rem 1.25rem;
+    margin: 0.2em;
+    border-radius: 10px;
+    border-color: white;
+}
+
+.add:hover,
+.add:focus {
+    color: #24B9B6;
+    background: #282c34;
+    text-decoration: none;
+    cursor: pointer;
+}
 
 
-.buttonsMap{
+.buttonsMap {
     /*display:flex;*/
-    width:100%;
+    width: 100%;
     /*margin-left: 41%;*/
 }
 
 @keyframes fade {
-    from { opacity: 0.5; }
+    from {
+        opacity: 0.5;
+    }
 }
 
 .fadeIcon {
