@@ -31,10 +31,6 @@ function App() {
 
     let count = 0;
 
-    //let auth = this.context;
-
-    //console.log('AUTH', AuthContext);
-
     let handleLocationsClick = async (e) => {
         e.preventDefault();
         let locations = await request(
@@ -89,7 +85,7 @@ function App() {
         if (isAuthenticated && count == 0) {
             //POST user
             console.log("user", user);
-            fetchUser();
+            //fetchUser();
 
         }
 
