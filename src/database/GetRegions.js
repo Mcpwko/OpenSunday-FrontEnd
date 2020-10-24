@@ -36,12 +36,14 @@ function GetRegions(props) {
     // Default - Return values/options for a select in Formik
     return (
         <>
-            <option>Choose a region</option>
-            {regionsDB.map((regionDB) => (
-                <option value={regionDB.idRegion} key={regionDB.idRegion}>
-                    {regionDB.name}
-                </option>
-            ))}
+            <option>Choose a region*</option>
+            {regionsDB
+                .sort((a, b) => a.name > b.name ? 1 : -1)
+                .map((regionDB) => (
+                    <option value={regionDB.idRegion} key={regionDB.idRegion}>
+                        {regionDB.name}
+                    </option>
+                ))}
         </>
     )
 

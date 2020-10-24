@@ -3,7 +3,7 @@ import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 
-function GetAllTypes(){
+function GetAllTypes() {
     const authContext = useContext(Auth0Context);
     const [typesDB, setTypesDB] = useState([]);
 
@@ -29,19 +29,21 @@ function GetAllTypes(){
     return typesDB;
 }
 
-function GetTypes(){
+function GetTypes() {
 
     const typesDB = GetAllTypes();
 
     // Default - Return values/options for a select in Formik
     return (
         <>
-            <option value="">Choose a type</option>
-            {typesDB.map((typeDB) => (
-                <option value={typeDB.idType} key={typeDB.idType}>
-                    {typeDB.name}
-                </option>
-            ))}
+            <option value="">Choose a type*</option>
+            {typesDB
+                .sort((a, b) => a.name > b.name ? 1 : -1)
+                .map((typeDB) => (
+                    <option value={typeDB.idType} key={typeDB.idType}>
+                        {typeDB.name}
+                    </option>
+                ))}
         </>
     )
 
