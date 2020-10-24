@@ -1,11 +1,19 @@
+/* Hide all labels of the form, placeholder are sufficient*/
 label {
     visibility: hidden;
+    font-size: 0.5em;
+}
+
+/*Show labels for lat and long*/
+label.show{
+    visibility: visible;
+    font-size: 0.8em;
+    /*text-align: center;*/
 }
 
 .buttons {
     text-align: center;
 }
-
 
 /*!* Some useful colors *!*/
 /*:root {*/

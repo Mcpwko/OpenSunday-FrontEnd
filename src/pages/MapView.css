@@ -8,14 +8,24 @@
 }
 
 .listVenues{
-    flex-basis: 300px;
+    -webkit-transition: width 1s ease;
+    -moz-transition: width 1s ease;
+    -o-transition: width 1s ease;
+    transition: width 1s ease;
+    /*flex-basis: 300px;*/
     font-size: 15px;
     overflow-y:auto;
     -webkit-overflow-scrolling: touch;
     max-height: 90vh;
     height: 100vh;
-    background-color: green;
+    background-color: rgba(0,12,21,0.4);
+    width:0;
 }
+
+.listVenues.in{
+    width: 20%;
+}
+
 
 
 .myDivIcon {

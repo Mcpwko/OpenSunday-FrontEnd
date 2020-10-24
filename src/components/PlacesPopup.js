@@ -1,15 +1,10 @@
 import React, {useEffect} from 'react';
 import {Popup} from 'react-leaflet';
+import {Link} from "react-router-dom";
 
 function PlacesPopup  (props)  {
     const data = props.data;
 
-    const handleClick = (e) => {
-        e.preventDefault();
-        console.log("depuis POPUP : " + data.idPlace)
-        props.select(data.idPlace-1);
-        props.onOpen();
-    }
 
     return (
         <Popup>
@@ -18,7 +13,16 @@ function PlacesPopup  (props)  {
             <div>{data.typeSet.name && "Type : "+ data.typeSet.name}</div>
             <div>{data.categorySet.name!=null &&  "Category : " + data.categorySet.name}</div>
             <br/>
-            <button className="toolsBtn" onClick={handleClick}>See more information</button>
+            <button className="toolsBtn">
+                <Link
+                    className="btn toolsBtn"
+                    onClick={props.onOpen}
+                    to={`/map/${data.idPlace}`}
+                    className="App-link">
+                    See more information
+                </Link>
+            </button>
+
         </Popup>
     );
 };
