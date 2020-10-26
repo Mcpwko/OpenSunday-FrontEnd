@@ -10,12 +10,9 @@ import {
     Nav,
     NavItem,
     NavLink,
-    // UncontrolledDropdown,
-    // DropdownToggle,
-    // DropdownMenu,
-    // DropdownItem,
     NavbarText
 } from 'reactstrap';
+import {Link} from "react-router-dom";
 
 const Navigation = (props) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -30,33 +27,16 @@ const Navigation = (props) => {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                         <NavItem>
-                            <NavLink href="/">Home</NavLink>
+                            <NavLink tag={Link} to="/">Home</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/map">Map</NavLink>
+                            <NavLink tag={Link} to="/map">Map</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/about">About</NavLink>
+                            <NavLink tag={Link} to="/about">About</NavLink>
                         </NavItem>
-                        {/*<UncontrolledDropdown nav inNavbar>*/}
-                        {/*    <DropdownToggle nav caret>*/}
-                        {/*        Options*/}
-                        {/*    </DropdownToggle>*/}
-                        {/*    <DropdownMenu right>*/}
-                        {/*        <DropdownItem>*/}
-                        {/*            Option 1*/}
-                        {/*        </DropdownItem>*/}
-                        {/*        <DropdownItem>*/}
-                        {/*            Option 2*/}
-                        {/*        </DropdownItem>*/}
-                        {/*        <DropdownItem divider />*/}
-                        {/*        <DropdownItem>*/}
-                        {/*            Reset*/}
-                        {/*        </DropdownItem>*/}
-                        {/*    </DropdownMenu>*/}
-                        {/*</UncontrolledDropdown>*/}
                     </Nav>
-                    <NavbarText>©OpenSunday</NavbarText>
+                    <NavbarText>{props.auth}</NavbarText>
                 </Collapse>
             </Navbar>
         </div>
