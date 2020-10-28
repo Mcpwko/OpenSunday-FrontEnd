@@ -18,7 +18,6 @@ import {get} from "leaflet/src/dom/DomUtil";
 function App() {
     //List of all places
     let [locations, setLocations] = useState([]);
-
     //Variables for Auth0
     let {
         loading,
@@ -41,6 +40,12 @@ function App() {
 
     }, [isAuthenticated]);
 
+    // const [isOpen, setIsOpen] = useState(false);
+    //
+    // const toggle = () => setIsOpen(!isOpen);
+
+    //Temporarly variable for Testing
+    let count = 0;
     //Handle click for "Get Locations" button
     let handleLocationsClick = async (e) => {
         e.preventDefault();
@@ -59,7 +64,7 @@ function App() {
     //Handle click on "Login" to open Auth0 Popup Login
     let handleLoginClick = async (e) => {
         e.preventDefault();
-         await request(
+        await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.user}`,
             getAccessTokenSilently,
             loginWithRedirect
@@ -104,26 +109,49 @@ function App() {
         return <Loading/>;
     }
 
-    return (
-        <div className="App">
-
-            <Navigation/>
-
-            <header className="App-header">
-                {isAuthenticated && (
+    const authUser = () => {
+        return (
+            <div>
+                {isAuthenticated ?
                     <a
                         className="App-link Logout-link"
                         href="#"
                         onClick={handleLogoutClick}
                     >
-                        {user.name}
-                        Logout
+                        {user.name} - Logout
                     </a>
-                )}
+                    :
+                    <a className="App-link"
+                       href="#"
+                       style={{color: "#61dafb"}}
+                       onClick={handleLoginClick}>
+                        login
+                    </a>
+                }
+            </div>
+            // <br/>
+        );
+    }
 
+    return (
+        <div className="App">
+            <BrowserRouter>
 
-                <br/>
-                <BrowserRouter>
+                <Navigation auth={authUser()}/>
+
+                <header className="App-header">
+                    {/*{isAuthenticated && (*/}
+                    {/*    <a*/}
+                    {/*        className="App-link Logout-link"*/}
+                    {/*        href="#"*/}
+                    {/*        onClick={handleLogoutClick}*/}
+                    {/*    >*/}
+                    {/*        {user.name}*/}
+                    {/*        Logout*/}
+                    {/*    </a>*/}
+                    {/*)}*/}
+                    {/*<br/>*/}
+
                     <Switch>
                         <Route
                             /*
@@ -134,11 +162,7 @@ function App() {
                             exact
                             render={() => (
                                 <>
-                                    <a className="App-link"
-                                       href="#"
-                                       onClick={handleLoginClick}>
-                                        login
-                                    </a>
+
                                     <h1>Welcome on OpenSunday</h1>
                                     {/*<ContactForm/>*/}
                                     {/*<FormPlace/>*/}
@@ -170,8 +194,9 @@ function App() {
                         <Route path="/map" exact component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
                     </Switch>
-                </BrowserRouter>
-            </header>
+
+                </header>
+            </BrowserRouter>
         </div>
     );
 }

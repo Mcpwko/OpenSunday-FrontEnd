@@ -22,12 +22,12 @@
   color: #61dafb;
 }
 
-.Logout-link {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1em;
-}
+/*.Logout-link {*/
+/*  position: absolute;*/
+/*  top: 0;*/
+/*  right: 0;*/
+/*  padding: 1em;*/
+/*}*/
 
 .leaflet-container {  width: 90vw;  height: 90vh; }
 
