@@ -13,29 +13,38 @@ import {
     NavbarText
 } from 'reactstrap';
 import {Link} from "react-router-dom";
+import logo from '../assets/Logo.png';
+
 
 const Navigation = (props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
 
+    function setActive(link) {
+
+    }
+
     return (
         <div id="navigationBar">
             <Navbar color="dark" dark expand="md">
-                <NavbarBrand href="/">OpenSunday</NavbarBrand>
+                <NavbarBrand href="/">
+                    <img src={logo} alt="Logo"></img>
+                </NavbarBrand>
                 <NavbarToggler onClick={toggle}/>
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                         <NavItem>
-                            <NavLink tag={Link} to="/">Home</NavLink>
+                            <NavLink tag={Link} to="/" activeClassName="active">Home</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to="/map">Map</NavLink>
+                            <NavLink tag={Link} to="/map" activeClassName="active">Map</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to="/about">About</NavLink>
+                            <NavLink tag={Link} to="/about" activeClassName="active">About</NavLink>
                         </NavItem>
                     </Nav>
+
                     <NavbarText>{props.auth}</NavbarText>
                 </Collapse>
             </Navbar>

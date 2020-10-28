@@ -37,7 +37,7 @@ function GetCategories(props) {
     // Default - Return values/options for a select in Formik
     return (
         <>
-            <option>Choose a category*</option>
+            <option value="">Choose a category*</option>
             {categoriesDB
                 .sort((a, b) => a.name > b.name ? 1 : -1)
                 .map((categoryDB) => (

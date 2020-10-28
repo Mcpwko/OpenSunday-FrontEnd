@@ -59,10 +59,10 @@ const Container = styled.div`
   }
   h2{
     text-align: center;
-     font-size: 1em;
-     font-weight: 400;
-      padding: 0.8em;
-     color: #24B9B6;
+    font-size: 1em;
+    font-weight: 400;
+    padding: 0.8em;
+    color: #24B9B6;
   }
   sub{
     color: darkred;
@@ -117,18 +117,19 @@ margin-top:2em;
 // RegEx for phone number validation
 const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
 
-// Schema for yup
+/**
+ * Validation schema for Yup (Validation for the form with Formik)
+ */
 const validationSchema = Yup.object().shape({
     name: Yup.string()
-        .max(15, "Must be 15 characters or less")
+        .max(20, "Must be 20 characters or less")
         .required("A name for the place is required"),
     type: Yup.string()
         .required("Type is required"),
     category: Yup.string()
-        .required('Category is required!'),
+        .required("Category is required"),
     description: Yup.string()
         .max(120, "Must be 60 characters or less"),
-    // .required("Description required"),
     address: Yup.string()
         .max(40, "Must be 40 characters or less")
         .required("Required"),
@@ -136,7 +137,7 @@ const validationSchema = Yup.object().shape({
         .max(8, "Must be 8 characters or less")
         .required("Required"),
     city: Yup.string()
-        .max(20, "Must be 8 characters or less")
+        .max(20, "Must be 20 characters or less")
         .required("Required"),
     region: Yup.string()
         .required("Required"),
@@ -147,7 +148,7 @@ const validationSchema = Yup.object().shape({
     email: Yup.string()
         .email("Invalid email address"),
     phone: Yup.string()
-        .matches(phoneRegExp, 'Phone number is not valid'),
+        .matches(phoneRegExp, "Phone number is not valid"),
     website: Yup.string()
         .url("Invalid url")
 });
@@ -261,27 +262,29 @@ export const FormPlace = (props) => {
     }
 
     function simulateClick(e) {
-        e.click()
-        console.log("CLICKED ;)");
+        if (e !== null) {
+            e.click()
+            console.log("CLICKED ;)");
+        }
     }
 
 
     return (
         // <Modal>
         <Container>
-            {console.log(latitude)}
-            {console.log(myZip)}
+            {/*{console.log(latitude)}*/}
+            {/*{console.log(myZip)}*/}
             {/*<Button onClick={displayForm}></Button>*/}
             {/*{showForm ?*/}
             <h1>Add a new place</h1>
-            <h5 style={{color: "#DDDDDD"}}>* = mandatory</h5>
+            <h5 style={{color: "#DEDEDE"}}>* = mandatory</h5>
             {/*<textpath>Testmy</textpath>*/}
             <Formik
                 initialValues={{
                     name: "",
-                    type: "", // added for our select
-                    category: "", // added for our select
-                    description: "",
+                    type: "", // select
+                    category: "", // select
+                    description: "", // text area
                     address: "",
                     zip: "",
                     city: "",
@@ -298,7 +301,7 @@ export const FormPlace = (props) => {
                     // When button submits form and form is in the process of submitting, submit button is disabled
                     setSubmitting(true);
 
-                    // This is a douille
+                    // As we do not work with values for latitude and longitude we have to set them with our respective states
                     values.lat = latitude;
                     values.long = longitude;
 
@@ -324,23 +327,26 @@ export const FormPlace = (props) => {
                     <MyForm onSubmit={handleSubmit} className="mx-auto">
                         {/*{visible ? null : <InitializeForm/>}*/}
 
-                        {visible ? null : <div className="buttons">
-                            <GetButton variant="secondary" type="button" ref={simulateClick} style={{display: "none"}}
-                                       onClick={() => {
-                                           SearchLocation(latitude, longitude)
-                                               .then(() => setFieldValue('zip', myZip))
-                                               .then(() => setFieldValue('city', myCity))
-                                           //     .then(() => console.log("async" + myZip))
-                                           //
-                                           // console.log("after async" + myZip);
-                                           // setFieldValue('name', myZip);
-                                       }
-                                       }
-                                // active={false}
-                            >
-                                Get zip and city
-                            </GetButton>
-                        </div>}
+                        {visible ? null :
+                            <div className="buttons">
+                                <GetButton variant="secondary" type="button" ref={simulateClick}
+                                           style={{display: "none"}}
+                                           onClick={() => {
+                                               SearchLocation(latitude, longitude)
+                                                   .then(() => setFieldValue('zip', myZip))
+                                                   .then(() => setFieldValue('city', myCity))
+                                               //     .then(() => console.log("async" + myZip))
+                                               //
+                                               // console.log("after async" + myZip);
+                                               // setFieldValue('name', myZip);
+                                           }
+                                           }
+                                    // active={false}
+                                >
+                                    Get zip and city
+                                </GetButton>
+                            </div>
+                        }
 
                         {/*<GetButton variant="secondary" type="button"*/}
                         {/*           onClick={() => {*/}
@@ -388,17 +394,18 @@ export const FormPlace = (props) => {
                         </Form.Group>
 
                         <Form.Group controlId="formCategory">
-                            <Form.Label>Category:</Form.Label>
+                            <Form.Label>Category of place:</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="category"
                                 value={values.category}
                                 onChange={handleChange}
-                                onBlur={handleBlur}>
+                                onBlur={handleBlur}
+                                className={touched.category && errors.category ? "has-error" : null}>
 
                                 {GetCategories()}
-                                {/*<option value="">Select a category</option>*/}
-                                {/*<option value="chinese">Chinese</option>*/}
+                                {/*<option value="">Select a category of place</option>*/}
+                                {/*<option value="restaurant">Restaurant</option>*/}
 
                             </Form.Control>
                             {touched.category && errors.category ? (
@@ -411,7 +418,6 @@ export const FormPlace = (props) => {
                             <Form.Label>Description of the place:</Form.Label>
                             <Form.Control
                                 as="textarea"
-                                // type="textArea"
                                 name="description"
                                 placeholder="Enter a description of some additional features (optional)"
                                 onChange={handleChange}

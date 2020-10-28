@@ -14,6 +14,8 @@ import About from "./pages/About";
 import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink} from "reactstrap";
+import Account from "./pages/Account";
 
 function App() {
     //List of all places
@@ -113,13 +115,22 @@ function App() {
         return (
             <div>
                 {isAuthenticated ?
-                    <a
-                        className="App-link Logout-link"
-                        href="#"
-                        onClick={handleLogoutClick}
-                    >
-                        {user.name} - Logout
-                    </a>
+                    <div>
+                        <Link
+                            style={{paddingRight: "2em"}}
+                            to="account"
+                        >
+                            My account
+                        </Link>
+                        <a
+                            className="App-link Logout-link"
+                            href="#"
+                            style={{color: "#61dafb"}}
+                            onClick={handleLogoutClick}
+                        >
+                            {user.name} - Logout
+                        </a>
+                    </div>
                     :
                     <a className="App-link"
                        href="#"
@@ -132,6 +143,7 @@ function App() {
             // <br/>
         );
     }
+
 
     return (
         <div className="App">
@@ -193,6 +205,7 @@ function App() {
                         <Route path="/location/:id" component={PlaceDetails}/>
                         <Route path="/map" exact component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
+                        <Route path="/account" component={Account}/>
                     </Switch>
 
                 </header>
