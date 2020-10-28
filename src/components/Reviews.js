@@ -6,10 +6,13 @@ import {Marker} from "react-leaflet";
 import {VenueLocationIcon} from "./VenueLocationIcon";
 import PlacesPopup from "./PlacesPopup";
 import Rating from "@material-ui/lab/Rating";
+import {FormPlace} from "./FormPlace";
+import {FormReview} from "./FormReview";
 
 
 function Reviews (props) {
     const [reviews, setReviews] = useState([]);
+    const [showForm, setShowForm] = useState(false);
     const authContext = useContext(Auth0Context);
     const idPlace = props.idPlace;
 
@@ -27,6 +30,20 @@ function Reviews (props) {
         getReviews();
     },[reviews]);
 
+
+    const showReviewForm = (props) => {
+
+
+        setShowForm(true)
+    }
+
+
+    const closeForm = () => {
+        setShowForm(false)
+    }
+
+
+
     return(
             <div>
                 <ul>
@@ -41,6 +58,8 @@ function Reviews (props) {
                     </li>
                 ))}
                 </ul>
+                <button className="add" onClick={showReviewForm}>Add new review</button>
+                {showForm ? <FormReview place={idPlace}/> : null}
             </div>
     )
 };

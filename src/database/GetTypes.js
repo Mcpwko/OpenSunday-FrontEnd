@@ -3,7 +3,7 @@ import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 
-function GetAllTypes() {
+export function GetAllTypes() {
     const authContext = useContext(Auth0Context);
     const [typesDB, setTypesDB] = useState([]);
 

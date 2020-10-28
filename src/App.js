@@ -18,6 +18,7 @@ import {get} from "leaflet/src/dom/DomUtil";
 function App() {
     //List of all places
     let [locations, setLocations] = useState([]);
+
     //Variables for Auth0
     let {
         loading,
@@ -28,8 +29,18 @@ function App() {
         user,
     } = useAuth0();
 
-    //Temporarly variable for Testing
-    let count = 0;
+
+    //Hooks which checks if user is connected to POST Check
+    useEffect(() => {
+
+        if (isAuthenticated) {
+            //POST user
+            fetchUser();
+
+        }
+
+    }, [isAuthenticated]);
+
     //Handle click for "Get Locations" button
     let handleLocationsClick = async (e) => {
         e.preventDefault();
@@ -76,20 +87,9 @@ function App() {
                 idUserType: "1"
             })
         });
-        count = 1;
     };
 
-    //Hooks which checks if user is connected to POST Check
-    useEffect(() => {
 
-        if (isAuthenticated && count == 0) {
-            //POST user
-            console.log("user", user);
-            // fetchUser();
-
-        }
-
-    });
     //Handle click on "Logout"
     let handleLogoutClick = async (e) => {
         e.preventDefault();

@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {Button, Col, Form} from 'react-bootstrap';
 import {Formik} from 'formik';
@@ -8,6 +8,11 @@ import axios from "axios";
 import GetCategories from "../database/GetCategories";
 import GetTypes from "../database/GetTypes";
 import GetRegions from "../database/GetRegions";
+import endpoints from "../endpoints.json";
+import moment from "moment";
+import { useAuth0 } from "@auth0/auth0-react";
+import {Auth0Context} from "@auth0/auth0-react";
+import request from "../utils/request";
 
 const Container = styled.div`
   // background: #F7F9FA;
@@ -148,11 +153,46 @@ const validationSchema = Yup.object().shape({
 });
 
 
+
+let fetchPlace = async (values, token) => {
+
+    await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            'Content-Type': "application/json",
+        }, body: JSON.stringify({
+            name: values.name,
+            description: values.description,
+            email: values.email,
+            website: values.website,
+            phoneNumber: values.phoneNumber,
+            isOpenSunday: true,
+            isOpenSpecialDay: true,
+            isVerified: false,
+            isAdvertised: false,
+            lat: values.lat,
+            long: values.long,
+            address: values.address,
+            zip: values.zip,
+            city: values.city,
+            idRegion: values.region,
+            idCategory: values.category,
+            idType: values._type
+        })
+    });
+
+};
+
+
+
 export const FormPlace = (props) => {
     // const [showForm, setShowForm] = useState(false);
 
     const [latitude, setLatitude] = useState(props.latitude);
     const [longitude, setLongitude] = useState(props.longitude);
+
 
     let myZip = "";
     let myCity = "";
@@ -556,7 +596,7 @@ export const FormPlace = (props) => {
                         {/*============================== SUBMIT BUTTON ==================================*/}
                         <div className="buttons">
                             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-                            {latitude !== 0 ? <SubmitButton variant="primary" type="submit" disabled={isSubmitting}>
+                            {latitude !== 0 ? <SubmitButton variant="primary" type="submit" disabled={isSubmitting} onClick={fetchPlace(values, props.token)}>
                                 Submit
                             </SubmitButton> : <div><sub>Latitude and longitude are needed for submitting</sub><br/>
                                 <sub>Click on "Get coordinates" button</sub></div>}
