@@ -203,7 +203,7 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                        <Route path="/map" exact component={MapView} props={locations}></Route>
+                        <Route path="/map" component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
                         <Route path="/account" component={Account}/>
                     </Switch>

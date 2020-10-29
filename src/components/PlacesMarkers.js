@@ -1,7 +1,8 @@
 import React, {Fragment, useEffect} from 'react';
-import {Marker} from 'react-leaflet';
+import {Marker, Popup} from 'react-leaflet';
 import {VenueLocationIcon} from './VenueLocationIcon';
 import PlacesPopup from "./PlacesPopup";
+import {Link} from "react-router-dom";
 
 function PlacesMarkers  (props)  {
 

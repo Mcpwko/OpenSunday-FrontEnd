@@ -9,6 +9,7 @@ import Rating from "@material-ui/lab/Rating";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Reviews from "./Reviews";
+import Modal from "react-bootstrap";
 
 function Details (props){
     const[rate,setRate] = useState(0);
@@ -26,7 +27,7 @@ function Details (props){
             }
         }
         getRate();
-    });
+    },[]);
 
     //let history = useHistory();
 
@@ -42,7 +43,7 @@ function Details (props){
                      onClick={handleClick}
             >
                 <span>❌</span>
-            </button>
+            </button> {console.log("PROPS : " + props.idPlace)}
             <h1>{props.name} {props.isVerified ?
                 <FontAwesomeIcon icon={faCheckCircle}/> :
                 <button>
@@ -98,6 +99,9 @@ function Details (props){
             <br/>
             <h1>Reviews</h1>
             <Reviews idPlace={props.idPlace}></Reviews>
+            <h1>Something is wrong ?
+                <button>Report</button>
+            </h1>
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Popup} from 'react-leaflet';
-import {Link} from "react-router-dom";
+import {BrowserRouter, Link} from "react-router-dom";
+import Details from "./Details";
 
 function PlacesPopup  (props)  {
     const data = props.data;

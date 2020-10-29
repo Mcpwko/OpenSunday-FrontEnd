@@ -123,7 +123,7 @@ function MapView(props) {
         }
 
         getPlaces();
-    }, []);
+    },[]);
 
     // Update the position of the draggable marker
     const updatePosition = () => {
@@ -216,64 +216,6 @@ function MapView(props) {
                     )}
                 />
 
-                {/*Sidebar with information about the place which has been selected*/}
-                {/*<div  className={`listVenues ${visible ? "in" : ""}`} >*/}
-                {/*    {visible &&*/}
-                {/*        <>*/}
-                {/*            <button className="toolsBtn" onClick={showDetails}>*/}
-                {/*                <span>❌</span>*/}
-                {/*            </button>*/}
-                {/*            <h1>{places[selected].name} {places[selected].isVerified ?*/}
-                {/*                <FontAwesomeIcon icon={faCheckCircle}/> :*/}
-                {/*                <button>*/}
-                {/*                    <FontAwesomeIcon icon={faEdit}/>*/}
-                {/*                </button>}*/}
-                {/*            </h1>*/}
-
-                {/*            <h2>{places[selected].categorySet.name}</h2>*/}
-                {/*            <h2>{places[selected].typeSet.name}</h2>*/}
-                {/*            <p>*/}
-                {/*                Open on sundays : {*/}
-                {/*                places[selected].isOpenSunday ?*/}
-                {/*                    <span>✔</span> : <span>❌</span>*/}
-                {/*            }*/}
-                {/*            </p>*/}
-                {/*            <p>*/}
-                {/*                Open on Special Days : {*/}
-                {/*                places[selected].isOpenSpecialDay ?*/}
-                {/*                    <span>✔</span> : <span>❌</span>*/}
-                {/*            }*/}
-                {/*            </p>*/}
-                {/*            <table>*/}
-                {/*                <tbody>*/}
-                {/*                    <tr>*/}
-                {/*                        <td style={{align:"center"}}>{places[selected].description}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].locationSet.address}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].locationSet.regionSet.name}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].locationSet.citySet.name}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].email}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].website}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].phoneNumber}</td>*/}
-                {/*                    </tr>*/}
-                {/*                </tbody>*/}
-                {/*            </table>*/}
-                {/*            <br/>*/}
-                {/*            <h1>Reviews</h1>*/}
-                {/*    </>}*/}
-                {/*</div>*/}
-
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
                     <FormPlace latitude={marker.lat} longitude={marker.lng} token={authContext.getAccessTokenSilently()} gcButton={buttonGC}/>
@@ -362,6 +304,12 @@ function MapView(props) {
                             </button>
                         </Popup>
                     </Marker>
+                    <Route path="/map/:id/report">
+                        <Modal>
+                            <span id="close" onClick={closeForm}>&times;</span>
+                            <div>WELL DONE</div>
+                        </Modal>
+                    </Route>
                 </Map>
             </div>
         </BrowserRouter>
