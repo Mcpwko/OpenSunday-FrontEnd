@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect} from 'react';
 import {Marker, Popup} from 'react-leaflet';
-import {VenueLocationIcon} from './VenueLocationIcon';
+import {Icons} from './Icons';
 import PlacesPopup from "./PlacesPopup";
 import {Link} from "react-router-dom";
 
@@ -14,7 +14,7 @@ function PlacesMarkers  (props)  {
                 place.locationSet.lat,
                 place.locationSet.long
             ]}
-            icon={VenueLocationIcon}
+            icon={Icons}
         >
             <PlacesPopup data={place} onOpen={props.onOpen} select={props.select}/>
         </Marker>

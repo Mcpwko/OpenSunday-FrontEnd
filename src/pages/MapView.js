@@ -25,20 +25,11 @@ import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
 import {BrowserRouter, Link, Route} from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
-import {VenueLocationIcon} from "../components/VenueLocationIcon";
+import {HereLocationIcon, PlusLocationIcon, Icons} from "../components/Icons";
 import styled from "styled-components";
 import Details from "../components/Details";
+import {useAlert} from "react-alert";
 
-export const locationIcon = L.icon({
-    iconUrl: require('../assets/plusIcon.png'),
-    iconRetinaUrl: require('../assets/plusIcon.png'),
-    iconAnchor: null,
-    shadowUrl: null,
-    shadowSize: null,
-    shadowAnchor: null,
-    iconSize: [30, 35],
-    // className: 'fadeIcon'
-});
 
 const Modal = styled.div`
     // display: none; /* Hidden by default */
@@ -75,6 +66,8 @@ function MapView(props) {
     const refMarker = useRef();
     const refMap = useRef();
     const authContext = useContext(Auth0Context);
+    const alert = useAlert();
+
 
     const {
         latitude,
@@ -83,6 +76,15 @@ function MapView(props) {
         accuracy,
         error,
     } = usePosition();
+
+    const [showHere, setShowHere] = useState(false);
+
+    useEffect(() => {
+        if (latitude !== undefined && longitude!== undefined) {
+            setShowHere(true);
+            alert.success("Your location has been successfully found !");
+        }
+    }, [latitude]); // Execute only if latitude has changed
 
 
     const toggleDraggable = (props) => {
@@ -123,7 +125,7 @@ function MapView(props) {
         }
 
         getPlaces();
-    },[]);
+    }, []);
 
     // Update the position of the draggable marker
     const updatePosition = () => {
@@ -218,7 +220,8 @@ function MapView(props) {
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
-                    <FormPlace latitude={marker.lat} longitude={marker.lng} token={authContext.getAccessTokenSilently()} gcButton={buttonGC}/>
+                    <FormPlace latitude={marker.lat} longitude={marker.lng} token={authContext.getAccessTokenSilently()}
+                               gcButton={buttonGC}/>
                 </Modal> : null}
                 {/*<Foursquare className="listVenues"/>*/}
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
@@ -231,9 +234,11 @@ function MapView(props) {
                     <Control position="topleft">
                         <button className="toolsBtn"
                                 onClick={() => setViewPort({
-                                    center: [latitude, longitude],
-                                    zoom: 12,
-                                })}
+                                        center: [latitude, longitude],
+                                        zoom: 12
+                                    }
+                                )}
+                                disabled={!showHere}
                         >
                             <FontAwesomeIcon icon={faHome}/>
                         </button>
@@ -251,7 +256,8 @@ function MapView(props) {
                             closeResultsOnClick={true}>
                         {(info) => (
                             setMarker(info.latLng),
-                                <Marker icon={locationIcon} position={info?.latLng}>{<Popup>
+                                // Marker to add location from search
+                                <Marker icon={PlusLocationIcon} position={info?.latLng}>{<Popup>
                                     <div>
                                         <h1>{info.raw[0].address.amenity}</h1>
                                         <h2>{info.raw[0].type}</h2>
@@ -286,8 +292,25 @@ function MapView(props) {
                     </Search>
                     <Markers venues={data.venues}/>
                     {places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}
+
+                    {/*Marker to show the location of the user*/}
+                    {console.log("lat:" + latitude)}
+                    {console.log(error)}
+                    {showHere ? <Marker
+                        icon={HereLocationIcon}
+                        // draggable={draggable}
+                        // onDragend={updatePosition}
+                        // position={[46.3, 7.5333]}
+                        id="fadeIcon"
+                        position={[latitude, longitude]}
+                        // ref={refMarker}
+                        // opacity={opacity}
+                    /> : null}
+
+
+                    {/*Draggable marker*/}
                     <Marker
-                        icon={locationIcon}
+                        icon={PlusLocationIcon}
                         draggable={draggable}
                         onDragend={updatePosition}
                         position={marker}

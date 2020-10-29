@@ -214,6 +214,7 @@ function App() {
                     </Switch>
 
                 </header>
+                <footer> COPYRIGHT 2020 </footer>
             </BrowserRouter>
         </div>
     );

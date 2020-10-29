@@ -3,7 +3,6 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context} from "@auth0/auth0-react";
 import {Marker} from "react-leaflet";
-import {VenueLocationIcon} from "./VenueLocationIcon";
 import PlacesPopup from "./PlacesPopup";
 import Rating from "@material-ui/lab/Rating";
 import {FormPlace} from "./FormPlace";
