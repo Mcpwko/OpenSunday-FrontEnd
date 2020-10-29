@@ -82,7 +82,7 @@ const MyForm = styled(Form)`
   }
 `;
 
-const SubmitButton = styled(Button)`
+export const SubmitButton = styled(Button)`
   background: #1863AB;
   border: none;
   font-size: 1.2em;
@@ -193,7 +193,6 @@ export const FormPlace = (props) => {
 
     const [latitude, setLatitude] = useState(props.latitude);
     const [longitude, setLongitude] = useState(props.longitude);
-
 
     let myZip = "";
     let myCity = "";

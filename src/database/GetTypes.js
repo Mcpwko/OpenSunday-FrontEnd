@@ -1,4 +1,4 @@
-import React, {Fragment, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";

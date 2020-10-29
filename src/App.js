@@ -3,7 +3,7 @@ import "./App.css";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints";
-import Loading from "./components/Loading";
+import Loading from "./components-reusable/Loading";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
 import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
@@ -14,7 +14,6 @@ import About from "./pages/About";
 import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
-import {Collapse, Nav, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink} from "reactstrap";
 import Account from "./pages/Account";
 
 function App() {

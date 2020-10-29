@@ -21,8 +21,26 @@ const Navigation = (props) => {
 
     const toggle = () => setIsOpen(!isOpen);
 
-    function setActive(link) {
+    let active = [true, false, false];
 
+    function setActive(link) {
+        switch (link) {
+            case 0:
+                active[0] = true;
+                active[1] = false;
+                active[2] = false;
+                break;
+            case 1:
+                active[0] = false;
+                active[1] = true;
+                active[2] = false;
+                break;
+            case 2:
+                active[0] = false;
+                active[1] = false;
+                active[2] = true;
+                break;
+        }
     }
 
     return (
@@ -35,13 +53,13 @@ const Navigation = (props) => {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                         <NavItem>
-                            <NavLink tag={Link} to="/" activeClassName="active">Home</NavLink>
+                            <NavLink active={active[0]} tag={Link} to="/" onClick={setActive(0)}>Home</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to="/map" activeClassName="active">Map</NavLink>
+                            <NavLink active={active[1]} tag={Link} to="/map" onClick={setActive(1)}>Map</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to="/about" activeClassName="active">About</NavLink>
+                            <NavLink active={active[2]} tag={Link} to="/about" onClick={setActive(2)}>About</NavLink>
                         </NavItem>
                     </Nav>
 
