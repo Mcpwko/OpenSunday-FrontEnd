@@ -7,7 +7,7 @@ import {Form, Button} from "react-bootstrap";
 import * as Yup from "yup";
 import styled from 'styled-components';
 import ConfirmDialog from "../components-reusable/ConfirmDialog";
-import { useAlert } from "react-alert";
+import {useAlert} from "react-alert";
 
 const Container = styled.div`
   text-align: center;
@@ -83,6 +83,7 @@ export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
 
+
     function deleteAccount() {
         // alert("THIS IS THE FUNCTION DELETE ACCOUNT");
         alert.show("This is the delete method to implement");
@@ -97,19 +98,16 @@ export default function UserAccount(props) {
         alert.success("The account has been successfully deleted");
 
 
-
-
-
     }
 
-    function changePseudo(){
+    function changePseudo() {
         // Look if the Pseudo is available
 
         // If yes modify the pseudo of user#x
 
 
-
     }
+
 
     // const authContext = useContext(Auth0Context);
     // const [value, setValue] = useState("");
@@ -117,7 +115,9 @@ export default function UserAccount(props) {
     // let pseudo = "test";
 
     return (
+
         <Container style={{width: "100%"}}>
+
 
             <h1>Account settings</h1>
 
@@ -169,7 +169,8 @@ export default function UserAccount(props) {
                         <div className="buttons">
                             {/*============================== SUBMIT BUTTON ==================================*/}
                             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-                            <SubmitButton variant="primary" type="submit" disabled={isSubmitting} style={{marginTop:"1em"}}>
+                            <SubmitButton variant="primary" type="submit" disabled={isSubmitting}
+                                          style={{marginTop: "1em"}}>
                                 Change pseudo
                             </SubmitButton>
                         </div>
@@ -177,7 +178,8 @@ export default function UserAccount(props) {
                         <div className="buttons">
                             {/*============================== DELETE BUTTON ==================================*/}
 
-                            <DeleteButton variant="secondary" active={confirmOpen} onClick={() => setConfirmOpen(true)}>
+                            <DeleteButton variant="secondary" active={confirmOpen}
+                                          onClick={() => setConfirmOpen(true)}>
                                 Delete account
                             </DeleteButton>
                             <ConfirmDialog

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./App.css";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
@@ -15,6 +15,7 @@ import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
 import Account from "./pages/Account";
+import {ThemeContext, themes} from "./context/ThemeContext";
 
 function App() {
     //List of all places
@@ -28,6 +29,7 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
+    let themeContext = useContext(ThemeContext);
 
 
     //Hooks which checks if user is connected to POST Check
@@ -150,7 +152,11 @@ function App() {
 
                 <Navigation auth={authUser()}/>
 
-                <header className="App-header">
+                <header className="App-header"
+                        style={{
+                            backgroundColor: themes[themeContext.theme].background,
+                            color: themes[themeContext.theme].foreground
+                        }}>
                     {/*{isAuthenticated && (*/}
                     {/*    <a*/}
                     {/*        className="App-link Logout-link"*/}

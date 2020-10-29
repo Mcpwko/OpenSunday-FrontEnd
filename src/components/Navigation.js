@@ -1,7 +1,7 @@
 /**
  * Javascript file for handling the navigation bar
  */
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     Collapse,
     Navbar,
@@ -14,14 +14,18 @@ import {
 } from 'reactstrap';
 import {Link} from "react-router-dom";
 import logo from '../assets/Logo.png';
+import {ThemeContext, themes} from "../context/ThemeContext";
 
 
 const Navigation = (props) => {
+
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
 
     let active = [true, false, false];
+
+    let themeContext = useContext(ThemeContext);
 
     function setActive(link) {
         switch (link) {
@@ -46,7 +50,7 @@ const Navigation = (props) => {
     return (
         <div id="navigationBar">
             <Navbar color="dark" dark expand="md">
-                <NavbarBrand href="/">
+                <NavbarBrand tag={Link} to="/">
                     <img src={logo} alt="Logo"></img>
                 </NavbarBrand>
                 <NavbarToggler onClick={toggle}/>
@@ -59,7 +63,8 @@ const Navigation = (props) => {
                             <NavLink active={active[1]} tag={Link} to="/map" onClick={setActive(1)}>Map</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink active={active[2]} tag={Link} to="/about" onClick={setActive(2)}>About</NavLink>
+                            <NavLink active={active[2]} tag={Link} to="/about"
+                                     onClick={setActive(2)}>About</NavLink>
                         </NavItem>
                     </Nav>
 
@@ -69,5 +74,6 @@ const Navigation = (props) => {
         </div>
     );
 }
+
 
 export default Navigation;

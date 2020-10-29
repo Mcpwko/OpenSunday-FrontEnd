@@ -26,6 +26,7 @@
     "moment-timezone": "^0.5.31",
     "react": "^16.13.1",
     "react-alert": "^7.0.2",
+    "react-alert-template-basic": "^1.0.0",
     "react-bootstrap": "^1.3.0",
     "react-dom": "^16.13.1",
     "react-foursquare": "^1.0.3",
@@ -64,8 +65,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "react-alert-template-basic": "^1.0.0"
   }
 }
