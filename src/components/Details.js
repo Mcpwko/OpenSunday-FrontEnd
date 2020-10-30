@@ -44,6 +44,10 @@ function Details(props) {
         setShow(false);
     };
 
+    const closeForm = () => {
+        setShowForm(false)
+    }
+
 
     //let history = useHistory();
 
@@ -52,19 +56,20 @@ function Details(props) {
         //history.push("/map");
     }
 
-    let place = props.place;
 
     return (
+
         <div className={`listVenues ${props.onOpen ? "in" : ""}`}>
+
             <button className="toolsBtn"
                     onClick={handleClick}
             >
                 <span>❌</span>
             </button>
-            {console.log("PROPS : " + props.idPlace)}
+            {/*{console.log("PROPS : " + props.idPlace)}*/}
             <h1>{props.name} {props.isVerified ?
                 <FontAwesomeIcon icon={faCheckCircle}/> :
-                <button onClick={()=>setShowForm(true)}>
+                <button onClick={() => setShowForm(true)}>
                     <FontAwesomeIcon icon={faEdit}/>
                 </button>}
             </h1>
@@ -75,8 +80,8 @@ function Details(props) {
             </Box>
 
             {showForm ? <Mod>
-                {/*<span id="close" onClick={closeForm}>&times;</span>*/}
-                <FormPlace place={place}/>
+                <span id="close" onClick={closeForm}>&times;</span>
+                <FormPlace place={props} modification={true}/>
             </Mod> : null}
 
 

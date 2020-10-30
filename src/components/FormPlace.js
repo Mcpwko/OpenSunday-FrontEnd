@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {Button, Col, Form} from 'react-bootstrap';
-import {Formik} from 'formik';
+import {Field, Formik} from 'formik';
 import * as Yup from 'yup';
 import "./FormPlace.css";
 import axios from "axios";
@@ -249,10 +249,9 @@ export const FormPlace = (props) => {
     // Boolean to toggle the edit mode
     const [modification, setModification] = useState(false);
 
-    // Retrieve the array to modify
-    const [array, setArray] = useState(false);
 
-    console.log("PROPSPLACE:" + props.place);
+    // Retrieve the array to modify
+    const [placeEdit, setPlaceEdit] = useState([]);
 
     const [visible, setVisible] = useState(props.gcButton);
     const [errorGC, setErrorGC] = useState(false);
@@ -261,6 +260,18 @@ export const FormPlace = (props) => {
 
     let myZip = "";
     let myCity = "";
+
+    useEffect(() => {
+        if (props.place !== undefined) {
+            console.log("MODIFICATION TRUE")
+            setPlaceEdit(props);
+            setModification(true)
+        } else {
+            console.log("MODIFICATION FALSE")
+            setModification(false);
+        }
+
+    }, [props.place]); // Execute only if latitude has changed
 
 
     const url = "https://us1.locationiq.com/v1/search.php?key=pk.a9fb192a815fa6985b189ffe5138383b&q=";
@@ -328,17 +339,25 @@ export const FormPlace = (props) => {
         }
     }
 
+    function simulateProps(e) {
+
+        // if(modification=)
+        if (e !== null) {
+            e.click()
+            console.log("CLICKED ON PROPS ;)");
+        }
+    }
 
     return (
         // <Modal>
         <Container>
-            {/*{console.log(latitude)}*/}
-            {/*{console.log(myZip)}*/}
-            {/*<Button onClick={displayForm}></Button>*/}
-            {/*{showForm ?*/}
-            <h1>Add a new place</h1>
+            {modification ?
+                <h1>Edit {props.place.name} <span>✏</span></h1>
+                :
+                <h1>Add a new place</h1>
+            }
             <h5 style={{color: "#DEDEDE"}}>* = mandatory</h5>
-            {/*<textpath>Testmy</textpath>*/}
+
             <Formik
                 initialValues={{
                     name: "",
@@ -366,6 +385,9 @@ export const FormPlace = (props) => {
                     values.lat = latitude;
                     values.long = longitude;
 
+                    /** PUT (TO DO)*/
+
+                    /**POST (TOMODIFY)*/
                     // Simulate submitting to database, shows us values submitted, resets form
                     setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));
@@ -388,6 +410,37 @@ export const FormPlace = (props) => {
                     <MyForm onSubmit={handleSubmit} className="mx-auto">
                         {/*{visible ? null : <InitializeForm/>}*/}
 
+                        {modification ? <Button style={{display: "none"}}
+                                                ref={simulateProps}
+                                                onClick={() => {
+                                                    //mandatory
+                                                    setFieldValue('name', props.place.name)
+                                                    setFieldValue('description', props.place.description)
+
+                                                    myCity = props.place.locationSet.citySet.name;
+                                                    myZip = props.place.locationSet.citySet.npa;
+
+                                                    setLatitude(props.place.locationSet.lat)
+                                                    setLongitude(props.place.locationSet.long)
+
+                                                    setFieldValue('type', props.place.typeSet.idType)
+                                                    setFieldValue('category', props.place.categorySet.idCategory)
+                                                    setFieldValue('region', props.place.locationSet.regionSet.idRegion)
+
+                                                    //optional
+                                                    setFieldValue('address', props.place.locationSet.address)
+                                                    setFieldValue('email', props.place.email)
+                                                    setFieldValue('website', props.place.website)
+                                                    setFieldValue('phone', props.place.phoneNumber)
+
+                                                    // checkboxes
+                                                    setFieldValue('openSunday', props.place.isOpenSunday)
+                                                    setFieldValue('openSpecialDay', props.place.isOpenSunday)
+
+                                                }}
+                        >
+                        </Button> : null}
+
                         {visible ? null :
                             <div className="buttons">
                                 <GetButton variant="secondary" type="button" ref={simulateClick}
@@ -398,7 +451,7 @@ export const FormPlace = (props) => {
                                                    .then(() => setFieldValue('city', myCity))
                                                //     .then(() => console.log("async" + myZip))
                                                //
-                                               // console.log("after async" + myZip);
+                                               console.log("after async" + myZip);
                                                // setFieldValue('name', myZip);
                                            }
                                            }
@@ -575,7 +628,6 @@ export const FormPlace = (props) => {
 
                         </div>
 
-
                         {/*============================== LAT & LONG ==================================*/}
                         <Form.Row>
                             <Col>
@@ -617,37 +669,42 @@ export const FormPlace = (props) => {
                         <Form.Row>
                             <Col>
                                 <Form.Label className={"show"}>Open on Sunday ?</Form.Label>
-                                <Form.Check
-                                    type="checkbox"
-                                    name="openSunday"
-                                    placeholder="Latitude"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.openSunday}
+                                <Form.Check>
+                                    {/*<label className={"show"}>*/}
+                                    <Field type="checkbox" name="openSunday"/>
+                                    {/*{`${values.openSunday}`}*/}
+                                    {/*</label>*/}
+                                </Form.Check>
 
-                                    // className={touched.openSunday && errors.openSunday ? "has-error" : null}
-
-                                />
-
+                                {/*<Form.Check*/}
+                                {/*    type="checkbox"*/}
+                                {/*    name="openSunday"*/}
+                                {/*    // onChange={handleChange}*/}
+                                {/*    onChange={(e) => {setFieldValue("openSunday", e.target.checked)}}*/}
+                                {/*    onBlur={handleBlur}*/}
+                                {/*    value={values.openSunday}*/}
+                                {/*    // className={touched.openSunday && errors.openSunday ? "has-error" : null}*/}
+                                {/*/>*/}
 
                             </Col>
                             <Col>
                                 <Form.Label className={"show"}>Open on special days ?</Form.Label>
-                                <Form.Check
-                                    type="checkbox"
-                                    name="openSpecialDay"
-                                    placeholder="Longitude"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.openSpecialDay}
-                                    // className={touched.openSpecialDay && errors.openSpecialDay ? "has-error" : null}
+                                <Form.Check>
+                                    {/*<label className={"show"}>*/}
+                                    <Field type="checkbox" name="openSpecialDay"/>
+                                    {/*{`${values.openSunday}`}*/}
+                                    {/*</label>*/}
+                                </Form.Check>
+                                {/*<Form.Check*/}
+                                {/*    type="checkbox"*/}
+                                {/*    name="openSpecialDay"*/}
+                                {/*    onChange={handleChange}*/}
+                                {/*    onBlur={handleBlur}*/}
+                                {/*    value={values.openSpecialDay}*/}
+                                {/*    // className={touched.openSpecialDay && errors.openSpecialDay ? "has-error" : null}*/}
 
-                                />
-
-
+                                {/*/>*/}
                             </Col>
-
-
                         </Form.Row>
                         {/*<div className="buttons">*/}
 
@@ -718,7 +775,7 @@ export const FormPlace = (props) => {
                             {latitude !== 0 ?
                                 <SubmitButton variant="primary" type="submit" disabled={isSubmitting}
                                               onClick={fetchPlace(values, props.token)}>
-                                    Submit
+                                    {modification? "Confirm modification" : "Submit"}
                                 </SubmitButton> :
                                 <div><sub>Latitude and longitude are needed for submitting</sub><br/>
                                     <sub>Click on "Get coordinates" button</sub></div>}
