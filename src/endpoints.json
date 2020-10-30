@@ -6,5 +6,6 @@
   "categories": "/api/categories",
   "regions": "/api/regions",
   "review": "/api/reviews/place/",
-  "rate": "/api/places/Rating/"
+  "rate": "/api/places/Rating/",
+  "report": "/api/reports"
 }

@@ -1,5 +1,5 @@
 import React, {Fragment, useContext, useEffect, useRef, useState} from 'react';
-import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
+import {Map, TileLayer, Marker, Popup, LayersControl,LayerGroup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
 import Markers from '../components/VenueMarkers';
@@ -23,24 +23,17 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {BrowserRouter, Link, Route} from 'react-router-dom';
+import {BrowserRouter, Link, Route, useLocation, Router } from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
-import {VenueLocationIcon} from "../components/VenueLocationIcon";
+import {HereLocationIcon, PlusLocationIcon, Icons} from "../components/Icons";
 import styled from "styled-components";
 import Details from "../components/Details";
+import {useAlert} from "react-alert";
+import PlacesPopup from "../components/PlacesPopup";
 
-export const locationIcon = L.icon({
-    iconUrl: require('../assets/plusIcon.png'),
-    iconRetinaUrl: require('../assets/plusIcon.png'),
-    iconAnchor: null,
-    shadowUrl: null,
-    shadowSize: null,
-    shadowAnchor: null,
-    iconSize: [30, 35],
-    // className: 'fadeIcon'
-});
+const { Overlay } = LayersControl;
 
-const Modal = styled.div`
+export const Modal = styled.div`
     // display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 10000; /* Sit on top */
@@ -67,14 +60,42 @@ function MapView(props) {
         center: [46.2333, 7.35],
         zoom: 12,
     });
+    const [types,setTypes] = useState([]);
     const [places, setPlaces] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
     const [selected, setSelected] = useState(0);
 
+    const [infoMarker, setInfoMarker] = useState();
+
+
     const refMarker = useRef();
     const refMap = useRef();
+    const firstOverlayRef = useRef();
+    const secondOverlayRef = useRef();
     const authContext = useContext(Auth0Context);
+    const alert = useAlert();
+
+    const path = useLocation();
+
+    useEffect(() => {
+        console.log(path.pathname)
+        if(path.pathname.startsWith("/map/")) {
+            setVisible(true);
+            console.log("PLACES : " + places);
+            if(places.length>0){
+            var place = {...places.find(
+                (place) => place.idPlace === +path.pathname.split("/").pop()
+            )}
+                console.log("PLACES : " + place);
+            if(place!=null)
+            setViewPort({
+                center: [place.locationSet.lat, place.locationSet.long],
+                zoom: 12
+            })
+            }
+            }
+        },[path,places])
 
     const {
         latitude,
@@ -83,6 +104,44 @@ function MapView(props) {
         accuracy,
         error,
     } = usePosition();
+
+    const [showHere, setShowHere] = useState(false);
+
+    /** Show the marker of the user position */
+    useEffect(() => {
+        if (latitude !== undefined && longitude !== undefined) {
+            setShowHere(true);
+            alert.success("Your location has been successfully found !");
+        }
+    }, [latitude]); // Execute only if latitude has changed
+
+    /** Tell the user to activate geolocation if he want to see himself on the map*/
+    useEffect(() => {
+        if (error == "User denied geolocation prompt") {
+            alert.info("Activate the location in your browser to see where you are on the map");
+        }
+    }, [error]); // Execute only if latitude has changed
+
+
+    const [data, setData] = useState({
+        name: '',
+        address: '',
+        zip: '',
+        city: ''
+    })
+
+    /** Tell the user to activate geolocation if he want to see himself on the map*/
+    useEffect(() => {
+        if (infoMarker !== undefined) {
+            setData({
+                name: infoMarker.address.amenity,
+                address: infoMarker.address.road + " " + infoMarker.address.house_number,
+                zip: infoMarker.address.postcode,
+                city: infoMarker.address.town
+            })
+        }
+
+    }, [infoMarker]); // Execute only if latitude has changed
 
 
     const toggleDraggable = (props) => {
@@ -98,6 +157,7 @@ function MapView(props) {
 
         // In case of draggable marker
         if (opacity === 1) {
+            // setInfoMarker(undefined);
             setDraggable(draggable)
         }
 
@@ -109,7 +169,7 @@ function MapView(props) {
         setShowForm(false)
     }
     //Get places for DB
-    useEffect(() => {
+    useEffect( () => {
         async function getPlaces() {
 
             let places = await request(
@@ -125,6 +185,22 @@ function MapView(props) {
         getPlaces();
     }, []);
 
+    useEffect( () => {
+        async function getTypes() {
+
+            let types = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.types}`,
+                authContext.getAccessTokenSilently,
+            );
+
+            if (types && types.length > 0) {
+                setTypes(types);
+            }
+        }
+
+        getTypes();
+    }, []);
+
     // Update the position of the draggable marker
     const updatePosition = () => {
         const marker = refMarker.current
@@ -135,12 +211,16 @@ function MapView(props) {
         }
     }
     //Display the sidebar where are the information of a specific Place
-    const showDetails = () => {
+    const toggleSideBar = () => {
         if (visible) {
             setVisible(false)
         } else {
             setVisible(true)
         }
+    }
+
+    const showDetails = () => {
+        setVisible(true)
     }
     //Indicate which place has been selected
     const select = (info) => {
@@ -190,6 +270,14 @@ function MapView(props) {
         }, 100)
     }
 
+    const icon = L.icon({
+        iconSize: [25, 41],
+        iconAnchor: [10, 41],
+        popupAnchor: [2, -40],
+        iconUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png"
+    });
+
 
     return (
         <BrowserRouter>
@@ -202,96 +290,63 @@ function MapView(props) {
                 {/*TEST DU ROUTING POUR LES PLACES*/}
                 <Route
                     path="/map/:id"
+                    onEnter={showDetails}
                     render={(routeParams) => (
-
+                        places.length>0 ?
                         <Details
                             {...places.find(
                                 (place) => place.idPlace === +routeParams.match.params.id
                             )}
                             onOpen={visible}
-                            onClose={showDetails}
+                            onClose={toggleSideBar}
                             /* Pass the new method for toggling to the Book */
                             // toggleLike={handleToggleLike}
-                        />
+                        /> : null
                     )}
                 />
 
-                {/*Sidebar with information about the place which has been selected*/}
-                {/*<div  className={`listVenues ${visible ? "in" : ""}`} >*/}
-                {/*    {visible &&*/}
-                {/*        <>*/}
-                {/*            <button className="toolsBtn" onClick={showDetails}>*/}
-                {/*                <span>❌</span>*/}
-                {/*            </button>*/}
-                {/*            <h1>{places[selected].name} {places[selected].isVerified ?*/}
-                {/*                <FontAwesomeIcon icon={faCheckCircle}/> :*/}
-                {/*                <button>*/}
-                {/*                    <FontAwesomeIcon icon={faEdit}/>*/}
-                {/*                </button>}*/}
-                {/*            </h1>*/}
-
-                {/*            <h2>{places[selected].categorySet.name}</h2>*/}
-                {/*            <h2>{places[selected].typeSet.name}</h2>*/}
-                {/*            <p>*/}
-                {/*                Open on sundays : {*/}
-                {/*                places[selected].isOpenSunday ?*/}
-                {/*                    <span>✔</span> : <span>❌</span>*/}
-                {/*            }*/}
-                {/*            </p>*/}
-                {/*            <p>*/}
-                {/*                Open on Special Days : {*/}
-                {/*                places[selected].isOpenSpecialDay ?*/}
-                {/*                    <span>✔</span> : <span>❌</span>*/}
-                {/*            }*/}
-                {/*            </p>*/}
-                {/*            <table>*/}
-                {/*                <tbody>*/}
-                {/*                    <tr>*/}
-                {/*                        <td style={{align:"center"}}>{places[selected].description}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].locationSet.address}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].locationSet.regionSet.name}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].locationSet.citySet.name}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].email}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].website}</td>*/}
-                {/*                    </tr>*/}
-                {/*                    <tr>*/}
-                {/*                        <td>{places[selected].phoneNumber}</td>*/}
-                {/*                    </tr>*/}
-                {/*                </tbody>*/}
-                {/*            </table>*/}
-                {/*            <br/>*/}
-                {/*            <h1>Reviews</h1>*/}
-                {/*    </>}*/}
-                {/*</div>*/}
-
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
-                    <FormPlace latitude={marker.lat} longitude={marker.lng} token={authContext.getAccessTokenSilently()} gcButton={buttonGC}/>
+                    {/*{console.log("LOG FORM-INFOMARKER // data ==================>" + infoMarker.address.amenity)}*/}
+                    <FormPlace latitude={marker.lat} longitude={marker.lng}
+                               gcButton={buttonGC} data={data} closeForm={closeForm}/>
                 </Modal> : null}
                 {/*<Foursquare className="listVenues"/>*/}
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                      className="mapContent">
+                    <LayersControl position="topright">
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
+                        {/*<Overlay name="Layer 1">*/}
+                        {/*    <LayerGroup id="lg1" ref={firstOverlayRef}>*/}
+                        {/*        <Marker position={[51, 0.1]} icon={icon} />*/}
+                        {/*    </LayerGroup>*/}
+                        {/*</Overlay>*/}
+                        {/*<Overlay name="Layer 2">*/}
+                        {/*    <LayerGroup ref={secondOverlayRef}>*/}
+                        {/*        <Marker position={[51, 0.2]} icon={icon} />*/}
+                        {/*    </LayerGroup>*/}
+                        {/*</Overlay>*/}
+                        {types!=null ? types.map((type) =>(
+                            <Overlay name={type.name} checked>
+                                <LayerGroup>
+                                <PlacesMarkers venues={places.filter((place) => place.typeSet.name.includes(type.name))} onOpen={showDetails} select={select}/>
+                                </LayerGroup>
+                            </Overlay>
+                        )) : null}
+
+                    </LayersControl>
                     {/* button to return to the Device Location */}
                     <Control position="topleft">
                         <button className="toolsBtn"
                                 onClick={() => setViewPort({
-                                    center: [latitude, longitude],
-                                    zoom: 12,
-                                })}
+                                        center: [latitude, longitude],
+                                        zoom: 12
+                                    }
+                                )}
+                                disabled={!showHere}
                         >
                             <FontAwesomeIcon icon={faHome}/>
                         </button>
@@ -308,8 +363,10 @@ function MapView(props) {
                     <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
                             closeResultsOnClick={true}>
                         {(info) => (
-                            setMarker(info.latLng),
-                                <Marker icon={locationIcon} position={info?.latLng}>{<Popup>
+                            setInfoMarker(info.raw[0]),
+                                setMarker(info.latLng),
+                                // Marker to add location from search
+                                <Marker icon={PlusLocationIcon} position={info?.latLng}>{<Popup>
                                     <div>
                                         <h1>{info.raw[0].address.amenity}</h1>
                                         <h2>{info.raw[0].type}</h2>
@@ -343,9 +400,27 @@ function MapView(props) {
 
                     </Search>
                     <Markers venues={data.venues}/>
-                    {places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}
+                    {/*ANCIEN LISTE POUR AFFICHER LES MARKERS DE LA DB*/}
+                    {/*{places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}*/}
+
+                    {/*Marker to show the location of the user*/}
+                    {/*{console.log("lat:" + latitude)}*/}
+                    {/*{console.log(error)}*/}
+                    {showHere ? <Marker
+                        icon={HereLocationIcon}
+                        // draggable={draggable}
+                        // onDragend={updatePosition}
+                        // position={[46.3, 7.5333]}
+                        id="fadeIcon"
+                        position={[latitude, longitude]}
+                        // ref={refMarker}
+                        // opacity={opacity}
+                    /> : null}
+
+
+                    {/*Draggable marker*/}
                     <Marker
-                        icon={locationIcon}
+                        icon={PlusLocationIcon}
                         draggable={draggable}
                         onDragend={updatePosition}
                         position={marker}
@@ -362,6 +437,12 @@ function MapView(props) {
                             </button>
                         </Popup>
                     </Marker>
+                    <Route path="/map/:id/report">
+                        <Modal>
+                            <span id="close" onClick={closeForm}>&times;</span>
+                            <div>WELL DONE</div>
+                        </Modal>
+                    </Route>
                 </Map>
             </div>
         </BrowserRouter>

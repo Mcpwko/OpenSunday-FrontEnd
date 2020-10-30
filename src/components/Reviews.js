@@ -3,7 +3,6 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context} from "@auth0/auth0-react";
 import {Marker} from "react-leaflet";
-import {VenueLocationIcon} from "./VenueLocationIcon";
 import PlacesPopup from "./PlacesPopup";
 import Rating from "@material-ui/lab/Rating";
 import {FormPlace} from "./FormPlace";
@@ -20,15 +19,14 @@ function Reviews (props) {
         async function getReviews(){
                 let review = await request(
                     `${process.env.REACT_APP_SERVER_URL}${endpoints.review}${ props.idPlace}`,
-                    authContext.getAccessTokenSilently,
-                    authContext.loginWithRedirect
+                    authContext.getAccessTokenSilently
                 );
         if(review!=null){
             setReviews(review);
         }
         }
         getReviews();
-    },[reviews]);
+    },[props.idPlace]);
 
 
     const showReviewForm = (props) => {
@@ -46,8 +44,8 @@ function Reviews (props) {
 
     return(
             <div>
-                <ul>
-                {reviews.map((review) => (
+                <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
+                {reviews!=null ? reviews.map((review) => (
                     <li key={review.idReview}>
                     <h3>{review.userSet.idAuth0}</h3>
                         <p>{review.rate}</p>
@@ -56,7 +54,7 @@ function Reviews (props) {
                         {review.comment}
                     </p>
                     </li>
-                ))}
+                )):null}
                 </ul>
                 <button className="add" onClick={showReviewForm}>Add new review</button>
                 {showForm ? <FormReview place={idPlace}/> : null}

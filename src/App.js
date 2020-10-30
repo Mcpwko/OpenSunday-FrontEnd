@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./App.css";
 import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints";
-import Loading from "./components/Loading";
+import Loading from "./components-reusable/Loading";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
 import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
@@ -14,6 +14,8 @@ import About from "./pages/About";
 import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
+import Account from "./pages/Account";
+import {ThemeContext, themes} from "./context/ThemeContext";
 
 function App() {
     //List of all places
@@ -27,6 +29,7 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
+    let themeContext = useContext(ThemeContext);
 
 
     //Hooks which checks if user is connected to POST Check
@@ -113,13 +116,22 @@ function App() {
         return (
             <div>
                 {isAuthenticated ?
-                    <a
-                        className="App-link Logout-link"
-                        href="#"
-                        onClick={handleLogoutClick}
-                    >
-                        {user.name} - Logout
-                    </a>
+                    <div>
+                        <Link
+                            style={{paddingRight: "2em"}}
+                            to="/account"
+                        >
+                            My account
+                        </Link>
+                        <a
+                            className="App-link Logout-link"
+                            href="#"
+                            style={{color: "#61dafb"}}
+                            onClick={handleLogoutClick}
+                        >
+                            {user.name} - Logout
+                        </a>
+                    </div>
                     :
                     <a className="App-link"
                        href="#"
@@ -133,13 +145,18 @@ function App() {
         );
     }
 
+
     return (
         <div className="App">
             <BrowserRouter>
 
                 <Navigation auth={authUser()}/>
 
-                <header className="App-header">
+                <header className="App-header"
+                        style={{
+                            backgroundColor: themes[themeContext.theme].background,
+                            color: themes[themeContext.theme].foreground
+                        }}>
                     {/*{isAuthenticated && (*/}
                     {/*    <a*/}
                     {/*        className="App-link Logout-link"*/}
@@ -191,11 +208,17 @@ function App() {
                             )}
                         />
                         <Route path="/location/:id" component={PlaceDetails}/>
-                        <Route path="/map" exact component={MapView} props={locations}></Route>
+                        <Route path="/map" component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
+                        <Route path="/account" component={Account}/>
                     </Switch>
 
                 </header>
+                <footer style={{
+                    backgroundColor: themes[themeContext.theme].background,
+                    color: themes[themeContext.theme].foreground
+                }}> COPYRIGHT 2020 - Brice Berclaz, Mickaël Puglisi, Ludovic Sahraoui
+                </footer>
             </BrowserRouter>
         </div>
     );

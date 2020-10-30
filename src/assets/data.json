@@ -1,7 +1,7 @@
 {
   "venues": [
     {
-      "description": "This is a test of description for Restaurant Capri",
+      "description": "This is a local test of description for Restaurant Capri",
       "name": "Restaurant Capri",
       "geometry": [
         46.291442,
@@ -9,7 +9,7 @@
       ]
     },
     {
-      "description": "This is a test of description for Restaurant Carbonia",
+      "description": "This is a local test of description for Restaurant Carbonia",
       "name": "Restaurant Carbonia",
       "geometry": [
         46.294546,
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "description": "This is a test of description for Restaurant les Arcades",
+      "description": "This is a local test of description for Restaurant les Arcades",
       "name": "Restaurant les Arcades",
       "geometry": [
         46.293828,
