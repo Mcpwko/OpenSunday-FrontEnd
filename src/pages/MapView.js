@@ -23,7 +23,7 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {BrowserRouter, Link, Route} from 'react-router-dom';
+import {BrowserRouter, Link, Route, useLocation, Router } from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {HereLocationIcon, PlusLocationIcon, Icons} from "../components/Icons";
 import styled from "styled-components";
@@ -68,6 +68,26 @@ function MapView(props) {
     const authContext = useContext(Auth0Context);
     const alert = useAlert();
 
+    const path = useLocation();
+
+    useEffect(() => {
+        console.log(path.pathname)
+        if(path.pathname.startsWith("/map/")) {
+            setVisible(true);
+            console.log("PLACES : " + places);
+            if(places.length>0){
+            var place = {...places.find(
+                (place) => place.idPlace === +path.pathname.split("/").pop()
+            )}
+                console.log("PLACES : " + place);
+            if(place!=null)
+            setViewPort({
+                center: [place.locationSet.lat, place.locationSet.long],
+                zoom: 12
+            })
+            }
+            }
+        },[path,places])
 
     const {
         latitude,
@@ -111,7 +131,7 @@ function MapView(props) {
         setShowForm(false)
     }
     //Get places for DB
-    useEffect(() => {
+    useEffect( () => {
         async function getPlaces() {
 
             let places = await request(
@@ -137,12 +157,16 @@ function MapView(props) {
         }
     }
     //Display the sidebar where are the information of a specific Place
-    const showDetails = () => {
+    const toggleSideBar = () => {
         if (visible) {
             setVisible(false)
         } else {
             setVisible(true)
         }
+    }
+
+    const showDetails = () => {
+            setVisible(true)
     }
     //Indicate which place has been selected
     const select = (info) => {
@@ -204,17 +228,18 @@ function MapView(props) {
                 {/*TEST DU ROUTING POUR LES PLACES*/}
                 <Route
                     path="/map/:id"
+                    onEnter={showDetails}
                     render={(routeParams) => (
-
+                        places.length>0 ?
                         <Details
                             {...places.find(
                                 (place) => place.idPlace === +routeParams.match.params.id
                             )}
                             onOpen={visible}
-                            onClose={showDetails}
+                            onClose={toggleSideBar}
                             /* Pass the new method for toggling to the Book */
                             // toggleLike={handleToggleLike}
-                        />
+                        /> : null
                     )}
                 />
 

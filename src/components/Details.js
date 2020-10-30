@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faEdit} from "@fortawesome/free-solid-svg-icons";
-import {useHistory} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context} from "@auth0/auth0-react";
@@ -9,10 +9,12 @@ import Rating from "@material-ui/lab/Rating";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Reviews from "./Reviews";
-import Modal from "react-bootstrap";
+import {Modal} from "react-bootstrap";
 
 function Details (props){
     const[rate,setRate] = useState(0);
+    const [show,setShow] = useState(false) ;
+
     const authContext = useContext(Auth0Context);
 
     useEffect(()=>{
@@ -28,6 +30,17 @@ function Details (props){
         }
         getRate();
     },[]);
+
+
+    function showModal () {
+        setShow( true);
+    };
+
+    function hideModal() {
+        setShow( false);
+    };
+
+
 
     //let history = useHistory();
 
@@ -99,11 +112,16 @@ function Details (props){
             <br/>
             <h1>Reviews</h1>
             <Reviews idPlace={props.idPlace}></Reviews>
-            <h1>Something is wrong ?
-                <button>Report</button>
-            </h1>
+            {authContext.isAuthenticated && props.isVerified?
+                <h1>Something is wrong ?
+                <a className="text-danger" onClick={showModal} >Report</a>
+                    <Modal>
+                        <p>Modal</p>
+                        <p>Data</p>
+                    </Modal>
+            </h1> : null}
         </div>
     )
 }
 
-export default Details
+export default withRouter(Details)

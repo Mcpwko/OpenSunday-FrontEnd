@@ -119,7 +119,7 @@ function App() {
                     <div>
                         <Link
                             style={{paddingRight: "2em"}}
-                            to="account"
+                            to="/account"
                         >
                             My account
                         </Link>
