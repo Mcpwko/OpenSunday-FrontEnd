@@ -114,7 +114,7 @@ function Details(props) {
 
             {showForm ? <Mod>
                 <span id="close" onClick={closeForm}>&times;</span>
-                <FormPlace place={props} modification={true}/>
+                <FormPlace place={props}/>
             </Mod> : null}
 
 

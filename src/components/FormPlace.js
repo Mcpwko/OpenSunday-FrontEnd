@@ -218,6 +218,8 @@ export const FormPlace = (props) => {
     // Boolean to toggle the edit mode
     const [modification, setModification] = useState(false);
 
+    //Boolean when edition is from a search with info in the popup
+    const [add, setAdd] = useState(false);
 
     // Retrieve the array to modify
     const [placeEdit, setPlaceEdit] = useState([]);
@@ -232,17 +234,31 @@ export const FormPlace = (props) => {
     let myZip = "";
     let myCity = "";
 
+    // if props.data changes
+    useEffect(() => {
+        if (props.data !== undefined) {
+            // console.log("MODIFICATION TRUE")
+            // setPlaceEdit(props);
+            setAdd(true)
+        } else {
+            // console.log("MODIFICATION FALSE")
+            setAdd(false);
+        }
+
+    }, [props.data]); // Execute only if place has changed
+
+    // If props.place changes
     useEffect(() => {
         if (props.place !== undefined) {
             console.log("MODIFICATION TRUE")
-            setPlaceEdit(props);
+            // setPlaceEdit(props);
             setModification(true)
         } else {
             console.log("MODIFICATION FALSE")
             setModification(false);
         }
 
-    }, [props.place]); // Execute only if latitude has changed
+    }, [props.place]); // Execute only if place has changed
 
 
     const url = "https://us1.locationiq.com/v1/search.php?key=pk.a9fb192a815fa6985b189ffe5138383b&q=";
@@ -293,7 +309,6 @@ export const FormPlace = (props) => {
 
             // console.log("Sl" + data.address.postcode);
             // console.log("SL" + data.address.city);
-
 
             myZip = data.address.postcode;
             myCity = data.address.city;
@@ -429,33 +444,44 @@ export const FormPlace = (props) => {
                   }) => (
                     <MyForm onSubmit={handleSubmit} className="mx-auto">
                         {/*{visible ? null : <InitializeForm/>}*/}
+                        {add ? <Button style={{display: "none"}}
+                                                ref={simulateProps}
+                                                onClick={() => {
+                                                    setFieldValue('name', props.data.name)
+                                                    setFieldValue('address', props.data.address)
+                                                    setFieldValue('zip', props.data.zip)
+                                                    setFieldValue('city', props.data.city)
+                                                    // console.log("I AM IN THE ADD" + props.data.name)
+                                                }}
+                        >
+                        </Button> : null}
 
                         {modification ? <Button style={{display: "none"}}
                                                 ref={simulateProps}
                                                 onClick={() => {
-                                                    //mandatory
-                                                    setFieldValue('name', props.place.name)
-                                                    setFieldValue('description', props.place.description)
+                                                        setFieldValue('name', props.place.name)
+                                                        setFieldValue('description', props.place.description)
 
-                                                    myCity = props.place.locationSet.citySet.name;
-                                                    myZip = props.place.locationSet.citySet.npa;
+                                                        myCity = props.place.locationSet.citySet.name;
+                                                        myZip = props.place.locationSet.citySet.npa;
 
-                                                    setLatitude(props.place.locationSet.lat)
-                                                    setLongitude(props.place.locationSet.long)
+                                                        setLatitude(props.place.locationSet.lat)
+                                                        setLongitude(props.place.locationSet.long)
 
-                                                    setFieldValue('type', props.place.typeSet.idType)
-                                                    setFieldValue('category', props.place.categorySet.idCategory)
-                                                    setFieldValue('region', props.place.locationSet.regionSet.idRegion)
+                                                        setFieldValue('type', props.place.typeSet.idType)
+                                                        setFieldValue('category', props.place.categorySet.idCategory)
+                                                        setFieldValue('region', props.place.locationSet.regionSet.idRegion)
 
-                                                    //optional
-                                                    setFieldValue('address', props.place.locationSet.address)
-                                                    setFieldValue('email', props.place.email)
-                                                    setFieldValue('website', props.place.website)
-                                                    setFieldValue('phone', props.place.phoneNumber)
+                                                        //optional
+                                                        setFieldValue('address', props.place.locationSet.address)
+                                                        setFieldValue('email', props.place.email)
+                                                        setFieldValue('website', props.place.website)
+                                                        setFieldValue('phone', props.place.phoneNumber)
 
-                                                    // checkboxes
-                                                    setFieldValue('openSunday', props.place.isOpenSunday)
-                                                    setFieldValue('openSpecialDay', props.place.isOpenSunday)
+                                                        // checkboxes
+                                                        setFieldValue('openSunday', props.place.isOpenSunday)
+                                                        setFieldValue('openSpecialDay', props.place.isOpenSunday)
+
 
                                                 }}
                         >

@@ -23,7 +23,7 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {BrowserRouter, Link, Route, useLocation, Router } from 'react-router-dom';
+import {BrowserRouter, Link, Route, useLocation, Router} from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {HereLocationIcon, PlusLocationIcon, Icons} from "../components/Icons";
 import styled from "styled-components";
@@ -63,6 +63,9 @@ function MapView(props) {
     const [buttonGC, setButtonGC] = useState(false);
     const [selected, setSelected] = useState(0);
 
+    const [infoMarker, setInfoMarker] = useState();
+
+
     const refMarker = useRef();
     const refMap = useRef();
     const authContext = useContext(Auth0Context);
@@ -72,22 +75,24 @@ function MapView(props) {
 
     useEffect(() => {
         console.log(path.pathname)
-        if(path.pathname.startsWith("/map/")) {
+        if (path.pathname.startsWith("/map/")) {
             setVisible(true);
             console.log("PLACES : " + places);
-            if(places.length>0){
-            var place = {...places.find(
-                (place) => place.idPlace === +path.pathname.split("/").pop()
-            )}
+            if (places.length > 0) {
+                var place = {
+                    ...places.find(
+                        (place) => place.idPlace === +path.pathname.split("/").pop()
+                    )
+                }
                 console.log("PLACES : " + place);
-            if(place!=null)
-            setViewPort({
-                center: [place.locationSet.lat, place.locationSet.long],
-                zoom: 12
-            })
+                if (place != null)
+                    setViewPort({
+                        center: [place.locationSet.lat, place.locationSet.long],
+                        zoom: 12
+                    })
             }
-            }
-        },[path,places])
+        }
+    }, [path, places])
 
     const {
         latitude,
@@ -99,6 +104,7 @@ function MapView(props) {
 
     const [showHere, setShowHere] = useState(false);
 
+    /** Show the marker of the user position */
     useEffect(() => {
         if (latitude !== undefined && longitude !== undefined) {
             setShowHere(true);
@@ -106,11 +112,33 @@ function MapView(props) {
         }
     }, [latitude]); // Execute only if latitude has changed
 
+    /** Tell the user to activate geolocation if he want to see himself on the map*/
     useEffect(() => {
         if (error == "User denied geolocation prompt") {
             alert.info("Activate the location in your browser to see where you are on the map");
         }
     }, [error]); // Execute only if latitude has changed
+
+
+    const [data, setData] = useState({
+        name: '',
+        address: '',
+        zip: '',
+        city: ''
+    })
+
+    /** Tell the user to activate geolocation if he want to see himself on the map*/
+    useEffect(() => {
+        if (infoMarker !== undefined) {
+            setData({
+                name: infoMarker.address.amenity,
+                address: infoMarker.address.road + " " + infoMarker.address.house_number,
+                zip: infoMarker.address.postcode,
+                city: infoMarker.address.town
+            })
+        }
+
+    }, [infoMarker]); // Execute only if latitude has changed
 
 
     const toggleDraggable = (props) => {
@@ -126,6 +154,7 @@ function MapView(props) {
 
         // In case of draggable marker
         if (opacity === 1) {
+            // setInfoMarker(undefined);
             setDraggable(draggable)
         }
 
@@ -137,7 +166,7 @@ function MapView(props) {
         setShowForm(false)
     }
     //Get places for DB
-    useEffect( () => {
+    useEffect(() => {
         async function getPlaces() {
 
             let places = await request(
@@ -172,7 +201,7 @@ function MapView(props) {
     }
 
     const showDetails = () => {
-            setVisible(true)
+        setVisible(true)
     }
     //Indicate which place has been selected
     const select = (info) => {
@@ -236,23 +265,24 @@ function MapView(props) {
                     path="/map/:id"
                     onEnter={showDetails}
                     render={(routeParams) => (
-                        places.length>0 ?
-                        <Details
-                            {...places.find(
-                                (place) => place.idPlace === +routeParams.match.params.id
-                            )}
-                            onOpen={visible}
-                            onClose={toggleSideBar}
-                            /* Pass the new method for toggling to the Book */
-                            // toggleLike={handleToggleLike}
-                        /> : null
+                        places.length > 0 ?
+                            <Details
+                                {...places.find(
+                                    (place) => place.idPlace === +routeParams.match.params.id
+                                )}
+                                onOpen={visible}
+                                onClose={toggleSideBar}
+                                /* Pass the new method for toggling to the Book */
+                                // toggleLike={handleToggleLike}
+                            /> : null
                     )}
                 />
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
+                    {/*{console.log("LOG FORM-INFOMARKER // data ==================>" + infoMarker.address.amenity)}*/}
                     <FormPlace latitude={marker.lat} longitude={marker.lng}
-                               gcButton={buttonGC}/>
+                               gcButton={buttonGC} data={data}/>
                 </Modal> : null}
                 {/*<Foursquare className="listVenues"/>*/}
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
@@ -286,7 +316,8 @@ function MapView(props) {
                     <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
                             closeResultsOnClick={true}>
                         {(info) => (
-                            setMarker(info.latLng),
+                            setInfoMarker(info.raw[0]),
+                                setMarker(info.latLng),
                                 // Marker to add location from search
                                 <Marker icon={PlusLocationIcon} position={info?.latLng}>{<Popup>
                                     <div>
@@ -325,8 +356,8 @@ function MapView(props) {
                     {places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}
 
                     {/*Marker to show the location of the user*/}
-                    {console.log("lat:" + latitude)}
-                    {console.log(error)}
+                    {/*{console.log("lat:" + latitude)}*/}
+                    {/*{console.log(error)}*/}
                     {showHere ? <Marker
                         icon={HereLocationIcon}
                         // draggable={draggable}
