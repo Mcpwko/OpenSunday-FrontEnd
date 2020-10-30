@@ -31,7 +31,7 @@ import Details from "../components/Details";
 import {useAlert} from "react-alert";
 
 
-const Modal = styled.div`
+export const Modal = styled.div`
     // display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 10000; /* Sit on top */
@@ -100,11 +100,17 @@ function MapView(props) {
     const [showHere, setShowHere] = useState(false);
 
     useEffect(() => {
-        if (latitude !== undefined && longitude!== undefined) {
+        if (latitude !== undefined && longitude !== undefined) {
             setShowHere(true);
             alert.success("Your location has been successfully found !");
         }
     }, [latitude]); // Execute only if latitude has changed
+
+    useEffect(() => {
+        if (error == "User denied geolocation prompt") {
+            alert.info("Activate the location in your browser to see where you are on the map");
+        }
+    }, [error]); // Execute only if latitude has changed
 
 
     const toggleDraggable = (props) => {

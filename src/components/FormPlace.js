@@ -10,7 +10,7 @@ import GetTypes from "../database/GetTypes";
 import GetRegions from "../database/GetRegions";
 import endpoints from "../endpoints.json";
 import moment from "moment";
-import { useAuth0 } from "@auth0/auth0-react";
+import {useAuth0} from "@auth0/auth0-react";
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 
@@ -21,6 +21,7 @@ const Container = styled.div`
   margin: 5em auto;
   margin-top:0em;
   color: snow;
+  
   // -webkit-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
   // -moz-box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
   // box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
@@ -28,7 +29,14 @@ const Container = styled.div`
     width: 60%;
   }
   label {
+  // text-align:center;
     color: #24B9B6;
+    background:#282c34;
+    border-radius:10px;
+    opacity:0.8;
+    padding-left:5%;
+    padding-right:5%;
+    margin-top:15px;
     // font-size: 1.2em;
     // font-weight: 400;
   }
@@ -61,14 +69,38 @@ const Container = styled.div`
     text-align: center;
     font-size: 1em;
     font-weight: 400;
-    padding: 0.8em;
+    padding: 0.1em;
+    margin: 0.8em;
     color: #24B9B6;
+    border-radius:4px;
+    opacity:0.95;
+    background:#282c34;
+    margin-top:2em;
+    // padding-left:5px;
+    // padding-right:5px;
   }
   sub{
     color: darkred;
     background: grey;
     text-align: center;
   }
+  
+  .col{
+  text-align:center;}
+  
+.form-check {
+    // text-align: center;
+}
+
+input[type=checkbox] {
+    border-radius: 50%
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    padding: 10px;
+}
   
 `;
 
@@ -120,7 +152,7 @@ const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?
 /**
  * Validation schema for Yup (Validation for the form with Formik)
  */
-const validationSchema = Yup.object().shape({
+let validationSchema = Yup.object().shape({
     name: Yup.string()
         .max(20, "Must be 20 characters or less")
         .required("A name for the place is required"),
@@ -145,6 +177,8 @@ const validationSchema = Yup.object().shape({
         .required("Required latitude"),
     long: Yup.number()
         .required("Required longitude"),
+    openSunday: Yup.boolean(),
+    openSpecialDay: Yup.boolean(),
     email: Yup.string()
         .email("Invalid email address"),
     phone: Yup.string()
@@ -153,6 +187,25 @@ const validationSchema = Yup.object().shape({
         .url("Invalid url")
 });
 
+// /** Partially retrieved on: https://github.com/jquense/yup/issues/72 */
+// /** Partially retrieved on: https://runkit.com/sbreiler/5d5cf7a7fff9950013857ac5*/
+// // Extended validation
+// validationSchema = validationSchema.test( // this test is added additional to any other (build-in) tests
+//     'myCustomCheckboxTest',
+//     null, // we'll return error message ourself if needed
+//     (obj) => {
+//         // only testing the checkboxes here
+//         if (obj.openSunday || obj.openSpecialDay) {
+//             return true; // everything is fine
+//         }
+//
+//         return new Yup.ValidationError(
+//             '❗ Check at least one checkbox',
+//             null,
+//             'openSunday'
+//         );
+//     }
+// );
 
 
 let fetchPlace = async (values, token) => {
@@ -187,20 +240,28 @@ let fetchPlace = async (values, token) => {
 };
 
 
-
 export const FormPlace = (props) => {
     // const [showForm, setShowForm] = useState(false);
 
     const [latitude, setLatitude] = useState(props.latitude);
     const [longitude, setLongitude] = useState(props.longitude);
 
-    let myZip = "";
-    let myCity = "";
+    // Boolean to toggle the edit mode
+    const [modification, setModification] = useState(false);
+
+    // Retrieve the array to modify
+    const [array, setArray] = useState(false);
+
+    console.log("PROPSPLACE:" + props.place);
 
     const [visible, setVisible] = useState(props.gcButton);
     const [errorGC, setErrorGC] = useState(false);
 
     const [zipCity, setZipCity] = useState([]);
+
+    let myZip = "";
+    let myCity = "";
+
 
     const url = "https://us1.locationiq.com/v1/search.php?key=pk.a9fb192a815fa6985b189ffe5138383b&q=";
     const endUrl = "&format=json";
@@ -290,10 +351,11 @@ export const FormPlace = (props) => {
                     region: "",
                     lat: latitude,
                     long: longitude,
+                    openSunday: false, // checkbox
+                    openSpecialDay: false, // checkbox
                     email: "",
                     phone: "",
                     website: ""
-                    // acceptedTerms: false, // added for our checkbox
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, {setSubmitting, resetForm}) => {
@@ -551,6 +613,57 @@ export const FormPlace = (props) => {
                             </Col>
                         </Form.Row>
 
+                        {/*============================== CHECKBOXES ==================================*/}
+                        <Form.Row>
+                            <Col>
+                                <Form.Label className={"show"}>Open on Sunday ?</Form.Label>
+                                <Form.Check
+                                    type="checkbox"
+                                    name="openSunday"
+                                    placeholder="Latitude"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.openSunday}
+
+                                    // className={touched.openSunday && errors.openSunday ? "has-error" : null}
+
+                                />
+
+
+                            </Col>
+                            <Col>
+                                <Form.Label className={"show"}>Open on special days ?</Form.Label>
+                                <Form.Check
+                                    type="checkbox"
+                                    name="openSpecialDay"
+                                    placeholder="Longitude"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.openSpecialDay}
+                                    // className={touched.openSpecialDay && errors.openSpecialDay ? "has-error" : null}
+
+                                />
+
+
+                            </Col>
+
+
+                        </Form.Row>
+                        {/*<div className="buttons">*/}
+
+                        {/*    <div style={{textAlign: "center"}}>*/}
+                        {/*        {touched.openSpecialDay && errors.openSpecialDay ? (*/}
+                        {/*            <div className="error-message"*/}
+                        {/*                 style={{textAlign: "center"}}>{errors.openSpecialDay}</div>*/}
+                        {/*        ) : null}*/}
+                        {/*        {touched.openSunday && errors.openSunday ? (*/}
+                        {/*            <div className="error-message"*/}
+                        {/*                 style={{textAlign: "center"}}>{errors.openSunday}</div>*/}
+                        {/*        ) : null}*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+
+
                         {/*============================== OPTIONAL PART OF THE FORM ==================================*/}
                         <h2>Optional</h2>
                         <Form.Group controlId="formEmail">
@@ -598,13 +711,17 @@ export const FormPlace = (props) => {
                             ) : null}
                         </Form.Group>
 
+
                         {/*============================== SUBMIT BUTTON ==================================*/}
                         <div className="buttons">
                             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
-                            {latitude !== 0 ? <SubmitButton variant="primary" type="submit" disabled={isSubmitting} onClick={fetchPlace(values, props.token)}>
-                                Submit
-                            </SubmitButton> : <div><sub>Latitude and longitude are needed for submitting</sub><br/>
-                                <sub>Click on "Get coordinates" button</sub></div>}
+                            {latitude !== 0 ?
+                                <SubmitButton variant="primary" type="submit" disabled={isSubmitting}
+                                              onClick={fetchPlace(values, props.token)}>
+                                    Submit
+                                </SubmitButton> :
+                                <div><sub>Latitude and longitude are needed for submitting</sub><br/>
+                                    <sub>Click on "Get coordinates" button</sub></div>}
                             {/*<CancelButton variant="secondary" type="cancel" className="cancel">*/}
                             {/*    Cancel*/}
                             {/*</CancelButton>*/}

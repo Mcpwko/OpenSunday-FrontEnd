@@ -44,7 +44,7 @@ function Reviews (props) {
 
     return(
             <div>
-                <ul>
+                <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
                 {reviews.map((review) => (
                     <li key={review.idReview}>
                     <h3>{review.userSet.idAuth0}</h3>
