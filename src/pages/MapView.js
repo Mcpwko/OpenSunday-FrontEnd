@@ -1,5 +1,5 @@
 import React, {Fragment, useContext, useEffect, useRef, useState} from 'react';
-import {Map, TileLayer, Marker, Popup, LayersControl, ControlledLayer} from 'react-leaflet';
+import {Map, TileLayer, Marker, Popup, LayersControl,LayerGroup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import data from '../assets/data.json';
 import Markers from '../components/VenueMarkers';
@@ -29,7 +29,9 @@ import {HereLocationIcon, PlusLocationIcon, Icons} from "../components/Icons";
 import styled from "styled-components";
 import Details from "../components/Details";
 import {useAlert} from "react-alert";
+import PlacesPopup from "../components/PlacesPopup";
 
+const { Overlay } = LayersControl;
 
 export const Modal = styled.div`
     // display: none; /* Hidden by default */
@@ -58,6 +60,7 @@ function MapView(props) {
         center: [46.2333, 7.35],
         zoom: 12,
     });
+    const [categories,setCategories] = useState([]);
     const [places, setPlaces] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
@@ -68,6 +71,8 @@ function MapView(props) {
 
     const refMarker = useRef();
     const refMap = useRef();
+    const firstOverlayRef = useRef();
+    const secondOverlayRef = useRef();
     const authContext = useContext(Auth0Context);
     const alert = useAlert();
 
@@ -180,6 +185,22 @@ function MapView(props) {
         getPlaces();
     }, []);
 
+    useEffect( () => {
+        async function getCategories() {
+
+            let categories = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.categories}`,
+                authContext.getAccessTokenSilently,
+            );
+
+            if (categories && categories.length > 0) {
+                setCategories(categories);
+            }
+        }
+
+        getCategories();
+    }, []);
+
     // Update the position of the draggable marker
     const updatePosition = () => {
         const marker = refMarker.current
@@ -249,6 +270,14 @@ function MapView(props) {
         }, 100)
     }
 
+    const icon = L.icon({
+        iconSize: [25, 41],
+        iconAnchor: [10, 41],
+        popupAnchor: [2, -40],
+        iconUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png"
+    });
+
 
     return (
         <BrowserRouter>
@@ -285,10 +314,30 @@ function MapView(props) {
                 {/*<Foursquare className="listVenues"/>*/}
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                      className="mapContent">
+                    <LayersControl position="topright">
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
+                        {/*<Overlay name="Layer 1">*/}
+                        {/*    <LayerGroup id="lg1" ref={firstOverlayRef}>*/}
+                        {/*        <Marker position={[51, 0.1]} icon={icon} />*/}
+                        {/*    </LayerGroup>*/}
+                        {/*</Overlay>*/}
+                        {/*<Overlay name="Layer 2">*/}
+                        {/*    <LayerGroup ref={secondOverlayRef}>*/}
+                        {/*        <Marker position={[51, 0.2]} icon={icon} />*/}
+                        {/*    </LayerGroup>*/}
+                        {/*</Overlay>*/}
+                        {categories!=null ? categories.map((category) =>(
+                            <Overlay name={category.name} checked>
+                                <LayerGroup>
+                                <PlacesMarkers venues={places.filter( (place) => place.categorySet.name.includes(category.name))} onOpen={showDetails} select={select}/>
+                                </LayerGroup>
+                            </Overlay>
+                        )) : null}
+
+                    </LayersControl>
                     {/* button to return to the Device Location */}
                     <Control position="topleft">
                         <button className="toolsBtn"
@@ -310,9 +359,6 @@ function MapView(props) {
                             <FontAwesomeIcon size={"lg"} icon={faMapMarkerAlt}/>
                         </button>
                     </Control>
-                    <LayersControl >
-                        <LayersControl.Overlay name="first"></LayersControl.Overlay>
-                    </LayersControl>
                     {/*Search button that allow to find any location from leaflet */}
                     <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
                             closeResultsOnClick={true}>
@@ -354,7 +400,8 @@ function MapView(props) {
 
                     </Search>
                     <Markers venues={data.venues}/>
-                    {places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}
+                    {/*ANCIEN LISTE POUR AFFICHER LES MARKERS DE LA DB*/}
+                    {/*{places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}*/}
 
                     {/*Marker to show the location of the user*/}
                     {/*{console.log("lat:" + latitude)}*/}

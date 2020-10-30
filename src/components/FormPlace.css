@@ -1,5 +1,5 @@
 /* Hide all labels of the form, placeholder are sufficient*/
-label {
+.labelField {
     visibility: hidden;
     font-size: 0.5em;
 }

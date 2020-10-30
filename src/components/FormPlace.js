@@ -498,7 +498,7 @@ export const FormPlace = (props) => {
                         {/*</GetButton>*/}
 
                         <Form.Group controlId="formName">
-                            <Form.Label>Name of the place:</Form.Label>
+                            <Form.Label className="labelField">Name of the place:</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="name"
@@ -514,7 +514,7 @@ export const FormPlace = (props) => {
                         </Form.Group>
 
                         <Form.Group controlId="formType">
-                            <Form.Label>Type of place:</Form.Label>
+                            <Form.Label className="labelField">Type of place:</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="type"
@@ -534,7 +534,7 @@ export const FormPlace = (props) => {
                         </Form.Group>
 
                         <Form.Group controlId="formCategory">
-                            <Form.Label>Category of place:</Form.Label>
+                            <Form.Label className="labelField">Category of place:</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="category"
@@ -555,7 +555,7 @@ export const FormPlace = (props) => {
 
                         {/*============================== DESCRIPTION - TEXTAREA ==================================*/}
                         <Form.Group controlId="formDescription">
-                            <Form.Label>Description of the place:</Form.Label>
+                            <Form.Label className="labelField">Description of the place:</Form.Label>
                             <Form.Control
                                 as="textarea"
                                 name="description"
@@ -564,7 +564,7 @@ export const FormPlace = (props) => {
                                 onBlur={handleBlur}
                                 value={values.description}
                                 className={touched.description && errors.description ? "has-error" : null}
-                                rows={1.8}
+                                rows={2}
                             />
                             {touched.description && errors.description ? (
                                 <div className="error-message">{errors.description}</div>
@@ -572,7 +572,7 @@ export const FormPlace = (props) => {
                         </Form.Group>
 
                         <Form.Group controlId="formAddress">
-                            <Form.Label>Address of the place:</Form.Label>
+                            <Form.Label className="labelField">Address of the place:</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="address"
@@ -590,7 +590,7 @@ export const FormPlace = (props) => {
                         {/*============================== ZIP - CITY - REGION ==================================*/}
                         <Form.Row style={{marginBottom: "1em"}}>
                             <Col>
-                                <Form.Label>Zip of the place:</Form.Label>
+                                <Form.Label className="labelField">Zip of the place:</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="zip"
@@ -605,7 +605,7 @@ export const FormPlace = (props) => {
                                 ) : null}
                             </Col>
                             <Col>
-                                <Form.Label>City of the place:</Form.Label>
+                                <Form.Label className="labelField">City of the place:</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="city"
@@ -621,7 +621,7 @@ export const FormPlace = (props) => {
                             </Col>
                             <Col>
                                 {/*<Form.Group controlId="formType">*/}
-                                <Form.Label>Region of place:</Form.Label>
+                                <Form.Label className="labelField">Region of place:</Form.Label>
                                 <Form.Control
                                     as="select"
                                     name="region"
@@ -764,7 +764,7 @@ export const FormPlace = (props) => {
                             ) : null}
                         </Form.Group>
                         <Form.Group controlId="formPhone">
-                            <Form.Label>Phone :</Form.Label>
+                            <Form.Label className="labelField">Phone :</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="phoneNumber"
@@ -779,7 +779,7 @@ export const FormPlace = (props) => {
                             ) : null}
                         </Form.Group>
                         <Form.Group controlId="formWebsite">
-                            <Form.Label>Website :</Form.Label>
+                            <Form.Label className="labelField">Website :</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="website"
