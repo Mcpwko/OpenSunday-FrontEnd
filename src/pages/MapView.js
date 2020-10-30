@@ -251,7 +251,7 @@ function MapView(props) {
 
                 {showForm ? <Modal>
                     <span id="close" onClick={closeForm}>&times;</span>
-                    <FormPlace latitude={marker.lat} longitude={marker.lng} token={authContext.getAccessTokenSilently()}
+                    <FormPlace latitude={marker.lat} longitude={marker.lng}
                                gcButton={buttonGC}/>
                 </Modal> : null}
                 {/*<Foursquare className="listVenues"/>*/}

@@ -208,37 +208,6 @@ let validationSchema = Yup.object().shape({
 // );
 
 
-let fetchPlace = async (values, token) => {
-
-    await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
-        method: 'POST',
-        headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-            'Content-Type': "application/json",
-        }, body: JSON.stringify({
-            name: values.name,
-            description: values.description,
-            email: values.email,
-            website: values.website,
-            phoneNumber: values.phoneNumber,
-            isOpenSunday: true,
-            isOpenSpecialDay: true,
-            isVerified: false,
-            isAdvertised: false,
-            lat: values.lat,
-            long: values.long,
-            address: values.address,
-            zip: values.zip,
-            city: values.city,
-            idRegion: values.region,
-            idCategory: values.category,
-            idType: values._type
-        })
-    });
-
-};
-
 
 export const FormPlace = (props) => {
     // const [showForm, setShowForm] = useState(false);
@@ -257,6 +226,8 @@ export const FormPlace = (props) => {
     const [errorGC, setErrorGC] = useState(false);
 
     const [zipCity, setZipCity] = useState([]);
+
+    const authContext = useContext(Auth0Context);
 
     let myZip = "";
     let myCity = "";
@@ -377,13 +348,43 @@ export const FormPlace = (props) => {
                     website: ""
                 }}
                 validationSchema={validationSchema}
-                onSubmit={(values, {setSubmitting, resetForm}) => {
+                onSubmit={async (values, {setSubmitting, resetForm}) => {
                     // When button submits form and form is in the process of submitting, submit button is disabled
                     setSubmitting(true);
 
                     // As we do not work with values for latitude and longitude we have to set them with our respective states
                     values.lat = latitude;
                     values.long = longitude;
+                    //POST place to DB
+
+                    // await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         Accept: "application/json",
+                    //         Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                    //         'Content-Type': "application/json",
+                    //     }, body: JSON.stringify({
+                    //         name: values.name,
+                    //         description: values.description,
+                    //         email: values.email,
+                    //         website: values.website,
+                    //         phoneNumber: values.phoneNumber,
+                    //         isOpenSunday: values.openSunday,
+                    //         isOpenSpecialDay: values.openSunday,
+                    //         isVerified: false,
+                    //         isAdvertised: false,
+                    //         lat: values.lat,
+                    //         long: values.long,
+                    //         address: values.address,
+                    //         zip: values.zip,
+                    //         city: values.city,
+                    //         idRegion: values.region,
+                    //         idCategory: values.category,
+                    //         idType: values.type
+                    //     })
+                    // });
+
+
 
                     /** PUT (TO DO)*/
 
@@ -391,6 +392,25 @@ export const FormPlace = (props) => {
                     // Simulate submitting to database, shows us values submitted, resets form
                     setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));
+                        alert(JSON.stringify({
+                            name: values.name,
+                            description: values.description,
+                            email: values.email,
+                            website: values.website,
+                            phoneNumber: values.phoneNumber,
+                            isOpenSunday: values.openSunday,
+                            isOpenSpecialDay: values.openSunday,
+                            isVerified: false,
+                            isAdvertised: false,
+                            lat: values.lat,
+                            long: values.long,
+                            address: values.address,
+                            zip: values.zip,
+                            city: values.city,
+                            idRegion: values.region,
+                            idCategory: values.category,
+                            idType: values.type
+                        },null,2));
                         resetForm();
                         setSubmitting(false);
                     }, 500);
@@ -773,8 +793,7 @@ export const FormPlace = (props) => {
                         <div className="buttons">
                             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
                             {latitude !== 0 ?
-                                <SubmitButton variant="primary" type="submit" disabled={isSubmitting}
-                                              onClick={fetchPlace(values, props.token)}>
+                                <SubmitButton variant="primary" type="submit" disabled={isSubmitting}>
                                     {modification? "Confirm modification" : "Submit"}
                                 </SubmitButton> :
                                 <div><sub>Latitude and longitude are needed for submitting</sub><br/>
