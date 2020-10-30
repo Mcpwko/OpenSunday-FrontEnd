@@ -12,7 +12,7 @@ import {FormReview} from "./FormReview";
 
 function Reviews (props) {
     const [reviews, setReviews] = useState([]);
-    const [showForm, setShowForm] = useState(false);
+    const [showForm, setShowForm] = useState();
     const authContext = useContext(Auth0Context);
     const idPlace = props.idPlace;
 
@@ -33,8 +33,8 @@ function Reviews (props) {
 
     const showReviewForm = (props) => {
 
-
         setShowForm(true)
+        console.log(showForm);
     }
 
 

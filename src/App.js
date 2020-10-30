@@ -64,14 +64,14 @@ function App() {
     //Handle click on "Login" to open Auth0 Popup Login
     let handleLoginClick = async (e) => {
         e.preventDefault();
+        console.log("Test")
         await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.user}`,
             getAccessTokenSilently,
             loginWithRedirect
         );
-
-
     };
+
     //Method to POST the user in the DB
     let fetchUser = async () => {
 

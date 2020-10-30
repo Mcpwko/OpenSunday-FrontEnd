@@ -13,6 +13,6 @@ export default async function (url, getAccessTokenSilently, loginWithRedirect) {
         return data;
     } catch (e) {
         console.error(e);
-        await loginWithRedirect;
+        await loginWithRedirect();
     }
 }
