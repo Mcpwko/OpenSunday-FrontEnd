@@ -13,6 +13,7 @@ import moment from "moment";
 import {useAuth0} from "@auth0/auth0-react";
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
+import {useAlert} from "react-alert";
 
 const Container = styled.div`
   // background: #F7F9FA;
@@ -181,7 +182,7 @@ let validationSchema = Yup.object().shape({
     openSpecialDay: Yup.boolean(),
     email: Yup.string()
         .email("Invalid email address"),
-    phone: Yup.string()
+    phoneNumber: Yup.string()
         .matches(phoneRegExp, "Phone number is not valid"),
     website: Yup.string()
         .url("Invalid url")
@@ -230,6 +231,7 @@ export const FormPlace = (props) => {
     const [zipCity, setZipCity] = useState([]);
 
     const authContext = useContext(Auth0Context);
+    const alert = useAlert();
 
     let myZip = "";
     let myCity = "";
@@ -359,7 +361,7 @@ export const FormPlace = (props) => {
                     openSunday: false, // checkbox
                     openSpecialDay: false, // checkbox
                     email: "",
-                    phone: "",
+                    phoneNumber: "",
                     website: ""
                 }}
                 validationSchema={validationSchema}
@@ -372,6 +374,9 @@ export const FormPlace = (props) => {
                     values.long = longitude;
                     //POST place to DB
 
+                    /** PUT (TO DO)*/
+
+                    /**POST (TOMODIFY)*/
                     // await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
                     //     method: 'POST',
                     //     headers: {
@@ -389,7 +394,7 @@ export const FormPlace = (props) => {
                     //         isVerified: false,
                     //         isAdvertised: false,
                     //         lat: values.lat,
-                    //         long: values.long,
+                    //         Long: values.long,
                     //         address: values.address,
                     //         zip: values.zip,
                     //         city: values.city,
@@ -399,37 +404,12 @@ export const FormPlace = (props) => {
                     //     })
                     // });
 
+                    resetForm();
+                    setSubmitting(false);
+                    alert.success("The place has been added !");
+                    props.closeForm();
 
 
-                    /** PUT (TO DO)*/
-
-                    /**POST (TOMODIFY)*/
-                    // Simulate submitting to database, shows us values submitted, resets form
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        alert(JSON.stringify({
-                            name: values.name,
-                            description: values.description,
-                            email: values.email,
-                            website: values.website,
-                            phoneNumber: values.phoneNumber,
-                            isOpenSunday: values.openSunday,
-                            isOpenSpecialDay: values.openSunday,
-                            isVerified: false,
-                            isAdvertised: false,
-                            lat: values.lat,
-                            long: values.long,
-                            address: values.address,
-                            zip: values.zip,
-                            city: values.city,
-                            idRegion: values.region,
-                            idCategory: values.category,
-                            idType: values.type
-                        },null,2));
-                        resetForm();
-                        setSubmitting(false);
-                    }, 500);
-                    // return true;
                 }}
             >
                 {({
@@ -476,7 +456,7 @@ export const FormPlace = (props) => {
                                                         setFieldValue('address', props.place.locationSet.address)
                                                         setFieldValue('email', props.place.email)
                                                         setFieldValue('website', props.place.website)
-                                                        setFieldValue('phone', props.place.phoneNumber)
+                                                        setFieldValue('phoneNumber', props.place.phoneNumber)
 
                                                         // checkboxes
                                                         setFieldValue('openSunday', props.place.isOpenSunday)
@@ -787,15 +767,15 @@ export const FormPlace = (props) => {
                             <Form.Label>Phone :</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="phone"
+                                name="phoneNumber"
                                 placeholder="Phone"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.phone}
-                                className={touched.phone && errors.phone ? "has-error" : null}
+                                value={values.phoneNumber}
+                                className={touched.phoneNumber && errors.phoneNumber ? "has-error" : null}
                             />
-                            {touched.phone && errors.phone ? (
-                                <div className="error-message">{errors.phone}</div>
+                            {touched.phoneNumber && errors.phoneNumber ? (
+                                <div className="error-message">{errors.phoneNumber}</div>
                             ) : null}
                         </Form.Group>
                         <Form.Group controlId="formWebsite">

@@ -45,7 +45,7 @@ function Reviews (props) {
     return(
             <div>
                 <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
-                {reviews.map((review) => (
+                {reviews!=null ? reviews.map((review) => (
                     <li key={review.idReview}>
                     <h3>{review.userSet.idAuth0}</h3>
                         <p>{review.rate}</p>
@@ -54,7 +54,7 @@ function Reviews (props) {
                         {review.comment}
                     </p>
                     </li>
-                ))}
+                )):null}
                 </ul>
                 <button className="add" onClick={showReviewForm}>Add new review</button>
                 {showForm ? <FormReview place={idPlace}/> : null}

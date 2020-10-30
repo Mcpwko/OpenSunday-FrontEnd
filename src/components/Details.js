@@ -108,7 +108,6 @@ function Details(props) {
             </h1>
 
             <Box component="fieldset" mb={3} borderColor="transparent">
-                <Typography component="legend">Read only</Typography>
                 <Rating name="simple-controlled" value={rate} precision={0.5} readOnly/>
             </Box>
 
@@ -132,10 +131,10 @@ function Details(props) {
                     <span>✔</span> : <span>❌</span>
             }
             </p>
-            <table>
+            <table className="tableDetails">
                 <tbody>
                 <tr>
-                    <td style={{align: "center"}}>{props.description}</td>
+                    <td>{props.description}</td>
                 </tr>
                 <tr>
                     <td>{props.locationSet.address}</td>
