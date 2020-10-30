@@ -60,7 +60,7 @@ function MapView(props) {
         center: [46.2333, 7.35],
         zoom: 12,
     });
-    const [categories,setCategories] = useState([]);
+    const [types,setTypes] = useState([]);
     const [places, setPlaces] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
@@ -186,19 +186,19 @@ function MapView(props) {
     }, []);
 
     useEffect( () => {
-        async function getCategories() {
+        async function getTypes() {
 
-            let categories = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.categories}`,
+            let types = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.types}`,
                 authContext.getAccessTokenSilently,
             );
 
-            if (categories && categories.length > 0) {
-                setCategories(categories);
+            if (types && types.length > 0) {
+                setTypes(types);
             }
         }
 
-        getCategories();
+        getTypes();
     }, []);
 
     // Update the position of the draggable marker
@@ -329,10 +329,10 @@ function MapView(props) {
                         {/*        <Marker position={[51, 0.2]} icon={icon} />*/}
                         {/*    </LayerGroup>*/}
                         {/*</Overlay>*/}
-                        {categories!=null ? categories.map((category) =>(
-                            <Overlay name={category.name} checked>
+                        {types!=null ? types.map((type) =>(
+                            <Overlay name={type.name} checked>
                                 <LayerGroup>
-                                <PlacesMarkers venues={places.filter( (place) => place.categorySet.name.includes(category.name))} onOpen={showDetails} select={select}/>
+                                <PlacesMarkers venues={places.filter((place) => place.typeSet.name.includes(type.name))} onOpen={showDetails} select={select}/>
                                 </LayerGroup>
                             </Overlay>
                         )) : null}

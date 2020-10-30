@@ -376,7 +376,7 @@ export const FormPlace = (props) => {
 
                     /** PUT (TO DO)*/
 
-                    /**POST (TOMODIFY)*/
+                    /**POST */
                     // await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
                     //     method: 'POST',
                     //     headers: {
