@@ -56,8 +56,8 @@ function Reviews (props) {
                     </li>
                 )):null}
                 </ul>
-                <button className="add" onClick={showReviewForm}>Add new review</button>
-                {showForm ? <FormReview place={idPlace}/> : null}
+                <FormReview place={{idPlace}}/>
+
             </div>
     )
 };
