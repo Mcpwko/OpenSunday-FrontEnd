@@ -8,6 +8,10 @@ import * as Yup from "yup";
 import styled from 'styled-components';
 import ConfirmDialog from "../components-reusable/ConfirmDialog";
 import {useAlert} from "react-alert";
+import request from "../utils/request";
+import endpoints from "../endpoints.json";
+import {UserContext} from "../context/UserContext";
+import moment from "moment";
 
 const Container = styled.div`
   text-align: center;
@@ -82,7 +86,8 @@ const validationSchema = Yup.object().shape({
 export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
-
+    const authContext = useContext(Auth0Context);
+    const userContext = useContext(UserContext);
 
     function deleteAccount() {
         // alert("THIS IS THE FUNCTION DELETE ACCOUNT");
@@ -97,17 +102,48 @@ export default function UserAccount(props) {
         // Tell the user
         alert.success("The account has been successfully deleted");
 
-
     }
 
-    function changePseudo() {
-        // Look if the Pseudo is available
+        let changePseudo = async (values) => {
 
-        // If yes modify the pseudo of user#x
+            //Get all users
+            let users = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.user}`,
+                authContext.getAccessTokenSilently
+            );
 
+            console.log(users);
 
-    }
+            //Look if the pseudo is available
+            let pseudoAvailable = users.map(user => values.pseudo === user.pseudo);
 
+            //If the pseudo is available, we save it in database
+            if(pseudoAvailable == true){
+
+                let token = authContext.getAccessTokenSilently();
+
+                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': "application/json",
+                    }, body: JSON.stringify({
+                        email: userContext.user.email,
+                        pseudo: values.pseudo,
+                        createdAt: userContext.user.createdAt,
+                        status: userContext.user.createdAt,
+                        idAuth0: userContext.user.idAuth0,
+                        idUserType: userContext.user.idUserType
+                    })
+                });
+
+                alert.success("The pseudo is modify !");
+            } else {
+                alert.show("The pseudo is not available");
+            }
+
+        };
 
     // const authContext = useContext(Auth0Context);
     // const [value, setValue] = useState("");
@@ -117,7 +153,6 @@ export default function UserAccount(props) {
     return (
 
         <Container style={{width: "100%"}}>
-
 
             <h1>Account settings</h1>
 
@@ -129,7 +164,8 @@ export default function UserAccount(props) {
                 onSubmit={(values, {setSubmitting, resetForm}) => {
                     // When button submits form and form is in the process of submitting, submit button is disabled
                     setSubmitting(true);
-
+                    //Change the pseudo
+                    changePseudo(values);
                     // Simulate submitting to database, shows us values submitted, resets form
                     setTimeout(() => {
 

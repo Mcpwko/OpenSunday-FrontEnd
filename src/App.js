@@ -16,10 +16,12 @@ import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
 import Account from "./pages/Account";
 import {ThemeContext, themes} from "./context/ThemeContext";
+import {UserContext} from "./context/UserContext";
 
 function App() {
     //List of all places
     let [locations, setLocations] = useState([]);
+
     //Variables for Auth0
     let {
         loading,
@@ -29,8 +31,8 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
-    let themeContext = useContext(ThemeContext);
-
+    const themeContext = useContext(ThemeContext);
+    const userContext = useContext(UserContext);
 
     //Hooks which checks if user is connected to POST Check
     useEffect(() => {
@@ -38,17 +40,17 @@ function App() {
         if (isAuthenticated) {
             //POST user
             fetchUser();
-
+            getConnectedUser();
         }
 
     }, [isAuthenticated]);
+
+
 
     // const [isOpen, setIsOpen] = useState(false);
     //
     // const toggle = () => setIsOpen(!isOpen);
 
-    //Temporarly variable for Testing
-    let count = 0;
     //Handle click for "Get Locations" button
     let handleLocationsClick = async (e) => {
         e.preventDefault();
@@ -73,13 +75,26 @@ function App() {
             getAccessTokenSilently,
             loginWithRedirect
         );
+
+
+    };
+
+//Method to get the connected user in the DB
+    let getConnectedUser = async () => {
+
+        let connectedUser = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+user.name}`,
+            getAccessTokenSilently
+        );
+
+        userContext.user = connectedUser;
+        console.log( userContext.user);
     };
 
     //Method to POST the user in the DB
     let fetchUser = async () => {
 
         let token = await getAccessTokenSilently();
-        console.log(token);
 
         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}`, {
             method: 'POST',
@@ -95,6 +110,7 @@ function App() {
                 idUserType: "1"
             })
         });
+
     };
 
 

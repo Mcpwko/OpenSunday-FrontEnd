@@ -25,6 +25,7 @@ import {
     WhatsappIcon,
     WhatsappShareButton
 } from "react-share";
+import {UserContext} from "../context/UserContext";
 
 const MyForm = styled(Form)`
   width: 80%;
@@ -41,6 +42,7 @@ function Details(props) {
     const [show, setShow] = useState(false);
     const [showForm, setShowForm] = useState(false);
 
+    const userContext = useContext(UserContext);
     const authContext = useContext(Auth0Context);
     const alert = useAlert();
 
@@ -177,10 +179,12 @@ function Details(props) {
                                     // When button submits form and form is in the process of submitting, submit button is disabled
                                     setSubmitting(true);
                                     //POST Report into the DB
+                                    /*
                                     let user = await request(
                                         `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+ authContext.user.name}`,
                                         authContext.getAccessTokenSilently,
-                                    )
+                                    )*/
+                                    console.log(userContext.user.idUser);
 
                                     await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.report}`, {
                                         method: 'POST',
@@ -193,7 +197,7 @@ function Details(props) {
                                             comment: values.comment,
                                             isForDelete:values.choice==='IsForDelete',
                                             isForEdit:values.choice==='IsForEdit',
-                                            idUser:user.idUser,
+                                            idUser:userContext.user.idUser,
                                             idPlace:props.idPlace
                                             }
                                         ),

@@ -10,6 +10,7 @@ import {Modal, Button,Form,Col} from "react-bootstrap";
 import {Modal as Mod} from "../pages/MapView"
 import request from "../utils/request";
 import {useAlert} from "react-alert";
+import {UserContext} from "../context/UserContext";
 
 const MyForm = styled(Form)`
   width: 80%;
@@ -23,29 +24,14 @@ const MyForm = styled(Form)`
 
 export function FormReview(props) {
 
-    //const [comment, setComment] = useState('');
-    //const [rating, setRating] = useState(0);
-
     const [show, setShow] = useState(false);
     const [rating, setRating] = useState(0);
     const alert = useAlert();
-
+    const userContext = useContext(UserContext);
     const authContext = useContext(Auth0Context);
 
-    function showModal() {
-        setShow(true);
-    };
-
-    function hideCommentModal() {
-        setShow(false);
-        console.log(show);
-    };
-
-    //let history = useHistory();
-
-    function handleClick() {
-        props.onClose();
-        //history.push("/map");
+    function toggleModal(){
+        setShow(show ? false : true);
     }
 
 
@@ -55,14 +41,13 @@ export function FormReview(props) {
             .required("A comment is required !"),
     });
 
-
     return (
 
         <div>
 
             {authContext.isAuthenticated ?
-                <button className="add" onClick={showModal}>Add new review
-                    <Modal show={show} onHide={hideCommentModal}>
+                <button className="add" onClick={toggleModal}>Add new review
+                    <Modal show={show} onHide={toggleModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Write a review for {props.name}</Modal.Title>
                         </Modal.Header>
@@ -77,36 +62,46 @@ export function FormReview(props) {
                                     // When button submits form and form is in the process of submitting, submit button is disabled
                                     setSubmitting(true);
                                     //POST Review into the DB
+                                    /*
                                     let user = await request(
                                         `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+ authContext.user.name}`,
                                         authContext.getAccessTokenSilently,
-                                    )
+                                    )*/
+                                    let user = userContext.user.idUser;
 
                                     console.log("RATE",rating);
                                     console.log("COMMENT",values.comment);
                                     console.log("IDAUTH",user.idUser);
                                     console.log("IDPLACE",props.place);
+                                    console.log("USER", userContext.user);
 
-                                    await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.review}`, {
-                                        method: 'POST',
-                                        headers: {
-                                            Accept: "application/json",
-                                            Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                                            'Content-Type': "application/json"
-                                        },
-                                        body: JSON.stringify({
-                                                rate: rating,
-                                                comment: values.comment,
-                                                idUser: user.idUser,
-                                                idPlace: props.place
-                                            }
-                                        ),
-                                    });
+                                    if(user.pseudo != null){
+                                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.review}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                Accept: "application/json",
+                                                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                                                'Content-Type': "application/json"
+                                            },
+                                            body: JSON.stringify({
+                                                    rate: rating,
+                                                    comment: values.comment,
+                                                    idUser: user.idUser,
+                                                    idPlace: props.place
+                                                }
+                                            ),
+                                        });
 
-                                    resetForm();
-                                    setSubmitting(false);
-                                    hideCommentModal();
-                                    alert.success("Your comment has been published !");
+                                        resetForm();
+                                        setSubmitting(false);
+                                        toggleModal();
+                                        alert.success("Your comment has been published !");
+
+                                    } else {
+                                        alert.success("Your need to configure a pseudo in your account !");
+                                    }
+
+
                                 }}
                             >
                                 {({
@@ -149,7 +144,7 @@ export function FormReview(props) {
 
                                         {/*============================== SUBMIT BUTTON ==================================*/}
                                         <Modal.Footer>
-                                            <Button variant="secondary"  onClick={hideCommentModal}>
+                                            <Button variant="secondary"  onClick={toggleModal}>
                                                 Close
                                             </Button>
                                             <Button variant="primary" type="submit" disabled={isSubmitting}>
