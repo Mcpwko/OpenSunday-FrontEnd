@@ -1,10 +1,10 @@
 import React, {Fragment, useEffect} from 'react';
 import {Marker, Popup} from 'react-leaflet';
-import {Icons} from './Icons';
+import {BarLocationIcon, switchIcon} from './Icons';
 import PlacesPopup from "./PlacesPopup";
 import {Link} from "react-router-dom";
 
-function PlacesMarkers  (props)  {
+function PlacesMarkers(props) {
 
     const {venues} = props;
     const markers = venues.map((place) => (
@@ -14,8 +14,13 @@ function PlacesMarkers  (props)  {
                 place.locationSet.lat,
                 place.locationSet.long
             ]}
-            icon={Icons}
+
+            icon={switchIcon(place.typeSet.name)}
         >
+            {/*{console.log(place.types.idType)}*/}
+            {/*{console.log(place)}*/}
+
+
             <PlacesPopup data={place} onOpen={props.onOpen} select={props.select}/>
         </Marker>
     ));

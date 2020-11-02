@@ -1,24 +1,69 @@
 import L from 'leaflet';
 
+// Other icons
+export const HereLocationIcon = myIcon("here", 32, 35, true)
+export const PlusLocationIcon = myIcon("plus", 30, 35, true)
+export const UndefinedLocationIcon = myIcon("undefined", 30, 35, true)
 
-export const Icons = myIcon("venue")
-export const HereLocationIcon = myIcon("here", 32, 35)
-export const PlusLocationIcon = myIcon("plus", 30, 35)
+// Places icons
+export const RestaurantIconLocation = myIcon("restaurant")
+export const BarLocationIcon = myIcon("bar")
+export const ArtsLocationIcon = myIcon("arts")
+export const HealthLocationIcon = myIcon("health")
+export const FoodShopLocationIcon = myIcon("foodshop")
+export const OutdoorLocationIcon = myIcon("outdoor")
+export const EmergencyLocationIcon = myIcon("emergency")
+export const StoreLocationIcon = myIcon("store")
+export const PoliceLocationIcon = myIcon("police")
+export const VeterinaryLocationIcon = myIcon("veterinary")
+export const EntertainmentLocationIcon = myIcon("entertainment")
 
+export function switchIcon(type) {
+    switch (type) {
+        case"Restaurant":
+            return RestaurantIconLocation
+        case "Bar":
+            return BarLocationIcon
+        case "Arts":
+            return ArtsLocationIcon
+        case "Health":
+            return HealthLocationIcon
+        case "Food shop":
+            return FoodShopLocationIcon
+        case "Outdoor":
+            return OutdoorLocationIcon
+        case "Emergency":
+            return EmergencyLocationIcon
+        case "Store":
+            return StoreLocationIcon
+        case "Police":
+            return PoliceLocationIcon;
+        case "Veterinary":
+            return VeterinaryLocationIcon;
+        case "Entertainment":
+            return EntertainmentLocationIcon;
+        default:
+            return UndefinedLocationIcon;
+    }
+}
 
+function myIcon(name, width, height, normal) {
 
-function myIcon(name, width, height) {
-
-    let className = 'leaflet-' + name + '-icon';
+    let className = 'icon-place';
+    let placePath = "/type"
 
     // Default width
-    if(!width){
-        width=35;
+    if (!width) {
+        width = 30;
     }
 
     // Default height
-    if(!height){
-        height=35;
+    if (!height) {
+        height = 35;
+    }
+
+    if (normal) {
+        placePath = ""
     }
 
     return (
@@ -28,52 +73,9 @@ function myIcon(name, width, height) {
             shadowSize: null,
             shadowAnchor: null,
             iconSize: [width, height],
-            iconUrl: require('../assets/icon-' + name + '.png'),
-            iconRetinaUrl: require('../assets/icon-' + name + '.png'),
+            iconUrl: require('../assets' + placePath + '/icon-' + name + '.png'),
+            iconRetinaUrl: require('../assets' + placePath + '/icon-' + name + '.png'),
             className: className,
         })
     );
 }
-
-
-// export const locationIcon = L.icon({
-//     iconUrl: require('../assets/icon-plus.png'),
-//     iconRetinaUrl: require('../assets/icon-plus.png'),
-//     iconAnchor: null,
-//     shadowUrl: null,
-//     shadowSize: null,
-//     shadowAnchor: null,
-//     iconSize: [30, 35],
-//     // className: 'fadeIcon'
-// });
-
-// const Icon = {
-//     iconAnchor: null,
-//     shadowUrl: null,
-//     shadowSize: null,
-//     shadowAnchor: null,
-//     iconSize: [35, 35],
-// };
-
-
-// export const Icons = L.icon({
-//     iconUrl: require('../assets/icon-venue.png'),
-//     iconRetinaUrl: require('../assets/icon-venue.png'),
-//     className: 'leaflet-venue-icon',
-//     ...Icon
-// });
-
-// export const ChemistLocationIcon = L.icon({
-//     iconUrl: require('../assets/icon-venue.png'),
-//     iconRetinaUrl: require('../assets/icon-venue.png'),
-//     className: 'leaflet-venue-icon',
-//     ...Icon
-// });
-//
-// export const HereLocationIcon = L.icon({
-//     iconUrl: require('../assets/PinsYouAreHere.png.png'),
-//     iconRetinaUrl: require('../assets/icon-here.png'),
-//     className: 'leaflet-venue-icon',
-//     ...Icon
-// });
-//

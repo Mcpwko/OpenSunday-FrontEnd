@@ -25,7 +25,7 @@ import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
 import {BrowserRouter, Link, Route, useLocation, Router } from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
-import {HereLocationIcon, PlusLocationIcon, Icons} from "../components/Icons";
+import {HereLocationIcon, PlusLocationIcon, RestaurantIconLocation} from "../components/Icons";
 import styled from "styled-components";
 import Details from "../components/Details";
 import {useAlert} from "react-alert";

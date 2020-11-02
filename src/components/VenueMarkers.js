@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {Marker} from 'react-leaflet';
-import {Icons} from './Icons';
+import {RestaurantIconLocation} from './Icons';
 import MarkerPopup from './MarkerPopup';
 
 const VenueMarkers = (props) => {
@@ -15,7 +15,7 @@ const VenueMarkers = (props) => {
             key={index}
             //position={venue.geometry}
             position={venue.location.latitude+", "+venue.location.longitude}
-            icon={Icons}
+            icon={RestaurantIconLocation}
         >
             <MarkerPopup data={venue}/>
         </Marker>
