@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import Rating from "@material-ui/lab/Rating";
 import {Auth0Context} from "@auth0/auth0-react";
 import endpoints from "../endpoints.json";
@@ -39,11 +39,20 @@ export function FormReview(props) {
             setShow(true);
     };
 
+    //let history = useHistory();
+
+    function handleClick() {
+        props.onClose();
+        //history.push("/map");
+    }
+
+
     let validationSchema = Yup.object().shape({
         comment: Yup.string()
             .max(120, "Must be 60 characters or less")
             .required("A comment is required !"),
     });
+
 
     return (
 

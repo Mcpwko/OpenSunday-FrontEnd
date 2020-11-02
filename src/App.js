@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import "./App.css";
-import {useAuth0} from "@auth0/auth0-react";
+import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints";
 import Loading from "./components-reusable/Loading";

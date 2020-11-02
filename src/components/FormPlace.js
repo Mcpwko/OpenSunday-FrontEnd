@@ -320,6 +320,7 @@ export const FormPlace = (props) => {
         }
     }
 
+
     function simulateClick(e) {
         if (e !== null) {
             e.click()
@@ -374,9 +375,42 @@ export const FormPlace = (props) => {
                     values.long = longitude;
                     //POST place to DB
 
-                    /** PUT (TO DO)*/
+                    /** PUT **/
+                    if(modification){
+                        console.log("FORM EDIT");
+                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.places}${'/'+props.place.idPlace}`, {
+                            method: 'PUT',
+                            headers: {
+                                Accept: "application/json",
+                                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                                'Content-Type': "application/json",
+                            }, body: JSON.stringify({
+                                idPlace: props.place.idPlace,
+                                name: values.name,
+                                description: values.description,
+                                email: values.email,
+                                website: values.website,
+                                phoneNumber: values.phoneNumber,
+                                isOpenSunday: values.openSunday,
+                                isOpenSpecialDay: values.openSunday,
+                                isVerified: false,
+                                isAdvertised: false,
+                                lat: values.lat,
+                                Long: values.long,
+                                address: values.address,
+                                zip: values.zip,
+                                city: values.city,
+                                idRegion: values.region,
+                                idCategory: values.category,
+                                idType: values.type
+                            })
+                        });
 
-                    /**POST */
+                        alert.success("The place has been modified !");
+
+                    }else{
+                        console.log("FORM POST");
+                    /**POST **/
                         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
                         method: 'POST',
                         headers: {
@@ -400,9 +434,11 @@ export const FormPlace = (props) => {
                          })
                      });
 
+                        alert.success("The place has been added !");
+                    }
+
                     resetForm();
                     setSubmitting(false);
-                    alert.success("The place has been added !");
                     props.closeForm();
 
 
@@ -443,6 +479,8 @@ export const FormPlace = (props) => {
 
                                                         setLatitude(props.place.locationSet.lat)
                                                         setLongitude(props.place.locationSet.long)
+                                                        setFieldValue('lat', props.place.locationSet.lat)
+                                                        setFieldValue('long', props.place.locationSet.long)
 
                                                         setFieldValue('type', props.place.typeSet.idType)
                                                         setFieldValue('category', props.place.categorySet.idCategory)
@@ -655,7 +693,7 @@ export const FormPlace = (props) => {
                             <Col>
                                 <Form.Label className={"show"}>Latitude*</Form.Label>
                                 <Form.Control
-                                    type="text"
+                                    type="number"
                                     name="lat"
                                     placeholder="Latitude"
                                     // onChange={handleChange}

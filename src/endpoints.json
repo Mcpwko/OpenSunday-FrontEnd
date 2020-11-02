@@ -7,7 +7,7 @@
   "regions": "/api/regions",
   "review": "/api/reviews/place/",
   "insertReview": "/api/reviews",
-  "checkUser": "/api/users/check",
+  "checkUser": "/api/users/check/",
   "rate": "/api/places/Rating/",
   "report": "/api/reports"
 }
