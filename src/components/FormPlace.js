@@ -377,32 +377,28 @@ export const FormPlace = (props) => {
                     /** PUT (TO DO)*/
 
                     /**POST */
-                    // await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         Accept: "application/json",
-                    //         Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                    //         'Content-Type': "application/json",
-                    //     }, body: JSON.stringify({
-                    //         name: values.name,
-                    //         description: values.description,
-                    //         email: values.email,
-                    //         website: values.website,
-                    //         phoneNumber: values.phoneNumber,
-                    //         isOpenSunday: values.openSunday,
-                    //         isOpenSpecialDay: values.openSunday,
-                    //         isVerified: false,
-                    //         isAdvertised: false,
-                    //         lat: values.lat,
-                    //         Long: values.long,
-                    //         address: values.address,
-                    //         zip: values.zip,
-                    //         city: values.city,
-                    //         idRegion: values.region,
-                    //         idCategory: values.category,
-                    //         idType: values.type
-                    //     })
-                    // });
+                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
+                        method: 'POST',
+                        headers: {
+                           Accept: "application/json",
+                           Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                       'Content-Type': "application/json",
+                       }, body: JSON.stringify({
+                          name: values.name, description: values.description,
+                            email: values.email,
+                            phoneNumber: values.phoneNumber,
+                            isOpenSunday: values.openSunday,
+                            isOpenSpecialDay: values.openSunday,
+                            isVerified: false,
+                            isAdvertised: false,
+                            lat: values.lat,
+                            Long: values.long,
+                            address: values.address,
+                            zip: values.zip, city: values.city,
+                            idRegion: values.region, idCategory: values.category,
+                            idType: values.type
+                         })
+                     });
 
                     resetForm();
                     setSubmitting(false);

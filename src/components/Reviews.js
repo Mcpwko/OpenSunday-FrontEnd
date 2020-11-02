@@ -18,7 +18,7 @@ function Reviews (props) {
     useEffect( () => {
         async function getReviews(){
                 let review = await request(
-                    `${process.env.REACT_APP_SERVER_URL}${endpoints.review}${ props.idPlace}`,
+                    `${process.env.REACT_APP_SERVER_URL}${endpoints.review}${props.idPlace}`,
                     authContext.getAccessTokenSilently
                 );
         if(review!=null){

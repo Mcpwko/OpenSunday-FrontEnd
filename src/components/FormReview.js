@@ -34,6 +34,10 @@ export function FormReview(props) {
         setShow(show ? false : true);
     }
 
+    function showModal() {
+        if(!show)
+            setShow(true);
+    };
 
     let validationSchema = Yup.object().shape({
         comment: Yup.string()
@@ -46,7 +50,7 @@ export function FormReview(props) {
         <div>
 
             {authContext.isAuthenticated ?
-                <button className="add" onClick={toggleModal}>Add new review
+                <button className="add" onClick={showModal}>Add new review
                     <Modal show={show} onHide={toggleModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Write a review for {props.name}</Modal.Title>
@@ -62,21 +66,8 @@ export function FormReview(props) {
                                     // When button submits form and form is in the process of submitting, submit button is disabled
                                     setSubmitting(true);
                                     //POST Review into the DB
-                                    /*
-                                    let user = await request(
-                                        `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+ authContext.user.name}`,
-                                        authContext.getAccessTokenSilently,
-                                    )*/
-                                    let user = userContext.user.idUser;
 
-                                    console.log("RATE",rating);
-                                    console.log("COMMENT",values.comment);
-                                    console.log("IDAUTH",user.idUser);
-                                    console.log("IDPLACE",props.place);
-                                    console.log("USER", userContext.user);
-
-                                    if(user.pseudo != null){
-                                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.review}`, {
+                                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertReview}`, {
                                             method: 'POST',
                                             headers: {
                                                 Accept: "application/json",
@@ -86,20 +77,17 @@ export function FormReview(props) {
                                             body: JSON.stringify({
                                                     rate: rating,
                                                     comment: values.comment,
-                                                    idUser: user.idUser,
-                                                    idPlace: props.place
+                                                    idUser: userContext.user.idUser,
+                                                    idPlace: props.place.idPlace
                                                 }
                                             ),
                                         });
 
                                         resetForm();
                                         setSubmitting(false);
-                                        toggleModal();
+                                    toggleModal();
                                         alert.success("Your comment has been published !");
 
-                                    } else {
-                                        alert.success("Your need to configure a pseudo in your account !");
-                                    }
 
 
                                 }}

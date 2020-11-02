@@ -95,7 +95,6 @@ function App() {
     let fetchUser = async () => {
 
         let token = await getAccessTokenSilently();
-
         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}`, {
             method: 'POST',
             headers: {
@@ -104,6 +103,7 @@ function App() {
                 'Content-Type': "application/json",
             }, body: JSON.stringify({
                 email: user.name,
+                pseudo: null,
                 createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
                 status: "0",
                 idAuth0: user.sub,

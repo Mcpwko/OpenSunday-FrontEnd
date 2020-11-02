@@ -106,27 +106,31 @@ export default function UserAccount(props) {
 
         let changePseudo = async (values) => {
 
-            //Get all users
-            let users = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.user}`,
+            console.log(authContext.getAccessTokenSilently);
+            //Look if the pseudo is available
+            let check = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/'+values.pseudo}`,
                 authContext.getAccessTokenSilently
             );
 
-            console.log(users);
+            console.log(check);
 
-            //Look if the pseudo is available
-            let pseudoAvailable = users.map(user => values.pseudo === user.pseudo);
+            if(!check){
+                //IF the pseudo is not available, there is an alert
+                alert.show("The pseudo "+values.pseudo+ " is not available");
 
-            //If the pseudo is available, we save it in database
-            if(pseudoAvailable == true){
+            } else {
 
-                let token = authContext.getAccessTokenSilently();
+                //If the pseudo is available, we save it in database
 
-                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}`, {
-                    method: 'POST',
+                console.log(userContext.user.email);
+                console.log(values.pseudo);
+
+                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
+                    method: 'PUT',
                     headers: {
                         Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
                         'Content-Type': "application/json",
                     }, body: JSON.stringify({
                         email: userContext.user.email,
@@ -139,13 +143,10 @@ export default function UserAccount(props) {
                 });
 
                 alert.success("The pseudo is modify !");
-            } else {
-                alert.show("The pseudo is not available");
             }
 
-        };
+        }
 
-    // const authContext = useContext(Auth0Context);
     // const [value, setValue] = useState("");
     //
     // let pseudo = "test";
@@ -161,7 +162,7 @@ export default function UserAccount(props) {
                     pseudo: "GetPseudo",
                 }}
                 validationSchema={validationSchema}
-                onSubmit={(values, {setSubmitting, resetForm}) => {
+                onSubmit={async (values, {setSubmitting, resetForm}) => {
                     // When button submits form and form is in the process of submitting, submit button is disabled
                     setSubmitting(true);
                     //Change the pseudo
