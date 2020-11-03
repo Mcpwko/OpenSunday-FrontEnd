@@ -1,7 +1,6 @@
 import React, {Fragment, useContext, useEffect, useRef, useState} from 'react';
-import {Map, TileLayer, Marker, Popup, LayersControl,LayerGroup} from 'react-leaflet';
+import {Map, TileLayer, Marker, Popup, LayersControl, LayerGroup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import data from '../assets/data.json';
 import Markers from '../components/VenueMarkers';
 import Foursquare from "../utils/foursquare";
 import Control from '@skyeer/react-leaflet-custom-control';
@@ -23,15 +22,16 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {BrowserRouter, Link, Route, useLocation, Router } from 'react-router-dom';
+import {BrowserRouter, Link, Route, useLocation, Router} from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {HereLocationIcon, PlusLocationIcon, RestaurantIconLocation} from "../components/Icons";
 import styled from "styled-components";
 import Details from "../components/Details";
 import {useAlert} from "react-alert";
 import PlacesPopup from "../components/PlacesPopup";
+import MarkerClusterGroup from "react-leaflet-markercluster";
 
-const { Overlay } = LayersControl;
+const {Overlay} = LayersControl;
 
 export const Modal = styled.div`
     // display: none; /* Hidden by default */
@@ -60,7 +60,7 @@ function MapView(props) {
         center: [46.2333, 7.35],
         zoom: 12,
     });
-    const [types,setTypes] = useState([]);
+    const [types, setTypes] = useState([]);
     const [places, setPlaces] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
@@ -81,22 +81,24 @@ function MapView(props) {
 
     useEffect(() => {
         console.log(path.pathname)
-        if(path.pathname.startsWith("/map/")) {
+        if (path.pathname.startsWith("/map/")) {
             setVisible(true);
             console.log("PLACES : " + places);
-            if(places.length>0){
-            var place = {...places.find(
-                (place) => place.idPlace === +path.pathname.split("/").pop()
-            )}
+            if (places.length > 0) {
+                var place = {
+                    ...places.find(
+                        (place) => place.idPlace === +path.pathname.split("/").pop()
+                    )
+                }
                 console.log("PLACES : " + place);
-            if(place!=null)
-            setViewPort({
-                center: [place.locationSet.lat, place.locationSet.long],
-                zoom: 12
-            })
+                if (place != null)
+                    setViewPort({
+                        center: [place.locationSet.lat, place.locationSet.long],
+                        zoom: 12
+                    })
             }
-            }
-        },[path,places])
+        }
+    }, [path, places])
 
     const {
         latitude,
@@ -170,7 +172,7 @@ function MapView(props) {
         setShowForm(false)
     }
     //Get places for DB
-    useEffect( () => {
+    useEffect(() => {
         async function getPlaces() {
 
             let places = await request(
@@ -186,7 +188,7 @@ function MapView(props) {
         getPlaces();
     }, []);
 
-    useEffect( () => {
+    useEffect(() => {
         async function getTypes() {
 
             let types = await request(
@@ -272,17 +274,17 @@ function MapView(props) {
     }
 
     const filterOpenSunday = (event) => {
-        if(event.target.checked){
+        if (event.target.checked) {
             setFilter(1);
-        }else{
+        } else {
             setFilter(0);
         }
     }
 
     const filterOpenSpecial = (event) => {
-        if(event.target.checked){
+        if (event.target.checked) {
             setFilter(2);
-        }else{
+        } else {
             setFilter(0);
         }
     }
@@ -309,16 +311,16 @@ function MapView(props) {
                     path="/map/:id"
                     onEnter={showDetails}
                     render={(routeParams) => (
-                        places.length>0 ?
-                        <Details
-                            {...places.find(
-                                (place) => place.idPlace === +routeParams.match.params.id
-                            )}
-                            onOpen={visible}
-                            onClose={toggleSideBar}
-                            /* Pass the new method for toggling to the Book */
-                            // toggleLike={handleToggleLike}
-                        /> : null
+                        places.length > 0 ?
+                            <Details
+                                {...places.find(
+                                    (place) => place.idPlace === +routeParams.match.params.id
+                                )}
+                                onOpen={visible}
+                                onClose={toggleSideBar}
+                                /* Pass the new method for toggling to the Book */
+                                // toggleLike={handleToggleLike}
+                            /> : null
                     )}
                 />
 
@@ -332,18 +334,26 @@ function MapView(props) {
                 <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                      className="mapContent">
                     <LayersControl position="topright">
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                    />
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                        />
 
-                        {types!=null ? types.map((type) =>(
+
+                        {types != null ? types.map((type) => (
+
                             <Overlay name={type.name} key={type.idType} checked>
                                 <LayerGroup>
-                                <PlacesMarkers venues={places.filter((place) => place.typeSet.name.includes(type.name) && (filter==1 ? place.isOpenSunday : filter==2 ? place.isOpenSpecialDay : true))} onOpen={showDetails} select={select}/>
+                                    <MarkerClusterGroup>
+                                        <PlacesMarkers
+                                            venues={places.filter((place) => place.typeSet.name.includes(type.name) && (filter == 1 ? place.isOpenSunday : filter == 2 ? place.isOpenSpecialDay : true))}
+                                            onOpen={showDetails} select={select}/>
+                                    </MarkerClusterGroup>
                                 </LayerGroup>
                             </Overlay>
+
                         )) : null}
+
 
                     </LayersControl>
                     {/* button to return to the Device Location */}
@@ -370,13 +380,13 @@ function MapView(props) {
                     <Control position="topright">
                         <div className="controlSection">
                             <label>Open on Sunday</label>
-                            <input type="checkbox" onChange={filterOpenSunday} />
+                            <input type="checkbox" onChange={filterOpenSunday}/>
                         </div>
                     </Control>
                     <Control position="topright">
                         <div className="controlSection">
                             <label>Open on Special Day</label>
-                            <input type="checkbox" onChange={filterOpenSpecial} />
+                            <input type="checkbox" onChange={filterOpenSpecial}/>
                         </div>
                     </Control>
                     {/*Search button that allow to find any location from leaflet */}
@@ -428,17 +438,24 @@ function MapView(props) {
                     {/*{console.log(error)}*/}
                     {showHere ? <Marker
                         icon={HereLocationIcon}
-                        // draggable={draggable}
-                        // onDragend={updatePosition}
-                        // position={[46.3, 7.5333]}
-                        id="fadeIcon"
                         position={[latitude, longitude]}
-                        // ref={refMarker}
-                        // opacity={opacity}
-                    /> : null}
+                    >
+                        <Popup minWidth={90}>
+                            <div>
+                                <h6>You are here</h6>
+                                <span>You are not here ?</span><br/>
+                                <span>Try to reload the page.</span><br/>
+                                <button className="add" onClick={() => {
+                                    window.location.reload(false)
+                                }}>
+                                    Reload
+                                </button>
+                            </div>
+                        </Popup>
+                    </Marker> : null}
 
 
-                    {/*Draggable marker*/}
+                    {/**Draggable marker*/}
                     <Marker
                         icon={PlusLocationIcon}
                         draggable={draggable}

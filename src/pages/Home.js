@@ -53,17 +53,16 @@ export default function Home() {
             </div>
 
 
-            {/*<div className="buttonsMap">*/}
+            <div className="buttonsMap">
+                <Link
+                    className="App-link"
+                    to={`/map`}
+                >
+                    <button className="add">Go to map</button>
+                </Link>
+            </div>
 
-            {/*    <button className="add" onClick={()=>}>Go to map</button>*/}
 
-            {/*</div>*/}
-
-
-            <Link
-                className="App-link"
-                to={`/map`}
-            >Go to map</Link>
         </>
 
 

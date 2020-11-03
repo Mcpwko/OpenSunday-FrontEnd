@@ -104,7 +104,7 @@ export default function UserAccount(props) {
                 setReports(report);
             }
 
-            //Chronological order (most rescent report)
+            //Chronological order (most recent report)
             let sortedReports = report.sort((a, b) => Date.parse(new Date(b.reportDate.split("/").reverse().join("-"))) - Date.parse(new Date(a.reportDate.split("/").reverse().join("-"))));
             setSortedReports(sortedReports);
 
