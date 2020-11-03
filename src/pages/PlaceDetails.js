@@ -31,7 +31,7 @@ export default function PlaceDetails({ match }) {
   return (
     <div>
       {place ? <Place {...place} /> : <p>Loading details...</p>}
-      <Link className="App-link" to="/">
+      <Link className="App-link" to="/places">
         Back
       </Link>
     </div>

@@ -18,34 +18,28 @@ import {ThemeContext, themes} from "../context/ThemeContext";
 
 
 const Navigation = (props) => {
+    const [acn1, setAcn1] = useState('active') // assumes link 1 is default active
+    const [acn2, setAcn2] = useState('')
+    const [acn3, setAcn3] = useState('')
+    const [acn4, setAcn4] = useState('')
+
+    const startChangeVis = id => {
+        setAcn1('')
+        setAcn2('')
+        setAcn3('')
+        setAcn4('')
+        if (id === 'a') setAcn1('active')
+        else if (id === 'b') setAcn2('active')
+        else if (id === 'c') setAcn3('active')
+        else if (id === 'd') setAcn4('active')
+    }
 
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
 
-    let active = [true, false, false];
 
     let themeContext = useContext(ThemeContext);
-
-    function setActive(link) {
-        switch (link) {
-            case 0:
-                active[0] = true;
-                active[1] = false;
-                active[2] = false;
-                break;
-            case 1:
-                active[0] = false;
-                active[1] = true;
-                active[2] = false;
-                break;
-            case 2:
-                active[0] = false;
-                active[1] = false;
-                active[2] = true;
-                break;
-        }
-    }
 
     return (
         <div id="navigationBar">
@@ -57,14 +51,25 @@ const Navigation = (props) => {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
                         <NavItem>
-                            <NavLink active={active[0]} tag={Link} to="/" onClick={setActive(0)}>Home</NavLink>
+                            <NavLink id="a" tag={Link} to="/" onClick={() => {
+                                startChangeVis('a')
+                            }} className={acn1}>Home</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink active={active[1]} tag={Link} to="/map" onClick={setActive(1)}>Map</NavLink>
+                            <NavLink id="b" tag={Link} to="/map" onClick={() => {
+                                startChangeVis('b')
+                            }} className={acn2}>Map</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink active={active[2]} tag={Link} to="/about"
-                                     onClick={setActive(2)}>About</NavLink>
+                            <NavLink id="c" tag={Link} to="/places" onClick={() => {
+                                startChangeVis('c')
+                            }} className={acn3}>Places</NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink id="d" tag={Link} to="/about"
+                                     onClick={() => {
+                                         startChangeVis('d')
+                                     }} className={acn4}>About</NavLink>
                         </NavItem>
                     </Nav>
 

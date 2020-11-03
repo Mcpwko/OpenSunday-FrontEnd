@@ -209,7 +209,6 @@ let validationSchema = Yup.object().shape({
 // );
 
 
-
 export const FormPlace = (props) => {
     // const [showForm, setShowForm] = useState(false);
 
@@ -236,30 +235,31 @@ export const FormPlace = (props) => {
     let myZip = "";
     let myCity = "";
 
+    /** Add with marker popup proposition */
     // if props.data changes
     useEffect(() => {
+        // Edition mode activate
         if (props.data !== undefined) {
-            // console.log("MODIFICATION TRUE")
-            // setPlaceEdit(props);
             setAdd(true)
-        } else {
-            // console.log("MODIFICATION FALSE")
+        }
+        // Edition mode deactivate
+        else {
             setAdd(false);
         }
 
     }, [props.data]); // Execute only if place has changed
 
+    /** Edition mode */
     // If props.place changes
     useEffect(() => {
+        // Edition mode activate
         if (props.place !== undefined) {
-            console.log("MODIFICATION TRUE")
-            // setPlaceEdit(props);
             setModification(true)
-        } else {
-            console.log("MODIFICATION FALSE")
+        }
+        // Edition mode deactivate
+        else {
             setModification(false);
         }
-
     }, [props.place]); // Execute only if place has changed
 
 
@@ -381,7 +381,7 @@ export const FormPlace = (props) => {
                         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.places}${'/'+props.place.idPlace}`, {
                             method: 'PUT',
                             headers: {
-                                Accept: "application/json",
+                                // Accept: "application/json",
                                 Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
                                 'Content-Type': "application/json",
                             }, body: JSON.stringify({
@@ -457,44 +457,51 @@ export const FormPlace = (props) => {
                     <MyForm onSubmit={handleSubmit} className="mx-auto">
                         {/*{visible ? null : <InitializeForm/>}*/}
                         {add ? <Button style={{display: "none"}}
-                                                ref={simulateProps}
-                                                onClick={() => {
-                                                    setFieldValue('name', props.data.name)
-                                                    setFieldValue('address', props.data.address)
-                                                    setFieldValue('zip', props.data.zip)
-                                                    setFieldValue('city', props.data.city)
-                                                    // console.log("I AM IN THE ADD" + props.data.name)
-                                                }}
+                                       ref={simulateProps}
+                                       onClick={() => {
+                                           setFieldValue('name', props.data.name)
+                                           setFieldValue('address', props.data.address)
+                                           setFieldValue('zip', props.data.zip)
+                                           setFieldValue('city', props.data.city)
+                                           // console.log("I AM IN THE ADD" + props.data.name)
+                                       }}
                         >
                         </Button> : null}
+
+                        {/*Reset the form*/}
+                        {visible ?
+                            <SubmitButton style={{display: "none"}} type="reset" ref={simulateClick}>
+                                {console.log("reseted")}
+                            </SubmitButton>
+                            : null}
 
                         {modification ? <Button style={{display: "none"}}
                                                 ref={simulateProps}
                                                 onClick={() => {
-                                                        setFieldValue('name', props.place.name)
-                                                        setFieldValue('description', props.place.description)
+                                                    setFieldValue('name', props.place.name)
+                                                    setFieldValue('description', props.place.description)
 
-                                                        myCity = props.place.locationSet.citySet.name;
-                                                        myZip = props.place.locationSet.citySet.npa;
+                                                    myCity = props.place.locationSet.citySet.name;
+                                                    myZip = props.place.locationSet.citySet.npa;
 
-                                                        setLatitude(props.place.locationSet.lat)
-                                                        setLongitude(props.place.locationSet.long)
+                                                    setLatitude(props.place.locationSet.lat)
+                                                    setLongitude(props.place.locationSet.long)
                                                         setFieldValue('lat', props.place.locationSet.lat)
                                                         setFieldValue('long', props.place.locationSet.long)
 
-                                                        setFieldValue('type', props.place.typeSet.idType)
-                                                        setFieldValue('category', props.place.categorySet.idCategory)
-                                                        setFieldValue('region', props.place.locationSet.regionSet.idRegion)
+                                                    setFieldValue('type', props.place.typeSet.idType)
+                                                    setFieldValue('category', props.place.categorySet.idCategory)
+                                                    setFieldValue('region', props.place.locationSet.regionSet.idRegion)
 
-                                                        //optional
-                                                        setFieldValue('address', props.place.locationSet.address)
-                                                        setFieldValue('email', props.place.email)
-                                                        setFieldValue('website', props.place.website)
-                                                        setFieldValue('phoneNumber', props.place.phoneNumber)
+                                                    //optional
+                                                    setFieldValue('address', props.place.locationSet.address)
+                                                    setFieldValue('email', props.place.email)
+                                                    setFieldValue('website', props.place.website)
+                                                    setFieldValue('phoneNumber', props.place.phoneNumber)
 
-                                                        // checkboxes
-                                                        setFieldValue('openSunday', props.place.isOpenSunday)
-                                                        setFieldValue('openSpecialDay', props.place.isOpenSunday)
+                                                    // checkboxes
+                                                    setFieldValue('openSunday', props.place.isOpenSunday)
+                                                    setFieldValue('openSpecialDay', props.place.isOpenSunday)
 
 
                                                 }}
@@ -834,7 +841,7 @@ export const FormPlace = (props) => {
                             {/*Submit button that is disabled after button is clicked/form is in the process of submitting*/}
                             {latitude !== 0 ?
                                 <SubmitButton variant="primary" type="submit" disabled={isSubmitting}>
-                                    {modification? "Confirm modification" : "Submit"}
+                                    {modification ? "Confirm modification" : "Submit"}
                                 </SubmitButton> :
                                 <div><sub>Latitude and longitude are needed for submitting</sub><br/>
                                     <sub>Click on "Get coordinates" button</sub></div>}

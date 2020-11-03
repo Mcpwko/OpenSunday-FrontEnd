@@ -94,13 +94,13 @@ export default function UserAccount(props) {
     const userContext = useContext(UserContext);
 
 
-    useEffect( () => {
-        async function getReports(){
+    useEffect(() => {
+        async function getReports() {
             let report = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.report}`,
                 authContext.getAccessTokenSilently
             );
-            if(report!=null){
+            if (report != null) {
                 setReports(report);
             }
 
@@ -109,10 +109,11 @@ export default function UserAccount(props) {
             setSortedReports(sortedReports);
 
         }
+
         console.log(userContext.user.idUserType);
         getReports();
 
-    },[]);
+    }, []);
 
 
 
@@ -138,21 +139,17 @@ export default function UserAccount(props) {
         const token = await authContext.getAccessTokenSilently();
         console.log("TOKEN CONNARD " + token)
             //Look if the pseudo is available
+
             let check = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/'+values.pseudo}`,
-                await authContext.getAccessTokenSilently()
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`,
+                authContext.getAccessTokenSilently
             );
 
-        /*
-            let check = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`, {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                },
-            });*/
             console.log(check);
 
-            if(!check){
+
+
+            if(check==1){
                 //IF the pseudo is not available, there is an alert
                 alert.show("The pseudo "+values.pseudo+ " is not available");
 
@@ -160,26 +157,23 @@ export default function UserAccount(props) {
 
                 //If the pseudo is available, we save it in database
 
-                console.log(userContext.user.email);
-                console.log(values.pseudo);
-
                 await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
                     method: 'PUT',
                     headers: {
-                        Accept: "application/json",
                         Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
                         'Content-Type': "application/json",
                     }, body: JSON.stringify({
+                        idUser:userContext.user.idUser,
                         email: userContext.user.email,
                         pseudo: values.pseudo,
                         createdAt: userContext.user.createdAt,
-                        status: userContext.user.createdAt,
+                        status: userContext.user.status,
                         idAuth0: userContext.user.idAuth0,
                         idUserType: userContext.user.idUserType
                     })
                 });
 
-                alert.success("The pseudo is modify !");
+                alert.success("The pseudo has been modified !");
             }
 
         }
@@ -271,8 +265,8 @@ export default function UserAccount(props) {
                         {/*============================== REPORT ==================================*/}
                         {userContext.user.idUserType == 3 ? <div>
 
-                            <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
-                                {sortedReports!=null ? sortedReports.map((report) => (
+                            <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
+                                {sortedReports != null ? sortedReports.map((report) => (
                                     <li key={report.idReport}>
                                         <p>---------------------------------</p>
                                         <h3>{report.idReport}</h3>
@@ -284,9 +278,9 @@ export default function UserAccount(props) {
                                         <p>Place: {report.placeSet.name}</p>
                                         <p>---------------------------------</p>
                                     </li>
-                                )):null}
+                                )) : null}
                             </ul>
-                        </div>:null}
+                        </div> : null}
 
 
                     </MyForm>
