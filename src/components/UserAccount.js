@@ -90,6 +90,7 @@ export default function UserAccount(props) {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [reports, setReports] = useState([]);
     const [sortedReports, setSortedReports] = useState([]);
+    const [places, setPlaces] = useState([]);
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
 
@@ -163,6 +164,8 @@ export default function UserAccount(props) {
 
 
 
+
+
             if(check==1){
                 //IF the pseudo is not available, there is an alert
                 alert.show("The pseudo "+values.pseudo+ " is not available");
@@ -186,6 +189,7 @@ export default function UserAccount(props) {
                         idUserType: userContext.user.idUserType
                     })
                 });
+                userContext.user.pseudo = values.pseudo;
 
                 alert.success("The pseudo has been modified !");
             }

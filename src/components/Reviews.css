@@ -2,3 +2,25 @@
 .listReviews{
     border-top: 2px ridge;
 }
+
+.buttonBan {
+    padding-bottom: 15px;
+    margin-right: 2px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border-color: darkred;
+    background-color: darkred;
+    color: white;
+    height: 15px;
+    width: 30px;
+    font-size: 10px;
+}
+
+
+.buttonBan:hover,
+.buttonBan:focus {
+    color: #24B9B6;
+    background: #282c34;
+    text-decoration: none;
+    cursor: pointer;
+}

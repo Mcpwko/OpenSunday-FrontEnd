@@ -69,6 +69,7 @@ function MapView(props) {
 
     const [infoMarker, setInfoMarker] = useState();
     const [filter, setFilter] = useState(0);
+    const [change, setChange] = useState(0);
 
 
     const refMarker = useRef();
@@ -189,7 +190,7 @@ function MapView(props) {
         }
 
         getPlaces();
-    }, []);
+    }, [path]);
 
     useEffect(() => {
         async function getTypes() {

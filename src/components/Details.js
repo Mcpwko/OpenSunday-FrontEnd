@@ -105,20 +105,25 @@ function Details(props) {
             >
                 <span>❌</span>
             </button>
-            {/*{console.log("PROPS : " + props.idPlace)}*/}
-            <h1>{props.name} {props.isVerified ?
-                <FontAwesomeIcon icon={faCheckCircle}/> :
-                <button onClick={() => {
-                    if(userContext.user.pseudo!=null){
-                        setShowForm(true)
-                    }else{
-                        alert.error("You don't have a pseudo yet !");
-                        alert.error("Please complete your profile in 'My Account' ! ");
-                    }
 
-                }}>
-                    <FontAwesomeIcon icon={faEdit}/>
-                </button>}
+            <h1>
+                {props.name}
+                {props.isVerified && <FontAwesomeIcon icon={faCheckCircle}/>}
+                {(!props.isVerified || userContext.user.idUserType ==3) &&
+
+                    <button onClick={() => {
+                        if(userContext.user.pseudo!=null){
+                            setShowForm(true)
+                        }else{
+                            alert.error("You don't have a pseudo yet !");
+                            alert.error("Please complete your profile in 'My Account' ! ");
+                        }
+
+                    }}>
+                        <FontAwesomeIcon icon={faEdit}/>
+                    </button>}
+
+
             </h1>
 
             <Box component="fieldset" mb={3} borderColor="transparent">

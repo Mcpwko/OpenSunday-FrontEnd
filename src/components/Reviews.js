@@ -8,12 +8,15 @@ import Rating from "@material-ui/lab/Rating";
 import {FormPlace} from "./FormPlace";
 import {FormReview} from "./FormReview";
 import "./Reviews.css";
+import userEvent from "@testing-library/user-event";
+import {UserContext} from "../context/UserContext";
 
 
 function Reviews (props) {
     const [reviews, setReviews] = useState([]);
     const [showForm, setShowForm] = useState();
     const authContext = useContext(Auth0Context);
+    const userContext = useContext(UserContext);
     const idPlace = props.idPlace;
 
     useEffect( () => {
@@ -48,11 +51,13 @@ function Reviews (props) {
                 <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
                 {reviews!=null ? reviews.map((review) => (
                     <li className="listReviews" key={review.idReview}>
-                    <h3>{review.userSet.pseudo}</h3>
+                    <h3>{review.userSet.pseudo }
+                    </h3>
                         <Rating name="simple-controlled" value={review.rate}  readOnly/>
                     <p>
                         {review.comment}
                     </p>
+                        {userContext.user.idUserType == 3 && review.userSet.idUserType!=3 ?<button className="buttonBan">Ban</button> : null}
                     </li>
                 )):null}
                 </ul>
