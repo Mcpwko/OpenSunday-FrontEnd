@@ -3,6 +3,7 @@ import {Marker, Popup} from 'react-leaflet';
 import {BarLocationIcon, switchIcon} from './Icons';
 import PlacesPopup from "./PlacesPopup";
 import {Link} from "react-router-dom";
+import MarkerClusterGroup from "react-leaflet-markercluster";
 
 function PlacesMarkers(props) {
 

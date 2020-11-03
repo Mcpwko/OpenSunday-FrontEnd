@@ -88,7 +88,6 @@ const validationSchema = Yup.object().shape({
 export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
-    const [places, setPlaces] = useState([]);
     const [reports, setReports] = useState([]);
     const [sortedReports, setSortedReports] = useState([]);
     const authContext = useAuth0();
@@ -115,29 +114,36 @@ export default function UserAccount(props) {
             }
 
             //Chronological order (most rescent report)
+            //Chronological order (most recent report)
             let sortedReports = report.sort((a, b) => Date.parse(new Date(b.reportDate.split("/").reverse().join("-"))) - Date.parse(new Date(a.reportDate.split("/").reverse().join("-"))));
             setSortedReports(sortedReports);
 
         }
+
+        console.log(userContext.user.idUserType);
         getReports();
 
     }, []);
 
-
-
-
-    function deleteAccount() {
-        // alert("THIS IS THE FUNCTION DELETE ACCOUNT");
-        alert.show("This is the delete method to implement");
-
-        // Unlog the user
-
-        // Redirect user to home page
+    async function deleteAccount() {
 
         // Delete account
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
+            method:'DELETE',
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+            },
+        });
 
         // Tell the user
         alert.success("The account has been successfully deleted");
+
+        // Unlog the user
+        authContext.logout({returnTo: window.location.origin})
+
+
+
 
     }
 

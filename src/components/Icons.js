@@ -1,7 +1,7 @@
 import L from 'leaflet';
 
 // Other icons
-export const HereLocationIcon = myIcon("here", 32, 35, true)
+export const HereLocationIcon = myIcon("here", 32, 35, true, "fadeIcon")
 export const PlusLocationIcon = myIcon("plus", 30, 35, true)
 export const UndefinedLocationIcon = myIcon("undefined", 30, 35, true)
 
@@ -47,10 +47,14 @@ export function switchIcon(type) {
     }
 }
 
-function myIcon(name, width, height, normal) {
+function myIcon(name, width, height, normal, cName) {
 
-    let className = 'icon-place';
+    let className = 'icon-'+name;
     let placePath = "/type"
+
+    if(cName!=undefined){
+        className=cName;
+    }
 
     // Default width
     if (!width) {

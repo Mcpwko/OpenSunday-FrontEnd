@@ -63,7 +63,11 @@ function Details(props) {
 
 
     function showModal() {
-        setShow(true);
+        if(userContext.user.pseudo!=null){
+            setShow(true);
+        }
+        alert.error("You don't have a pseudo yet !");
+        alert.error("Please complete your profile in 'My Account' ! ");
     };
 
     function hideModal() {
@@ -104,7 +108,15 @@ function Details(props) {
             {/*{console.log("PROPS : " + props.idPlace)}*/}
             <h1>{props.name} {props.isVerified ?
                 <FontAwesomeIcon icon={faCheckCircle}/> :
-                <button onClick={() => setShowForm(true)}>
+                <button onClick={() => {
+                    if(userContext.user.pseudo!=null){
+                        setShowForm(true)
+                    }else{
+                        alert.error("You don't have a pseudo yet !");
+                        alert.error("Please complete your profile in 'My Account' ! ");
+                    }
+
+                }}>
                     <FontAwesomeIcon icon={faEdit}/>
                 </button>}
             </h1>
