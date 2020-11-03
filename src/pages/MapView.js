@@ -67,6 +67,7 @@ function MapView(props) {
     const [selected, setSelected] = useState(0);
 
     const [infoMarker, setInfoMarker] = useState();
+    const [filter, setFilter] = useState(0);
 
 
     const refMarker = useRef();
@@ -270,6 +271,22 @@ function MapView(props) {
         }, 100)
     }
 
+    const filterOpenSunday = (event) => {
+        if(event.target.checked){
+            setFilter(1);
+        }else{
+            setFilter(0);
+        }
+    }
+
+    const filterOpenSpecial = (event) => {
+        if(event.target.checked){
+            setFilter(2);
+        }else{
+            setFilter(0);
+        }
+    }
+
     const icon = L.icon({
         iconSize: [25, 41],
         iconAnchor: [10, 41],
@@ -319,20 +336,11 @@ function MapView(props) {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
-                        {/*<Overlay name="Layer 1">*/}
-                        {/*    <LayerGroup id="lg1" ref={firstOverlayRef}>*/}
-                        {/*        <Marker position={[51, 0.1]} icon={icon} />*/}
-                        {/*    </LayerGroup>*/}
-                        {/*</Overlay>*/}
-                        {/*<Overlay name="Layer 2">*/}
-                        {/*    <LayerGroup ref={secondOverlayRef}>*/}
-                        {/*        <Marker position={[51, 0.2]} icon={icon} />*/}
-                        {/*    </LayerGroup>*/}
-                        {/*</Overlay>*/}
+
                         {types!=null ? types.map((type) =>(
-                            <Overlay name={type.name} checked>
+                            <Overlay name={type.name} key={type.idType} checked>
                                 <LayerGroup>
-                                <PlacesMarkers venues={places.filter((place) => place.typeSet.name.includes(type.name))} onOpen={showDetails} select={select}/>
+                                <PlacesMarkers venues={places.filter((place) => place.typeSet.name.includes(type.name) && (filter==1 ? place.isOpenSunday : filter==2 ? place.isOpenSpecialDay : true))} onOpen={showDetails} select={select}/>
                                 </LayerGroup>
                             </Overlay>
                         )) : null}
@@ -358,6 +366,18 @@ function MapView(props) {
                         >
                             <FontAwesomeIcon size={"lg"} icon={faMapMarkerAlt}/>
                         </button>
+                    </Control>
+                    <Control position="topright">
+                        <div className="controlSection">
+                            <label>Open on Sunday</label>
+                            <input type="checkbox" onChange={filterOpenSunday} />
+                        </div>
+                    </Control>
+                    <Control position="topright">
+                        <div className="controlSection">
+                            <label>Open on Special Day</label>
+                            <input type="checkbox" onChange={filterOpenSpecial} />
+                        </div>
                     </Control>
                     {/*Search button that allow to find any location from leaflet */}
                     <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
