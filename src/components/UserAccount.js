@@ -143,12 +143,13 @@ export default function UserAccount(props) {
                 await authContext.getAccessTokenSilently()
             );
 
+        /*
             let check = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`, {
                 headers: {
                     Accept: "application/json",
                     Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
                 },
-            });
+            });*/
             console.log(check);
 
             if(!check){
