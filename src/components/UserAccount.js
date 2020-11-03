@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./Place.css";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import {SubmitButton} from "./FormPlace";
@@ -94,13 +94,13 @@ export default function UserAccount(props) {
     const userContext = useContext(UserContext);
 
 
-    useEffect( () => {
-        async function getReports(){
+    useEffect(() => {
+        async function getReports() {
             let report = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.report}`,
                 authContext.getAccessTokenSilently
             );
-            if(report!=null){
+            if (report != null) {
                 setReports(report);
             }
 
@@ -109,12 +109,11 @@ export default function UserAccount(props) {
             setSortedReports(sortedReports);
 
         }
+
         console.log(userContext.user.idUserType);
         getReports();
 
-    },[]);
-
-
+    }, []);
 
 
     function deleteAccount() {
@@ -132,56 +131,56 @@ export default function UserAccount(props) {
 
     }
 
-        const changePseudo = async (values) => {
+    const changePseudo = async (values) => {
 
         console.log("NAMECONNARD " + authContext.user.name);
         const token = await authContext.getAccessTokenSilently();
         console.log("TOKEN CONNARD " + token)
-            //Look if the pseudo is available
-            let check = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/'+values.pseudo}`,
-                await authContext.getAccessTokenSilently()
-            );
+        //Look if the pseudo is available
+        let check = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/' + values.pseudo}`,
+            await authContext.getAccessTokenSilently()
+        );
 
-            let check = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`, {
+        // let check = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`, {
+        //     headers: {
+        //         Accept: "application/json",
+        //         Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+        //     },
+        // });
+        console.log(check);
+
+        if (!check) {
+            //IF the pseudo is not available, there is an alert
+            alert.show("The pseudo " + values.pseudo + " is not available");
+
+        } else {
+
+            //If the pseudo is available, we save it in database
+
+            console.log(userContext.user.email);
+            console.log(values.pseudo);
+
+            await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + userContext.user.idUser}`, {
+                method: 'PUT',
                 headers: {
                     Accept: "application/json",
                     Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                },
+                    'Content-Type': "application/json",
+                }, body: JSON.stringify({
+                    email: userContext.user.email,
+                    pseudo: values.pseudo,
+                    createdAt: userContext.user.createdAt,
+                    status: userContext.user.createdAt,
+                    idAuth0: userContext.user.idAuth0,
+                    idUserType: userContext.user.idUserType
+                })
             });
-            console.log(check);
 
-            if(!check){
-                //IF the pseudo is not available, there is an alert
-                alert.show("The pseudo "+values.pseudo+ " is not available");
-
-            } else {
-
-                //If the pseudo is available, we save it in database
-
-                console.log(userContext.user.email);
-                console.log(values.pseudo);
-
-                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
-                    method: 'PUT',
-                    headers: {
-                        Accept: "application/json",
-                        Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                        'Content-Type': "application/json",
-                    }, body: JSON.stringify({
-                        email: userContext.user.email,
-                        pseudo: values.pseudo,
-                        createdAt: userContext.user.createdAt,
-                        status: userContext.user.createdAt,
-                        idAuth0: userContext.user.idAuth0,
-                        idUserType: userContext.user.idUserType
-                    })
-                });
-
-                alert.success("The pseudo is modify !");
-            }
-
+            alert.success("The pseudo is modify !");
         }
+
+    }
 
     // const [value, setValue] = useState("");
     //
@@ -270,8 +269,8 @@ export default function UserAccount(props) {
                         {/*============================== REPORT ==================================*/}
                         {userContext.user.idUserType == 3 ? <div>
 
-                            <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
-                                {sortedReports!=null ? sortedReports.map((report) => (
+                            <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
+                                {sortedReports != null ? sortedReports.map((report) => (
                                     <li key={report.idReport}>
                                         <p>---------------------------------</p>
                                         <h3>{report.idReport}</h3>
@@ -283,9 +282,9 @@ export default function UserAccount(props) {
                                         <p>Place: {report.placeSet.name}</p>
                                         <p>---------------------------------</p>
                                     </li>
-                                )):null}
+                                )) : null}
                             </ul>
-                        </div>:null}
+                        </div> : null}
 
 
                     </MyForm>

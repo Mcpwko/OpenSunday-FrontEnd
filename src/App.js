@@ -15,7 +15,9 @@ import moment from "moment";
 import {forEach} from "react-bootstrap/ElementChildren";
 import {get} from "leaflet/src/dom/DomUtil";
 import Account from "./pages/Account";
+import Home from "./pages/Home";
 import {ThemeContext, themes} from "./context/ThemeContext";
+import Places from "./pages/Places";
 import {UserContext} from "./context/UserContext";
 
 function App() {
@@ -44,7 +46,6 @@ function App() {
         }
 
     }, [isAuthenticated]);
-
 
 
     // const [isOpen, setIsOpen] = useState(false);
@@ -83,12 +84,12 @@ function App() {
     let getConnectedUser = async () => {
 
         let connectedUser = await request(
-            `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+user.name}`,
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + user.name}`,
             getAccessTokenSilently
         );
 
         userContext.user = connectedUser;
-        console.log( userContext.user);
+        console.log(userContext.user);
     };
 
     //Method to POST the user in the DB
@@ -196,30 +197,31 @@ function App() {
                             render={() => (
                                 <>
 
-                                    <h1>Welcome on OpenSunday</h1>
-                                    {/*<ContactForm/>*/}
-                                    {/*<FormPlace/>*/}
-                                    <a
-                                        className="App-link"
-                                        href="#"
-                                        onClick={handleLocationsClick}
-                                    >
-                                        Get Locations
-                                    </a>
-                                    {locations && locations.length > 0 && (
-                                        <ul className="Locations-List">
-                                            {locations.map((location) => (
-                                                <li key={location.id}>
-                                                    <Link
-                                                        className="App-link"
-                                                        to={`/location/${location.id}`}
-                                                    >
-                                                        {location.name}
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
+
+                                    <Home/>
+                                    {/*/!*<ContactForm/>*!/*/}
+                                    {/*/!*<FormPlace/>*!/*/}
+                                    {/*<a*/}
+                                    {/*    className="App-link"*/}
+                                    {/*    href="#"*/}
+                                    {/*    onClick={handleLocationsClick}*/}
+                                    {/*>*/}
+                                    {/*    Get Locations*/}
+                                    {/*</a>*/}
+                                    {/*{locations && locations.length > 0 && (*/}
+                                    {/*    <ul className="Locations-List">*/}
+                                    {/*        {locations.map((location) => (*/}
+                                    {/*            <li key={location.id}>*/}
+                                    {/*                <Link*/}
+                                    {/*                    className="App-link"*/}
+                                    {/*                    to={`/location/${location.id}`}*/}
+                                    {/*                >*/}
+                                    {/*                    {location.name}*/}
+                                    {/*                </Link>*/}
+                                    {/*            </li>*/}
+                                    {/*        ))}*/}
+                                    {/*    </ul>*/}
+                                    {/*)}*/}
                                 </>
                             )}
                         />
@@ -227,6 +229,7 @@ function App() {
                         <Route path="/map" component={MapView} props={locations}></Route>
                         <Route path="/about" component={About}/>
                         <Route path="/account" component={Account}/>
+                        <Route path="/places" component={Places}/>
                     </Switch>
 
                 </header>
@@ -239,5 +242,6 @@ function App() {
         </div>
     );
 }
+
 
 export default App;

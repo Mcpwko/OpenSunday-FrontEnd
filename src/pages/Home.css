@@ -1,0 +1,39 @@
+/*Carrousel{*/
+/*    width:2000px;*/
+/*    height:2000px;*/
+/*}*/
+
+/*Carrousel.Item{*/
+/*    width:2000px;*/
+/*    height:2000px;*/
+/*}*/
+
+/*.slidediv{*/
+/*    width:85%;*/
+/*    height:50%;*/
+/*}*/
+
+.slide{
+    width:1000px;
+    height:500px;
+}
+
+/*img.slide{*/
+/*    margin-top:5em;*/
+/*}*/
+
+.carousel-caption{
+    background: darkblue;
+    border-radius: 10px;
+    padding: 0.5em;
+    /*height:5000px;*/
+}
+
+/*img{*/
+/*    width:600px;*/
+/*    height:600px;*/
+/*}*/
+/*img{*/
+/*    width:600px;*/
+/*    height:600px;*/
+/*}*/
