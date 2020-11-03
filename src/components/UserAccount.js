@@ -131,56 +131,49 @@ export default function UserAccount(props) {
 
     }
 
-    const changePseudo = async (values) => {
+        const changePseudo = async (values) => {
 
         console.log("NAMECONNARD " + authContext.user.name);
         const token = await authContext.getAccessTokenSilently();
         console.log("TOKEN CONNARD " + token)
-        //Look if the pseudo is available
-        let check = await request(
-            `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/' + values.pseudo}`,
-            await authContext.getAccessTokenSilently()
-        );
+            //Look if the pseudo is available
 
-        // let check = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`, {
-        //     headers: {
-        //         Accept: "application/json",
-        //         Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-        //     },
-        // });
-        console.log(check);
+            let check = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`,
+                authContext.getAccessTokenSilently
+            );
+            console.log(check);
 
-        if (!check) {
-            //IF the pseudo is not available, there is an alert
-            alert.show("The pseudo " + values.pseudo + " is not available");
 
-        } else {
 
-            //If the pseudo is available, we save it in database
+            if(check==1){
+                //IF the pseudo is not available, there is an alert
+                alert.show("The pseudo "+values.pseudo+ " is not available");
 
-            console.log(userContext.user.email);
-            console.log(values.pseudo);
+            } else {
 
-            await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + userContext.user.idUser}`, {
-                method: 'PUT',
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                    'Content-Type': "application/json",
-                }, body: JSON.stringify({
-                    email: userContext.user.email,
-                    pseudo: values.pseudo,
-                    createdAt: userContext.user.createdAt,
-                    status: userContext.user.createdAt,
-                    idAuth0: userContext.user.idAuth0,
-                    idUserType: userContext.user.idUserType
-                })
-            });
+                //If the pseudo is available, we save it in database
 
-            alert.success("The pseudo is modify !");
+                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                        'Content-Type': "application/json",
+                    }, body: JSON.stringify({
+                        idUser:userContext.user.idUser,
+                        email: userContext.user.email,
+                        pseudo: values.pseudo,
+                        createdAt: userContext.user.createdAt,
+                        status: userContext.user.status,
+                        idAuth0: userContext.user.idAuth0,
+                        idUserType: userContext.user.idUserType
+                    })
+                });
+
+                alert.success("The pseudo has been modified !");
+            }
+
         }
-
-    }
 
     // const [value, setValue] = useState("");
     //

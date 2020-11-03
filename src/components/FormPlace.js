@@ -381,7 +381,7 @@ export const FormPlace = (props) => {
                         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.places}${'/'+props.place.idPlace}`, {
                             method: 'PUT',
                             headers: {
-                                Accept: "application/json",
+                                // Accept: "application/json",
                                 Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
                                 'Content-Type': "application/json",
                             }, body: JSON.stringify({
