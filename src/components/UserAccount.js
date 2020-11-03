@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./Place.css";
 import {Auth0Context} from "@auth0/auth0-react";
 import {SubmitButton} from "./FormPlace";
@@ -12,6 +12,8 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {UserContext} from "../context/UserContext";
 import moment from "moment";
+import Rating from "@material-ui/lab/Rating";
+import {FormReview} from "./FormReview";
 
 const Container = styled.div`
   text-align: center;
@@ -86,8 +88,34 @@ const validationSchema = Yup.object().shape({
 export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [reports, setReports] = useState([]);
+    const [sortedReports, setSortedReports] = useState([]);
     const authContext = useContext(Auth0Context);
     const userContext = useContext(UserContext);
+
+
+    useEffect( () => {
+        async function getReports(){
+            let report = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.report}`,
+                authContext.getAccessTokenSilently
+            );
+            if(report!=null){
+                setReports(report);
+            }
+
+            //Chronological order (most rescent report)
+            let sortedReports = report.sort((a, b) => Date.parse(new Date(b.reportDate.split("/").reverse().join("-"))) - Date.parse(new Date(a.reportDate.split("/").reverse().join("-"))));
+            setSortedReports(sortedReports);
+
+        }
+        console.log(userContext.user.idUserType);
+        getReports();
+
+    },[]);
+
+
+
 
     function deleteAccount() {
         // alert("THIS IS THE FUNCTION DELETE ACCOUNT");
@@ -110,7 +138,7 @@ export default function UserAccount(props) {
             //Look if the pseudo is available
             let check = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/'+values.pseudo}`,
-                authContext.getAccessTokenSilently
+                await authContext.getAccessTokenSilently()
             );
 
             console.log(check);
@@ -230,6 +258,28 @@ export default function UserAccount(props) {
                                 All data linked to your account will be lost.
                             </ConfirmDialog>
                         </div>
+
+                        {/*============================== REPORT ==================================*/}
+                        {userContext.user.idUserType == 3 ? <div>
+
+                            <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
+                                {sortedReports!=null ? sortedReports.map((report) => (
+                                    <li key={report.idReport}>
+                                        <p>---------------------------------</p>
+                                        <h3>{report.idReport}</h3>
+                                        <p>Comment: {report.comment}</p>
+                                        <p>Delete: {report.isForDelete}</p>
+                                        <p>Edit: {report.isForEdit}</p>
+                                        <p>{report.reportDate}</p>
+                                        <p>By: {report.userSet.email}</p>
+                                        <p>Place: {report.placeSet.name}</p>
+                                        <p>---------------------------------</p>
+                                    </li>
+                                )):null}
+                            </ul>
+                        </div>:null}
+
+
                     </MyForm>
                 )}
             </Formik>
