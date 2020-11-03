@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import "./Place.css";
-import {Auth0Context} from "@auth0/auth0-react";
+import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import {SubmitButton} from "./FormPlace";
 import {Formik} from "formik";
 import {Form, Button} from "react-bootstrap";
@@ -90,7 +90,7 @@ export default function UserAccount(props) {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [reports, setReports] = useState([]);
     const [sortedReports, setSortedReports] = useState([]);
-    const authContext = useContext(Auth0Context);
+    const authContext = useAuth0();
     const userContext = useContext(UserContext);
 
 
@@ -132,15 +132,23 @@ export default function UserAccount(props) {
 
     }
 
-        let changePseudo = async (values) => {
+        const changePseudo = async (values) => {
 
-            console.log(authContext.getAccessTokenSilently);
+        console.log("NAMECONNARD " + authContext.user.name);
+        const token = await authContext.getAccessTokenSilently();
+        console.log("TOKEN CONNARD " + token)
             //Look if the pseudo is available
             let check = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${'/'+values.pseudo}`,
                 await authContext.getAccessTokenSilently()
             );
 
+            let check = await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`, {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                },
+            });
             console.log(check);
 
             if(!check){

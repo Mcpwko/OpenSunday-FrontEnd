@@ -59,7 +59,7 @@ function Details(props) {
         }
 
         getRate();
-    }, []);
+    }, [props.idPlace]);
 
 
     function showModal() {
@@ -115,7 +115,7 @@ function Details(props) {
 
             {showForm ? <Mod>
                 <span id="close" onClick={closeForm}>&times;</span>
-                <FormPlace place={props}/>
+                <FormPlace place={props} closeForm={closeForm}/>
             </Mod> : null}
 
 
