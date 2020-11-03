@@ -7,6 +7,7 @@ import PlacesPopup from "./PlacesPopup";
 import Rating from "@material-ui/lab/Rating";
 import {FormPlace} from "./FormPlace";
 import {FormReview} from "./FormReview";
+import "./Reviews.css";
 
 
 function Reviews (props) {
@@ -46,9 +47,8 @@ function Reviews (props) {
             <div>
                 <ul style={{listStyleType: "none", padding: "0", margin:"0"}}>
                 {reviews!=null ? reviews.map((review) => (
-                    <li key={review.idReview}>
-                    <h3>{review.userSet.idAuth0}</h3>
-                        <p>{review.rate}</p>
+                    <li className="listReviews" key={review.idReview}>
+                    <h3>{review.userSet.pseudo}</h3>
                         <Rating name="simple-controlled" value={review.rate}  readOnly/>
                     <p>
                         {review.comment}

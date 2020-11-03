@@ -30,6 +30,7 @@ import Details from "../components/Details";
 import {useAlert} from "react-alert";
 import PlacesPopup from "../components/PlacesPopup";
 import MarkerClusterGroup from "react-leaflet-markercluster";
+import {UserContext} from "../context/UserContext";
 
 const {Overlay} = LayersControl;
 
@@ -74,7 +75,8 @@ function MapView(props) {
     const refMap = useRef();
     const firstOverlayRef = useRef();
     const secondOverlayRef = useRef();
-    const authContext = useContext(Auth0Context);
+    const authContext = useAuth0();
+    const userContext = useContext(UserContext);
     const alert = useAlert();
 
     const path = useLocation();
@@ -178,6 +180,7 @@ function MapView(props) {
             let places = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
                 authContext.getAccessTokenSilently,
+                authContext.loginWithRedirect,
             );
 
             if (places && places.length > 0) {
@@ -194,6 +197,7 @@ function MapView(props) {
             let types = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.types}`,
                 authContext.getAccessTokenSilently,
+                authContext.loginWithRedirect,
             );
 
             if (types && types.length > 0) {
@@ -301,7 +305,15 @@ function MapView(props) {
     return (
         <BrowserRouter>
             <div className="buttonsMap">
-                <button className="add" onClick={() => toggleDraggable(true)}>Add new place</button>
+                <button className="add" onClick={() => {
+                    if(userContext.user.pseudo!=null){
+                        toggleDraggable(true)
+                    }else{
+                        alert.error("You don't have a pseudo yet !");
+                        alert.error("Please complete your profile in 'My Account' ! ");
+                    }
+
+                }}>Add new place</button>
             </div>
             <h5>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h5>
 

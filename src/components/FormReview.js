@@ -36,7 +36,13 @@ export function FormReview(props) {
 
     function showModal() {
         if(!show)
-            setShow(true);
+            if(userContext.user.pseudo!=null){
+                setShow(true);
+            }else{
+                alert.error("You don't have a pseudo yet !");
+                alert.error("Please complete your profile in 'My Account' ! ");
+            }
+
     };
 
     //let history = useHistory();

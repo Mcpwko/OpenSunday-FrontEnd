@@ -109,25 +109,29 @@ export default function UserAccount(props) {
             setSortedReports(sortedReports);
 
         }
-
-        console.log(userContext.user.idUserType);
         getReports();
 
     }, []);
 
-
-    function deleteAccount() {
-        // alert("THIS IS THE FUNCTION DELETE ACCOUNT");
-        alert.show("This is the delete method to implement");
-
-        // Unlog the user
-
-        // Redirect user to home page
+    async function deleteAccount() {
 
         // Delete account
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
+            method:'DELETE',
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+            },
+        });
 
         // Tell the user
         alert.success("The account has been successfully deleted");
+
+        // Unlog the user
+        authContext.logout({returnTo: window.location.origin})
+
+
+
 
     }
 
@@ -253,14 +257,16 @@ export default function UserAccount(props) {
                                 setOpen={setConfirmOpen}
                                 onConfirm={deleteAccount}
                             >
-                                Are you sure you want to delete this account?<br/>
+                                Are you sure you want to delete this account ?<br/>
                                 This action cannot be undone!<br/>
+                                Only the account on OpenSunday will be deleted <br/>
+                                but not your Auth0 Account ! <br/>
                                 All data linked to your account will be lost.
                             </ConfirmDialog>
                         </div>
 
                         {/*============================== REPORT ==================================*/}
-                        {userContext.user.idUserType == 3 ? <div>
+                        {userContext.user!=null && userContext.user.idUserType == 3 ? <div>
 
                             <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
                                 {sortedReports != null ? sortedReports.map((report) => (
