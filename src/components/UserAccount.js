@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./Place.css";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import {SubmitButton} from "./FormPlace";
@@ -88,6 +88,7 @@ const validationSchema = Yup.object().shape({
 export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [places, setPlaces] = useState([]);
     const [reports, setReports] = useState([]);
     const [sortedReports, setSortedReports] = useState([]);
     const authContext = useAuth0();
@@ -104,13 +105,20 @@ export default function UserAccount(props) {
                 setReports(report);
             }
 
+            //Get places
+            let place = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
+                authContext.getAccessTokenSilently
+            );
+            if (place != null) {
+                setPlaces(place);
+            }
+
             //Chronological order (most rescent report)
             let sortedReports = report.sort((a, b) => Date.parse(new Date(b.reportDate.split("/").reverse().join("-"))) - Date.parse(new Date(a.reportDate.split("/").reverse().join("-"))));
             setSortedReports(sortedReports);
 
         }
-
-        console.log(userContext.user.idUserType);
         getReports();
 
     }, []);
@@ -263,19 +271,23 @@ export default function UserAccount(props) {
                         </div>
 
                         {/*============================== REPORT ==================================*/}
-                        {userContext.user.idUserType == 3 ? <div>
+                        {userContext.user != null && userContext.user.idUserType == 3 ? <div>
 
                             <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
-                                {sortedReports != null ? sortedReports.map((report) => (
-                                    <li key={report.idReport}>
+                                {places != null ? places.map((place) => (
+                                    <li key={place.idPlace}>
                                         <p>---------------------------------</p>
-                                        <h3>{report.idReport}</h3>
-                                        <p>Comment: {report.comment}</p>
-                                        <p>Delete: {report.isForDelete}</p>
-                                        <p>Edit: {report.isForEdit}</p>
-                                        <p>{report.reportDate}</p>
-                                        <p>By: {report.userSet.email}</p>
-                                        <p>Place: {report.placeSet.name}</p>
+                                        <h3>{place.name}</h3>
+                                        {place.reportSet.map((report) => (
+                                            <ul>
+                                                <li key={report.idReport}>
+                                                    <p>Comment: {report.comment}</p>
+                                                    <p>Submit by: {report.userSet.pseudo}</p>
+                                                    <p>Date: {new Date(report.reportDate).getDay()}.{new Date(report.reportDate).getMonth()}.{new Date(report.reportDate).getFullYear()}</p>
+                                                </li>
+                                            </ul>
+                                            )
+                                        )}
                                         <p>---------------------------------</p>
                                     </li>
                                 )) : null}

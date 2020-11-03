@@ -179,34 +179,36 @@ function Details(props) {
                                     // When button submits form and form is in the process of submitting, submit button is disabled
                                     setSubmitting(true);
                                     //POST Report into the DB
-                                    /*
-                                    let user = await request(
-                                        `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+ authContext.user.name}`,
-                                        authContext.getAccessTokenSilently,
-                                    )*/
-                                    console.log(userContext.user.idUser);
+                                    console.log(userContext.reportChange)
 
-                                    await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.report}`, {
-                                        method: 'POST',
-                                        headers: {
-                                            Accept: "application/json",
-                                            Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                                            'Content-Type': "application/json"
-                                        },
-                                        body: JSON.stringify({
-                                            comment: values.comment,
-                                            isForDelete:values.choice==='IsForDelete',
-                                            isForEdit:values.choice==='IsForEdit',
-                                            idUser:userContext.user.idUser,
-                                            idPlace:props.idPlace
-                                            }
-                                        ),
-                                    });
+                                    if(userContext.user.reportSet.filter(x => x.idPlace == props.idPlace).length < 1) {
 
-                                    resetForm();
-                                    setSubmitting(false);
-                                    hideModal();
-                                    alert.success("Your report has been submitted !");
+                                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.report}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                Accept: "application/json",
+                                                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                                                'Content-Type': "application/json"
+                                            },
+                                            body: JSON.stringify({
+                                                    comment: values.comment,
+                                                    isForDelete: values.choice === 'IsForDelete',
+                                                    isForEdit: values.choice === 'IsForEdit',
+                                                    idUser: userContext.user.idUser,
+                                                    idPlace: props.idPlace
+                                                }
+                                            ),
+                                        });
+
+                                        userContext.user.reportSet.push({comment:values.comment, isForDelete:values.choice === 'IsForDelete', isForEdit:values.choice === 'IsForEdit', idUser:userContext.user.idUser, idPlace: props.idPlace});
+
+                                        resetForm();
+                                        setSubmitting(false);
+                                        hideModal();
+                                        alert.success("Your report has been submitted !");
+                                    }else {
+                                        alert.error("You already report this place !")
+                                    }
                                 }}
                             >
                                 {({

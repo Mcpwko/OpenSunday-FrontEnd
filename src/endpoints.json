@@ -9,5 +9,6 @@
   "insertReview": "/api/reviews",
   "checkUser": "/api/users/check/",
   "rate": "/api/places/Rating/",
-  "report": "/api/reports"
+  "report": "/api/reports",
+  "placeReports": "/api/reports/place/"
 }

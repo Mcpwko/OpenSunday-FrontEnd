@@ -76,27 +76,33 @@ export function FormReview(props) {
                                     setSubmitting(true);
                                     //POST Review into the DB
 
-                                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertReview}`, {
-                                            method: 'POST',
-                                            headers: {
-                                                Accept: "application/json",
-                                                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                                                'Content-Type': "application/json"
-                                            },
-                                            body: JSON.stringify({
-                                                    rate: rating,
-                                                    comment: values.comment,
-                                                    idUser: userContext.user.idUser,
-                                                    idPlace: props.place.idPlace
-                                                }
-                                            ),
-                                        });
+                                        if(userContext.user.reviewSet.filter(x => x.idPlace == props.place.idPlace).length < 1) {
 
-                                        resetForm();
-                                        setSubmitting(false);
-                                    toggleModal();
-                                        alert.success("Your comment has been published !");
+                                            await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertReview}`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    Accept: "application/json",
+                                                    Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                                                    'Content-Type': "application/json"
+                                                },
+                                                body: JSON.stringify({
+                                                        rate: rating,
+                                                        comment: values.comment,
+                                                        idUser: userContext.user.idUser,
+                                                        idPlace: props.place.idPlace
+                                                    }
+                                                ),
+                                            });
 
+                                            userContext.user.reviewSet.push({rate:rating,comment:values.comment,idUser:userContext.user.idUser,idPlace:props.place.idPlace});
+
+                                            resetForm();
+                                            setSubmitting(false);
+                                            toggleModal();
+                                            alert.success("Your comment has been published !");
+                                        } else {
+                                            alert.error("You already post a review for this place");
+                                        }
 
 
                                 }}
