@@ -1,24 +1,33 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {Fragment, useContext, useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory, {selectFilter, textFilter} from "react-bootstrap-table2-filter";
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
-import {Button} from "react-bootstrap";
+import {Button, Spinner} from "react-bootstrap";
 import styled from 'styled-components';
-import {GetAllPlaces} from "../database/GetPlaces";
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
-import * as Comparator from "react-bootstrap-table2-filter";
-import {GetAllCategories} from "../database/GetCategories";
-import {GetAllTypes} from "../database/GetTypes";
-// import filterFactory, { multiSelectFilter } from 'react-bootstrap-table2-filter';
+import GetCategories, {GetAllCategories} from "../database/GetCategories";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import {useHistory} from "react-router-dom";
+import {Marker} from "react-leaflet";
+import {switchIcon} from "./Icons";
+import PlacesPopup from "./PlacesPopup";
+import Select from "react-select";
+import {useAlert} from "react-alert";
 
 const Container = styled.div`
-
-td, th, tr, table, text, tbody, thead{
-    color:white;
-}
-
+    td, th, tr, table, text, tbody, thead{
+        color:white;
+    }
+    
+    .selection-cell, .selection-cell-header{
+        display:none;
+    }
+    
+    .table-hover tbody tr:hover{
+        background-color:rgba(168, 249, 243, 0.19);
+   }
 `;
 
 const {SearchBar} = Search;
@@ -52,39 +61,72 @@ const ClearButton = props => {
 };
 
 function Table() {
-    let [places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState([]);
     const authContext = useContext(Auth0Context);
-    let [categories, setTypes] = useState(GetAllCategories());
-    let [types, setCategories] = useState(GetAllTypes());
+    const [categories, setTypes] = useState([]);
+    const [types, setCategories] = useState([]);
+    let history = useHistory();
+    const alert = useAlert();
 
-
-
-    //Get places for DB
     useEffect(() => {
-        async function getPlaces() {
+        alert.info("Loading data")
 
+        async function getPlaces() {
             let places = await request(
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
                 authContext.getAccessTokenSilently,
                 authContext.loginWithRedirect
             );
 
-
             if (places && places.length > 0) {
-                console.log(places);
-                setPlaces(places);
-
+                setPlaces(places)
+                alert.success("Data loaded")
+                alert.info("Click on a place to see it on the map")
             }
-            // setCategories(GetAllCategories())
-            // setTypes(GetAllTypes())
         }
 
-        getPlaces().then(r => console.log(places)).then(y=> console.log("THEN"));
+        async function getCategories() {
+            let categories = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.categories}`,
+                authContext.getAccessTokenSilently,
+                authContext.loginWithRedirect
+            );
+
+            if (categories && categories.length > 0) {
+                setCategories(categories)
+            }
+        }
+
+        async function getTypes() {
+            let types = await request(
+                `${process.env.REACT_APP_SERVER_URL}${endpoints.types}`,
+                authContext.getAccessTokenSilently,
+                authContext.loginWithRedirect
+            );
+
+            if (types && types.length > 0) {
+                setTypes(types)
+            }
+        }
+
+        getCategories()
+            .then(getTypes())
+            .then(getPlaces())
+            .then()
 
     }, []);
 
-    console.log(places);
-
+    const selectRow = {
+        mode: "radio",
+        clickToSelect: true,
+        style: {
+            backgroundColor: "rgba(5, 6, 70, 1)",
+            color: "white"
+        },
+        onSelect: (row, isSelect, rowIndex, e) => {
+            history.push(`/map/${row.idPlace}`);
+        }
+    };
 
     const columns = [
         {
@@ -94,7 +136,8 @@ function Table() {
                 getFilter: filter => {
                     nameFilter = filter;
                 }
-            })
+            }),
+            sort: true
         },
         {
             dataField: "locationSet.citySet.name",
@@ -107,34 +150,14 @@ function Table() {
             sort: true
         },
         {
-            // dataField: "typeSet.name",
-            // text: "Type",
-            // formatter: cell => types[cell],
-            // filter: selectFilter({
-            //         options: types,
-            //         className: 'test-classname',
-            //         withoutEmptyOption: true,
-            //         defaultValue: 2,
-            //         comparator: Comparator.LIKE, // default is Comparator.EQ
-            //         style: { backgroundColor: 'pink' },
-            //         getFilter: (filter) => { // qualityFilter was assigned once the component has been mounted.
-            //             typeFilter = filter;
-            //         },
-            //         onFilter: (filterValue) => {
-            //             //...
-            //         }
-            // })
-
-
-
-
-
-
-            // filter: textFilter({
-            //     getFilter: filter => {
-            //         typeFilter = filter;
-            //     }
-            // })
+            dataField: "typeSet.name",
+            text: "Type",
+            filter: textFilter({
+                getFilter: filter => {
+                    typeFilter = filter;
+                }
+            }),
+            sort: true
         },
         {
             dataField: "typeSet.categorySet[0].name",
@@ -143,7 +166,8 @@ function Table() {
                 getFilter: filter => {
                     categoryFilter = filter;
                 }
-            })
+            }),
+            sort: true
         },
         {
             dataField: "isOpenSunday",
@@ -152,7 +176,8 @@ function Table() {
                 getFilter: filter => {
                     oSFilter = filter;
                 }
-            })
+            }),
+            sort: true
         },
         {
             dataField: "isOpenSpecialDay",
@@ -161,7 +186,8 @@ function Table() {
                 getFilter: filter => {
                     oSdFilter = filter;
                 }
-            })
+            }),
+            sort: true
         }
     ];
 
@@ -174,32 +200,11 @@ function Table() {
         oSdFilter("");
     }
 
-    // const products = [
-    //     {
-    //         name: "apple",
-    //         price: 100,
-    //         stock: 10,
-    //         origin: "japan"
-    //     },
-    //     {
-    //         name: "orange",
-    //         price: 150,
-    //         stock: 35,
-    //         origin: "spain"
-    //     },
-    //     {
-    //         name: "pineapple",
-    //         price: 300,
-    //         stock: 4,
-    //         origin: "america"
-    //     }
-    // ];
-
-
     return (
         <Container>
-            <h1>Clear search bar and filter</h1>
-            {/*{places && places.length > 0 && (*/}
+            <h1>Places search</h1>
+
+            {places && places.length > 0 ? (
                 <ToolkitProvider
                     bootstrap4
                     keyField="name"
@@ -216,21 +221,26 @@ function Table() {
                             <ClearButton
                                 {...props.searchProps}
                                 clearAllFilter={clearAllFilter}
-
                             />
-                            {console.log("TYPES=>"+types)}
+                            {/*{console.log("DD%" + ddt)}*/}
+                            {/*{console.log("TYPES=>" + types)}*/}
                             <BootstrapTable
                                 {...props.baseProps}
                                 filter={filterFactory()}
-                                noDataIndication="There is no solution"
+                                noDataIndication="No data found"
                                 striped
                                 hover
                                 condensed
+                                pagination={paginationFactory()}
+                                selectRow={selectRow}
+                                // headerWrapperClasses="thead-dark"
+                                // classes="table-striped table-hover"
                             />
                         </div>
                     )}
                 </ToolkitProvider>
-            {/*)}*/}
+            ) : <Spinner animation="border" variant="light" role="status" style={{width: "8rem", height: "8rem"}}><span
+                className="sr-only">Loading...</span></Spinner>}
         </Container>
     );
 

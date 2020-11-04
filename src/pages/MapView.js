@@ -96,7 +96,7 @@ function MapView(props) {
                 if (place != null)
                     setViewPort({
                         center: [place.locationSet.lat, place.locationSet.long],
-                        zoom: 12
+                        zoom: 15
                     })
             }
         }
@@ -304,199 +304,200 @@ function MapView(props) {
 
 
     return (
-        <UserContext.Provider value={{user:userContext.user, refresh:userContext.refresh, refreshPlaces:getPlaces}}>
-        <BrowserRouter>
-            <div className="buttonsMap">
-                <button className="add" onClick={() => {
-                    if(userContext.user.pseudo!=null){
-                        toggleDraggable(true)
-                    }else{
-                        alert.error("You don't have a pseudo yet !");
-                        alert.error("Please complete your profile in 'My Account' ! ");
-                    }
+        <UserContext.Provider value={{user: userContext.user, refresh: userContext.refresh, refreshPlaces: getPlaces}}>
+            <BrowserRouter>
+                <div className="buttonsMap">
+                    <button className="add" onClick={() => {
+                        if (userContext.user.pseudo != null) {
+                            toggleDraggable(true)
+                        } else {
+                            alert.error("You don't have a pseudo yet !");
+                            alert.error("Please complete your profile in 'My Account' ! ");
+                        }
 
-                }}>Add new place</button>
-            </div>
-            <h5>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h5>
+                    }}>Add new place
+                    </button>
+                </div>
+                <h5>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h5>
 
-            <div className="mapTab">
-                {/*TEST DU ROUTING POUR LES PLACES*/}
-                <Route
-                    path="/map/:id"
-                    onEnter={showDetails}
-                    render={(routeParams) => (
-                        places.length > 0 ?
-                            <Details
-                                {...places.find(
-                                    (place) => place.idPlace === +routeParams.match.params.id
-                                )}
-                                onOpen={visible}
-                                onClose={toggleSideBar}
-                                /* Pass the new method for toggling to the Book */
-                                // toggleLike={handleToggleLike}
-                            /> : null
-                    )}
-                />
-
-                {showForm ? <Modal>
-                    <span id="close" onClick={closeForm}>&times;</span>
-                    {/*{console.log("LOG FORM-INFOMARKER // data ==================>" + infoMarker.address.amenity)}*/}
-                    <FormPlace latitude={marker.lat} longitude={marker.lng}
-                               gcButton={buttonGC} data={data} closeForm={closeForm}/>
-                </Modal> : null}
-                {/*<Foursquare className="listVenues"/>*/}
-                <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
-                     className="mapContent">
-                    <LayersControl position="topright">
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                        />
-
-
-                        {types != null ? types.map((type) => (
-
-                            <Overlay name={type.name} key={type.idType} checked>
-                                <LayerGroup>
-                                    <MarkerClusterGroup>
-                                        <PlacesMarkers
-                                            venues={places.filter((place) => place.typeSet.name.includes(type.name) && (filter == 1 ? place.isOpenSunday : filter == 2 ? place.isOpenSpecialDay : true))}
-                                            onOpen={showDetails} select={select}/>
-                                    </MarkerClusterGroup>
-                                </LayerGroup>
-                            </Overlay>
-
-                        )) : null}
-
-
-                    </LayersControl>
-                    {/* button to return to the Device Location */}
-                    <Control position="topleft">
-                        <button className="toolsBtn"
-                                onClick={() => setViewPort({
-                                        center: [latitude, longitude],
-                                        zoom: 12
-                                    }
-                                )}
-                                disabled={!showHere}
-                        >
-                            <FontAwesomeIcon icon={faHome}/>
-                        </button>
-                    </Control>
-                    {/* button to add a new Marker on the map*/}
-                    <Control position="topleft">
-                        <button className="toolsBtn"
-                                onClick={setDraggableMarker}
-                        >
-                            <FontAwesomeIcon size={"lg"} icon={faMapMarkerAlt}/>
-                        </button>
-                    </Control>
-                    <Control position="topright">
-                        <div className="controlSection">
-                            <label>Open on Sunday</label>
-                            <input type="checkbox" onChange={filterOpenSunday}/>
-                        </div>
-                    </Control>
-                    <Control position="topright">
-                        <div className="controlSection">
-                            <label>Open on Special Day</label>
-                            <input type="checkbox" onChange={filterOpenSpecial}/>
-                        </div>
-                    </Control>
-                    {/*Search button that allow to find any location from leaflet */}
-                    <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
-                            closeResultsOnClick={true}>
-                        {(info) => (
-                            setInfoMarker(info.raw[0]),
-                                setMarker(info.latLng),
-                                // Marker to add location from search
-                                <Marker icon={PlusLocationIcon} position={info?.latLng}>{<Popup>
-                                    <div>
-                                        <h1>{info.raw[0].address.amenity}</h1>
-                                        <h2>{info.raw[0].type}</h2>
-                                        <p>{info.raw[0].address.road} {info.raw[0].address.house_number}</p>
-                                        <p>{info.raw[0].address.state}</p>
-                                        <p>{info.raw[0].address.postcode} {info.raw[0].address.town}</p>
-                                        <p>
-                                            {info.latLng.toString().replace(",", " , ")}
-                                        </p>
-                                        <p>Info from search component:{info.info}</p>
-                                        <p>
-                                            {info.raw &&
-                                            info.raw.place_id &&
-                                            JSON.stringify(info.raw.place_id)}
-                                        </p>
-                                        <br/>
-                                        <button style={{marginLeft: 10}} className="toolsBtn"
-                                                onClick={() => toggleDraggable(false)}>Add this new Place
-                                        </button>
-                                    </div>
-                                    {/*****/}
-                                    {/*Actualise the map*/}
-                                    {/*****/}
-                                    {
-                                        setTimeout(function () {
-                                            setZoom(25);
-                                        }, 100)
-                                    }
-                                </Popup>}</Marker>
+                <div className="mapTab">
+                    {/*TEST DU ROUTING POUR LES PLACES*/}
+                    <Route
+                        path="/map/:id"
+                        onEnter={showDetails}
+                        render={(routeParams) => (
+                            places.length > 0 ?
+                                <Details
+                                    {...places.find(
+                                        (place) => place.idPlace === +routeParams.match.params.id
+                                    )}
+                                    onOpen={visible}
+                                    onClose={toggleSideBar}
+                                    /* Pass the new method for toggling to the Book */
+                                    // toggleLike={handleToggleLike}
+                                /> : null
                         )}
+                    />
 
-                    </Search>
-                    <Markers venues={data.venues}/>
-                    {/*ANCIEN LISTE POUR AFFICHER LES MARKERS DE LA DB*/}
-                    {/*{places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}*/}
+                    {showForm ? <Modal>
+                        <span id="close" onClick={closeForm}>&times;</span>
+                        {/*{console.log("LOG FORM-INFOMARKER // data ==================>" + infoMarker.address.amenity)}*/}
+                        <FormPlace latitude={marker.lat} longitude={marker.lng}
+                                   gcButton={buttonGC} data={data} closeForm={closeForm}/>
+                    </Modal> : null}
+                    {/*<Foursquare className="listVenues"/>*/}
+                    <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
+                         className="mapContent">
+                        <LayersControl position="topright">
+                            <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                            />
 
-                    {/*Marker to show the location of the user*/}
-                    {/*{console.log("lat:" + latitude)}*/}
-                    {/*{console.log(error)}*/}
-                    {showHere ? <Marker
-                        icon={HereLocationIcon}
-                        position={[latitude, longitude]}
-                    >
-                        <Popup minWidth={90}>
-                            <div>
-                                <h6>You are here</h6>
-                                <span>You are not here ?</span><br/>
-                                <span>Try to reload the page.</span><br/>
-                                <button className="add" onClick={() => {
-                                    window.location.reload(false)
-                                }}>
-                                    Reload
-                                </button>
+
+                            {types != null ? types.map((type) => (
+
+                                <Overlay name={type.name} key={type.idType} checked>
+                                    <LayerGroup>
+                                        <MarkerClusterGroup>
+                                            <PlacesMarkers
+                                                venues={places.filter((place) => place.typeSet.name.includes(type.name) && (filter == 1 ? place.isOpenSunday : filter == 2 ? place.isOpenSpecialDay : true))}
+                                                onOpen={showDetails} select={select}/>
+                                        </MarkerClusterGroup>
+                                    </LayerGroup>
+                                </Overlay>
+
+                            )) : null}
+
+
+                        </LayersControl>
+                        {/* button to return to the Device Location */}
+                        <Control position="topleft">
+                            <button className="toolsBtn"
+                                    onClick={() => setViewPort({
+                                            center: [latitude, longitude],
+                                            zoom: 12
+                                        }
+                                    )}
+                                    disabled={!showHere}
+                            >
+                                <FontAwesomeIcon icon={faHome}/>
+                            </button>
+                        </Control>
+                        {/* button to add a new Marker on the map*/}
+                        <Control position="topleft">
+                            <button className="toolsBtn"
+                                    onClick={setDraggableMarker}
+                            >
+                                <FontAwesomeIcon size={"lg"} icon={faMapMarkerAlt}/>
+                            </button>
+                        </Control>
+                        <Control position="topright">
+                            <div className="controlSection">
+                                <label>Open on Sunday</label>
+                                <input type="checkbox" onChange={filterOpenSunday}/>
                             </div>
-                        </Popup>
-                    </Marker> : null}
+                        </Control>
+                        <Control position="topright">
+                            <div className="controlSection">
+                                <label>Open on Special Day</label>
+                                <input type="checkbox" onChange={filterOpenSpecial}/>
+                            </div>
+                        </Control>
+                        {/*Search button that allow to find any location from leaflet */}
+                        <Search position="topleft" inputPlaceholder="Search for places, City" zoom={25}
+                                closeResultsOnClick={true}>
+                            {(info) => (
+                                setInfoMarker(info.raw[0]),
+                                    setMarker(info.latLng),
+                                    // Marker to add location from search
+                                    <Marker icon={PlusLocationIcon} position={info?.latLng}>{<Popup>
+                                        <div>
+                                            <h1>{info.raw[0].address.amenity}</h1>
+                                            <h2>{info.raw[0].type}</h2>
+                                            <p>{info.raw[0].address.road} {info.raw[0].address.house_number}</p>
+                                            <p>{info.raw[0].address.state}</p>
+                                            <p>{info.raw[0].address.postcode} {info.raw[0].address.town}</p>
+                                            <p>
+                                                {info.latLng.toString().replace(",", " , ")}
+                                            </p>
+                                            <p>Info from search component:{info.info}</p>
+                                            <p>
+                                                {info.raw &&
+                                                info.raw.place_id &&
+                                                JSON.stringify(info.raw.place_id)}
+                                            </p>
+                                            <br/>
+                                            <button style={{marginLeft: 10}} className="toolsBtn"
+                                                    onClick={() => toggleDraggable(false)}>Add this new Place
+                                            </button>
+                                        </div>
+                                        {/*****/}
+                                        {/*Actualise the map*/}
+                                        {/*****/}
+                                        {
+                                            setTimeout(function () {
+                                                setZoom(25);
+                                            }, 100)
+                                        }
+                                    </Popup>}</Marker>
+                            )}
+
+                        </Search>
+                        <Markers venues={data.venues}/>
+                        {/*ANCIEN LISTE POUR AFFICHER LES MARKERS DE LA DB*/}
+                        {/*{places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}*/}
+
+                        {/*Marker to show the location of the user*/}
+                        {/*{console.log("lat:" + latitude)}*/}
+                        {/*{console.log(error)}*/}
+                        {showHere ? <Marker
+                            icon={HereLocationIcon}
+                            position={[latitude, longitude]}
+                        >
+                            <Popup minWidth={90}>
+                                <div>
+                                    <h6>You are here</h6>
+                                    <span>You are not here ?</span><br/>
+                                    <span>Try to reload the page.</span><br/>
+                                    <button className="add" onClick={() => {
+                                        window.location.reload(false)
+                                    }}>
+                                        Reload
+                                    </button>
+                                </div>
+                            </Popup>
+                        </Marker> : null}
 
 
-                    {/**Draggable marker*/}
-                    <Marker
-                        icon={PlusLocationIcon}
-                        draggable={draggable}
-                        onDragend={updatePosition}
-                        position={marker}
-                        ref={refMarker}
-                        opacity={opacity}
-                    >
-                        <Popup minWidth={90}>
+                        {/**Draggable marker*/}
+                        <Marker
+                            icon={PlusLocationIcon}
+                            draggable={draggable}
+                            onDragend={updatePosition}
+                            position={marker}
+                            ref={refMarker}
+                            opacity={opacity}
+                        >
+                            <Popup minWidth={90}>
                         <span onClick={toggleDraggable}>
                             {draggable ? 'Create place' : "Complete the form"}
                         </span>
-                            <br/>
-                            <button style={{marginLeft: 10}} className="toolsBtn"
-                                    onClick={() => toggleDraggable(false)}>Add a new Place
-                            </button>
-                        </Popup>
-                    </Marker>
-                    <Route path="/map/:id/report">
-                        <Modal>
-                            <span id="close" onClick={closeForm}>&times;</span>
-                            <div>WELL DONE</div>
-                        </Modal>
-                    </Route>
-                </Map>
-            </div>
-        </BrowserRouter>
+                                <br/>
+                                <button style={{marginLeft: 10}} className="toolsBtn"
+                                        onClick={() => toggleDraggable(false)}>Add a new Place
+                                </button>
+                            </Popup>
+                        </Marker>
+                        <Route path="/map/:id/report">
+                            <Modal>
+                                <span id="close" onClick={closeForm}>&times;</span>
+                                <div>WELL DONE</div>
+                            </Modal>
+                        </Route>
+                    </Map>
+                </div>
+            </BrowserRouter>
         </UserContext.Provider>
     );
 }
