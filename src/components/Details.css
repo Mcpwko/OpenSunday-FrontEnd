@@ -20,3 +20,17 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+
+.deletePlace{
+    border-radius: 5px;
+    background-color: darkred;
+    margin-top: 20px;
+
+}
+
+.deletePlace:hover{
+    background-color: darkred;
+    text-decoration: none;
+    cursor: pointer;
+}

@@ -1,5 +1,6 @@
 {
   "places": "/api/places",
+  "placesRoad": "/api/places/",
   "insertPlace": "/api/places/insert",
   "user": "/api/users",
   "types": "/api/types",

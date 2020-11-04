@@ -87,7 +87,7 @@ function MapView(props) {
             setVisible(true);
             console.log("PLACES : " + places);
             if (places.length > 0) {
-                var place = {
+                let place = {
                     ...places.find(
                         (place) => place.idPlace === +path.pathname.split("/").pop()
                     )
@@ -173,21 +173,22 @@ function MapView(props) {
     const closeForm = () => {
         setShowForm(false)
     }
+
+    async function getPlaces() {
+
+        let places = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
+            authContext.getAccessTokenSilently,
+            authContext.loginWithRedirect,
+        );
+
+        if (places && places.length > 0) {
+            setPlaces(places);
+        }
+    }
+
     //Get places for DB
     useEffect(() => {
-        async function getPlaces() {
-
-            let places = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
-                authContext.getAccessTokenSilently,
-                authContext.loginWithRedirect,
-            );
-
-            if (places && places.length > 0) {
-                setPlaces(places);
-            }
-        }
-
         getPlaces();
     }, [path]);
 
@@ -303,6 +304,7 @@ function MapView(props) {
 
 
     return (
+        <UserContext.Provider value={{user:userContext.user, refresh:userContext.refresh, refreshPlaces:getPlaces}}>
         <BrowserRouter>
             <div className="buttonsMap">
                 <button className="add" onClick={() => {
@@ -426,7 +428,7 @@ function MapView(props) {
                                         </p>
                                         <br/>
                                         <button style={{marginLeft: 10}} className="toolsBtn"
-                                                onClick={() => toggleDraggable(false)}>ADD ME
+                                                onClick={() => toggleDraggable(false)}>Add this new Place
                                         </button>
                                     </div>
                                     {/*****/}
@@ -482,7 +484,7 @@ function MapView(props) {
                         </span>
                             <br/>
                             <button style={{marginLeft: 10}} className="toolsBtn"
-                                    onClick={() => toggleDraggable(false)}>ADD ME
+                                    onClick={() => toggleDraggable(false)}>Add a new Place
                             </button>
                         </Popup>
                     </Marker>
@@ -495,6 +497,7 @@ function MapView(props) {
                 </Map>
             </div>
         </BrowserRouter>
+        </UserContext.Provider>
     );
 }
 

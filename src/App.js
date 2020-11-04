@@ -30,7 +30,6 @@ function App() {
     let [userConnected, setUserConnected] = useState({});
 
     let[showBan,setShowBan] = useState(false);
-    let[time,setTime] = useState(3);
 
     //Variables for Auth0
     let {
@@ -88,6 +87,7 @@ function App() {
 
 
     };
+
 
 
 //Method to get the connected user in the DB
@@ -185,7 +185,7 @@ function App() {
 
 
     return (
-        <UserContext.Provider value={{user:userConnected, refresh:getConnectedUser}}>
+        <UserContext.Provider value={{user:userConnected, refresh:getConnectedUser, refreshPlaces:null}}>
         <div className="App">
             <BrowserRouter>
 
