@@ -100,7 +100,7 @@ function Reviews (props) {
                             Are you sure you want to delete this review ? {id}<br/>
                             This action cannot be undone!<br/>
                         </ConfirmDialog>
-                        {userContext.user.idUserType == 3 /*&& review.userSet.idUserType != 3*/ ? <button className="buttonBan" onClick={() => (setBanUserDialog(true), setId(review.idUser))}>Ban</button> : null}
+                        {userContext.user.idUserType == 3 && review.userSet.idUserType != 3 ? <button className="buttonBan" onClick={() => (setBanUserDialog(true), setId(review.idUser))}>Ban</button> : null}
                         <ConfirmDialog
                             title="WARNING: This user will be banned"
                             open={banUserDialog}
