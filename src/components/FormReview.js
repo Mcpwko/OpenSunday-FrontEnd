@@ -99,9 +99,9 @@ export function FormReview(props) {
                                                     }
                                                 ),
                                             });
-
+                                            props.addReview();
                                             userContext.user.reviewSet.push({rate:rating,comment:values.comment,idUser:userContext.user.idUser,idPlace:props.place.idPlace});
-
+                                            setRating(0);
                                             resetForm();
                                             setSubmitting(false);
                                             toggleModal();

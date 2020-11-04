@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faEdit} from "@fortawesome/free-solid-svg-icons";
-import {withRouter} from 'react-router-dom';
+import {withRouter, useLocation} from 'react-router-dom';
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context} from "@auth0/auth0-react";
@@ -45,6 +45,7 @@ function Details(props) {
     const userContext = useContext(UserContext);
     const authContext = useContext(Auth0Context);
     const alert = useAlert();
+    const path = useLocation();
 
     useEffect(() => {
         async function getRate() {
@@ -59,15 +60,17 @@ function Details(props) {
         }
 
         getRate();
-    }, [props.idPlace]);
+    }, [props.idPlace, path]);
 
 
     function showModal() {
+        console.log("PSEUDO : " + userContext.user.pseudo)
         if(userContext.user.pseudo!=null){
             setShow(true);
+        }else{
+            alert.error("You don't have a pseudo yet !");
+            alert.error("Please complete your profile in 'My Account' ! ");
         }
-        alert.error("You don't have a pseudo yet !");
-        alert.error("Please complete your profile in 'My Account' ! ");
     };
 
     function hideModal() {
@@ -76,6 +79,15 @@ function Details(props) {
 
     const closeForm = () => {
         setShowForm(false)
+    }
+
+    const validatePlace = async () => {
+        let place = await request(`${process.env.REACT_APP_SERVER_URL}${endpoints.verifyPlace}${props.idPlace}`,
+            authContext.getAccessTokenSilently
+        );
+        if(place!=null){
+            alert.success(props.name + " has been verified !")
+        }
     }
 
 
@@ -333,6 +345,8 @@ function Details(props) {
             >
                 <EmailIcon size={32} round/>
             </EmailShareButton>
+            {(!props.isVerified && userContext.user.idUserType==3) &&
+            <button className="validatePlace" onClick={validatePlace}>Validate Place</button>}
         </div>
     )
 }

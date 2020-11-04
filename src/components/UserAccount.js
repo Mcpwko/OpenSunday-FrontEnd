@@ -187,7 +187,7 @@ export default function UserAccount(props) {
         alert.success("The account has been successfully deleted");
 
         // Unlog the user
-        authContext.logout({returnTo: window.location.origin})
+        authContext.logout({returnTo: window.location.origin});
 
 
     }
