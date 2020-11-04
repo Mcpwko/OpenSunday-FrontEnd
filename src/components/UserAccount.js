@@ -14,6 +14,7 @@ import {UserContext} from "../context/UserContext";
 import moment from "moment";
 import Rating from "@material-ui/lab/Rating";
 import {FormReview} from "./FormReview";
+import BootstrapTable from 'react-bootstrap-table-next';
 
 const Container = styled.div`
   text-align: center;
@@ -55,7 +56,7 @@ const Container = styled.div`
     background: grey;
     text-align: center;
   }
-
+    
 `;
 
 const MyForm = styled(Form)`
@@ -95,6 +96,54 @@ export default function UserAccount(props) {
     const userContext = useContext(UserContext);
 
 
+    function dateFormatter(cell){
+
+        return (
+            <div>{new Date(cell).getDate()}.{new Date(cell).getMonth()+1}.{new Date(cell).getFullYear()}</div>
+
+        );
+    }
+
+    const columns = [{
+        dataField: 'idReport',
+        text: 'Id Report',
+        headerStyle: {
+            color: '#24B9B6'
+        }
+    }, {
+        dataField: 'comment',
+        text: 'Comment',
+        headerStyle: {
+            color: '#24B9B6'
+        }
+    }, {
+        dataField: 'userSet.pseudo',
+        text: 'pseudo',
+        headerStyle: {
+            color: '#24B9B6'
+        }
+    }, {
+        dataField: 'reportDate',
+        text: 'Date',
+        sort: true,
+        formatter: dateFormatter,
+        headerStyle: {
+            color: '#24B9B6'
+        }
+    }];
+
+
+    const defaultSorted = [{
+        dataField: 'reportDate',
+        order: 'desc'
+    }]
+
+    const NoDataIndication = () => (
+        <div className="Spinner">
+            <h1 style={{color:'#24B9B6'}}>No report</h1>
+        </div>
+    )
+
     useEffect(() => {
         async function getReports() {
             let report = await request(
@@ -114,14 +163,11 @@ export default function UserAccount(props) {
                 setPlaces(place);
             }
 
-            //Chronological order (most rescent report)
             //Chronological order (most recent report)
             let sortedReports = report.sort((a, b) => Date.parse(new Date(b.reportDate.split("/").reverse().join("-"))) - Date.parse(new Date(a.reportDate.split("/").reverse().join("-"))));
             setSortedReports(sortedReports);
 
         }
-
-        console.log(userContext.user.idUserType);
         getReports();
 
     }, []);
@@ -144,15 +190,10 @@ export default function UserAccount(props) {
         authContext.logout({returnTo: window.location.origin})
 
 
-
-
     }
 
         const changePseudo = async (values) => {
-
-        console.log("NAMECONNARD " + authContext.user.name);
         const token = await authContext.getAccessTokenSilently();
-        console.log("TOKEN CONNARD " + token)
             //Look if the pseudo is available
 
             let check = await request(
@@ -161,10 +202,6 @@ export default function UserAccount(props) {
             );
 
             console.log(check);
-
-
-
-
 
             if(check==1){
                 //IF the pseudo is not available, there is an alert
@@ -286,19 +323,15 @@ export default function UserAccount(props) {
                             <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
                                 {places != null ? places.map((place) => (
                                     <li key={place.idPlace}>
-                                        <p>---------------------------------</p>
-                                        <h3>{place.name}</h3>
-                                        {place.reportSet.map((report) => (
-                                            <ul>
-                                                <li key={report.idReport}>
-                                                    <p>Comment: {report.comment}</p>
-                                                    <p>Submit by: {report.userSet.pseudo}</p>
-                                                    <p>Date: {new Date(report.reportDate).getDay()}.{new Date(report.reportDate).getMonth()}.{new Date(report.reportDate).getFullYear()}</p>
-                                                </li>
-                                            </ul>
-                                            )
-                                        )}
-                                        <p>---------------------------------</p>
+                                        <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: '#24B9B6', border: '1px solid #24B9B6', padding: '0.5em' }}>{place.name}</h3>
+                                        <BootstrapTable
+                                            rowStyle={{color:'#24B9B6'}}
+                                            bootstrap4
+                                            keyField='idReport'
+                                            noDataIndication={() => <NoDataIndication/>}
+                                            data={place.reportSet}
+                                            columns={columns}
+                                            defaultSorted={defaultSorted}/>
                                     </li>
                                 )) : null}
                             </ul>
