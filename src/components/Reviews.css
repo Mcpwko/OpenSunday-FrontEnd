@@ -24,3 +24,24 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.buttonRemove {
+    padding-bottom: 15px;
+    margin-right: 2px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border-color: darkred;
+    background-color: darkred;
+    color: white;
+    height: 20px;
+    width: 90px;
+    font-size: 10px;
+}
+
+.buttonRemove:hover,
+.buttonRemove:focus {
+    color: #24B9B6;
+    background: #282c34;
+    text-decoration: none;
+    cursor: pointer;
+}

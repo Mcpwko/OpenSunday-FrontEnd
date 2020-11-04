@@ -19,10 +19,17 @@ import Home from "./pages/Home";
 import {ThemeContext, themes} from "./context/ThemeContext";
 import Places from "./pages/Places";
 import {UserContext} from "./context/UserContext";
+import {useAlert} from "react-alert";
+import {Modal} from "react-bootstrap";
 
 function App() {
     //List of all places
     let [locations, setLocations] = useState([]);
+
+    //Connected User
+    let [userConnected, setUserConnected] = useState({});
+
+    let[showBan,setShowBan] = useState(false);
 
     //Variables for Auth0
     let {
@@ -33,6 +40,7 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
+    const alert = useAlert();
     const themeContext = useContext(ThemeContext);
     const userContext = useContext(UserContext);
 
@@ -80,16 +88,24 @@ function App() {
 
     };
 
+
+
 //Method to get the connected user in the DB
     let getConnectedUser = async () => {
 
         let connectedUser = await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + user.name}`,
-            getAccessTokenSilently
+            getAccessTokenSilently,loginWithRedirect
         );
+        setUserConnected(connectedUser);
+        //userContext.user = connectedUser;
+        if(connectedUser.status==1){
+            //alert.error("You have been banned ! You will be disconnect in 3 sec !")
+            setShowBan(true)
+            setInterval(function(){ logout({returnTo: window.location.origin}) }, 3000)
+        }
 
-        userContext.user = connectedUser;
-        console.log(userContext.user);
+
     };
 
     //Method to POST the user in the DB
@@ -124,6 +140,7 @@ function App() {
         */
         logout({returnTo: window.location.origin});
     };
+
 
     if (loading) {
         return <Loading/>;
@@ -162,8 +179,13 @@ function App() {
         );
     }
 
+    const hide = () =>{
+        //Blocking the banned user
+    }
+
 
     return (
+        <UserContext.Provider value={{user:userConnected, refresh:getConnectedUser, refreshPlaces:null}}>
         <div className="App">
             <BrowserRouter>
 
@@ -233,6 +255,14 @@ function App() {
                     </Switch>
 
                 </header>
+
+                <Modal show={showBan} onHide={hide}>
+                    <Modal.Header>
+                        <Modal.Title>BANNED</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>You have been banned ! You will be disconnected in 3 sec !</Modal.Body>
+                </Modal>
+
                 <footer style={{
                     backgroundColor: themes[themeContext.theme].background,
                     color: themes[themeContext.theme].foreground
@@ -240,6 +270,7 @@ function App() {
                 </footer>
             </BrowserRouter>
         </div>
+        </UserContext.Provider>
     );
 }
 

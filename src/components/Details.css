@@ -8,3 +8,29 @@
 .tableDetails{
     width: 100%;
 }
+
+.validatePlace{
+    border-radius: 5px;
+    background-color: green;
+    margin-top: 20px;
+}
+
+.validatePlace:hover{
+    background-color: darkgreen;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.deletePlace{
+    border-radius: 5px;
+    background-color: darkred;
+    margin-top: 20px;
+
+}
+
+.deletePlace:hover{
+    background-color: darkred;
+    text-decoration: none;
+    cursor: pointer;
+}

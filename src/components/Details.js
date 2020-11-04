@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faEdit} from "@fortawesome/free-solid-svg-icons";
-import {withRouter} from 'react-router-dom';
+import {withRouter, useLocation, useHistory} from 'react-router-dom';
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context} from "@auth0/auth0-react";
@@ -26,6 +26,7 @@ import {
     WhatsappShareButton
 } from "react-share";
 import {UserContext} from "../context/UserContext";
+import ConfirmDialog from "../components-reusable/ConfirmDialog";
 
 const MyForm = styled(Form)`
   width: 80%;
@@ -41,10 +42,13 @@ function Details(props) {
     const [rate, setRate] = useState(0);
     const [show, setShow] = useState(false);
     const [showForm, setShowForm] = useState(false);
+    const [removePlace, setRemovePlace] = useState(false);
 
     const userContext = useContext(UserContext);
     const authContext = useContext(Auth0Context);
     const alert = useAlert();
+    const history = useHistory();
+    const path = useLocation();
 
     useEffect(() => {
         async function getRate() {
@@ -59,15 +63,17 @@ function Details(props) {
         }
 
         getRate();
-    }, [props.idPlace]);
+    }, [props, path]);
 
 
     function showModal() {
+        console.log("PSEUDO : " + userContext.user.pseudo)
         if(userContext.user.pseudo!=null){
             setShow(true);
+        }else{
+            alert.error("You don't have a pseudo yet !");
+            alert.error("Please complete your profile in 'My Account' ! ");
         }
-        alert.error("You don't have a pseudo yet !");
-        alert.error("Please complete your profile in 'My Account' ! ");
     };
 
     function hideModal() {
@@ -76,6 +82,31 @@ function Details(props) {
 
     const closeForm = () => {
         setShowForm(false)
+    }
+
+    const validatePlace = async () => {
+        let place = await request(`${process.env.REACT_APP_SERVER_URL}${endpoints.verifyPlace}${props.idPlace}`,
+            authContext.getAccessTokenSilently
+        );
+        if(place!=null){
+            alert.success(props.name + " has been verified !")
+            userContext.refreshPlaces();
+        }
+    }
+
+    const deletePlace = async () => {
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.placesRoad}${props.idPlace}`, {
+            method:'DELETE',
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+            },
+        });
+
+        alert.success(props.name + " has been deleted !");
+        userContext.refreshPlaces();
+        history.push("/map");
+
     }
 
 
@@ -333,6 +364,22 @@ function Details(props) {
             >
                 <EmailIcon size={32} round/>
             </EmailShareButton>
+
+            <ConfirmDialog
+                title="WARNING: This place will be deleted"
+                open={removePlace}
+                setOpen={setRemovePlace}
+                onConfirm={deletePlace}
+            >
+                Are you sure you want to delete this Place ? {props.idPlace}<br/>
+                This action cannot be undone!<br/>
+            </ConfirmDialog>
+
+            {(!props.isVerified && userContext.user.idUserType==3) &&
+            <button className="validatePlace" onClick={validatePlace}>Validate Place</button>}
+
+            {(userContext.user.idUserType==3) &&
+            <button className="deletePlace" onClick={() => setRemovePlace(true)}>Delete Place</button>}
         </div>
     )
 }

@@ -14,6 +14,7 @@ import {useAuth0} from "@auth0/auth0-react";
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import {useAlert} from "react-alert";
+import {UserContext} from "../context/UserContext";
 
 const Container = styled.div`
   // background: #F7F9FA;
@@ -180,11 +181,11 @@ let validationSchema = Yup.object().shape({
         .required("Required longitude"),
     openSunday: Yup.boolean(),
     openSpecialDay: Yup.boolean(),
-    email: Yup.string()
+    email: Yup.string().nullable()
         .email("Invalid email address"),
-    phoneNumber: Yup.string()
+    phoneNumber: Yup.string().nullable()
         .matches(phoneRegExp, "Phone number is not valid"),
-    website: Yup.string()
+    website: Yup.string().nullable()
         .url("Invalid url")
 });
 
@@ -230,6 +231,7 @@ export const FormPlace = (props) => {
     const [zipCity, setZipCity] = useState([]);
 
     const authContext = useContext(Auth0Context);
+    const userContext = useContext(UserContext);
     const alert = useAlert();
 
     let myZip = "";
@@ -405,7 +407,7 @@ export const FormPlace = (props) => {
                                 idType: values.type
                             })
                         });
-
+                        userContext.refreshPlaces();
                         alert.success("The place has been modified !");
 
                     }else{
@@ -435,7 +437,10 @@ export const FormPlace = (props) => {
                      });
 
                         alert.success("The place has been added !");
+                        userContext.refreshPlaces();
                     }
+
+
 
                     resetForm();
                     setSubmitting(false);

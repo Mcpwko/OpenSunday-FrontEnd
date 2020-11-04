@@ -1,5 +1,6 @@
 {
   "places": "/api/places",
+  "placesRoad": "/api/places/",
   "insertPlace": "/api/places/insert",
   "user": "/api/users",
   "types": "/api/types",
@@ -7,8 +8,10 @@
   "regions": "/api/regions",
   "review": "/api/reviews/place/",
   "insertReview": "/api/reviews",
+  "reviews": "/api/reviews/",
   "checkUser": "/api/users/check/",
   "rate": "/api/places/Rating/",
   "report": "/api/reports",
-  "userAuth": "/api/v2/users/"
+  "banUser": "/api/users/Ban/",
+  "verifyPlace":"/api/places/Verify/"
 }
