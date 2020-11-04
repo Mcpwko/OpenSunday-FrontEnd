@@ -2,10 +2,11 @@ import React, {useState} from "react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
-// import Link from "@material-ui/core/Link";
 import GetTypes from "../database/GetTypes";
 import GetCategories from "../database/GetCategories";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
+import Table from "../components/Table"
+import Table2 from "../components/Table2"
 
 export default function Places(props) {
     //List of all places
@@ -39,17 +40,21 @@ export default function Places(props) {
 
     return (
         <div className="place">
-            <div className="filters"></div>
-            <select>
-                {GetTypes()}
-            </select>
-            <select>
-                {GetCategories()}
-            </select>
+            {/*<div className="filters"></div>*/}
+            {/*<select>*/}
+            {/*    {GetTypes()}*/}
+            {/*</select>*/}
+            {/*<select>*/}
+            {/*    {GetCategories()}*/}
+            {/*</select>*/}
 
-            <div className="buttonsMap">
-                <button className="add" onClick={handleLocationsClick}>Get places</button>
-            </div>
+            {/*<div className="buttonsMap">*/}
+            {/*    <button className="add" onClick={handleLocationsClick}>Get places</button>*/}
+            {/*</div>*/}
+
+
+            <Table2></Table2>
+            {/*<Table></Table>*/}
 
             {/*<a*/}
             {/*    className="App-link"*/}
