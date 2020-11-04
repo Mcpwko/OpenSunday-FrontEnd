@@ -69,6 +69,7 @@
     ]
   },
   "devDependencies": {
-    "react-bootstrap-table-next": "^4.0.3"
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-editor": "^1.4.0"
   }
 }

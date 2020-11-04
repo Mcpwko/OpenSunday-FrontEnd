@@ -15,7 +15,9 @@ import moment from "moment";
 import Rating from "@material-ui/lab/Rating";
 import {FormReview} from "./FormReview";
 import BootstrapTable from 'react-bootstrap-table-next';
-
+import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
+import {faBan, faEdit} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const Container = styled.div`
   text-align: center;
   color: snow;
@@ -89,9 +91,8 @@ const validationSchema = Yup.object().shape({
 export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
-    const [reports, setReports] = useState([]);
-    const [sortedReports, setSortedReports] = useState([]);
     const [places, setPlaces] = useState([]);
+    const [rowCount, setRowCount] = useState([]);
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
 
@@ -102,6 +103,51 @@ export default function UserAccount(props) {
             <div>{new Date(cell).getDate()}.{new Date(cell).getMonth()+1}.{new Date(cell).getFullYear()}</div>
 
         );
+    }
+
+    function deleteClick(){
+
+    }
+
+    function editClick(){
+
+    }
+
+    function deleteFormatter(cell, row){
+        if(row.isForDelete == true){
+        return (
+            <div>
+                <button className="editButton" onClick={deleteClick}><FontAwesomeIcon icon={faBan}/></button>
+            </div>
+        )}
+        else
+    {
+        return(
+
+        <div>
+            <h3>-</h3>
+        </div>
+
+        )}
+    }
+
+    function editFormatter(cell, row){
+
+        if(row.isForEdit == true){
+            return (
+                <div>
+                    <button className="editButton" onClick={editClick}><FontAwesomeIcon icon={faEdit}/></button>
+                </div>
+            )}
+        else
+        {
+            return(
+
+                <div>
+                    <h3>-</h3>
+                </div>
+
+            )}
     }
 
     const columns = [{
@@ -130,6 +176,20 @@ export default function UserAccount(props) {
         headerStyle: {
             color: '#24B9B6'
         }
+    }, {
+        dataField: 'isForEdit',
+        text: 'To edit',
+        formatter: editFormatter,
+        headerStyle: {
+            color: '#24B9B6'
+        }
+    }, {
+        dataField: 'isForDelete',
+        text: 'To delete',
+        formatter: deleteFormatter,
+        headerStyle: {
+            color: '#24B9B6'
+        }
     }];
 
 
@@ -145,14 +205,7 @@ export default function UserAccount(props) {
     )
 
     useEffect(() => {
-        async function getReports() {
-            let report = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.report}`,
-                authContext.getAccessTokenSilently
-            );
-            if (report != null) {
-                setReports(report);
-            }
+        async function getPlaces() {
 
             //Get places
             let place = await request(
@@ -163,12 +216,8 @@ export default function UserAccount(props) {
                 setPlaces(place);
             }
 
-            //Chronological order (most recent report)
-            let sortedReports = report.sort((a, b) => Date.parse(new Date(b.reportDate.split("/").reverse().join("-"))) - Date.parse(new Date(a.reportDate.split("/").reverse().join("-"))));
-            setSortedReports(sortedReports);
-
         }
-        getReports();
+        getPlaces();
 
     }, []);
 
@@ -319,11 +368,10 @@ export default function UserAccount(props) {
 
                         {/*============================== REPORT ==================================*/}
                         {userContext.user != null && userContext.user.idUserType == 3 ? <div>
-
                             <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
-                                {places != null ? places.map((place) => (
+                                {places != null ? places.map((place) =>  (
                                     <li key={place.idPlace}>
-                                        <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: '#24B9B6', border: '1px solid #24B9B6', padding: '0.5em' }}>{place.name}</h3>
+                                        <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: '#24B9B6', border: '1px solid #24B9B6', padding: '0.5em' }}>{place.name} | <span>{place.reportSet.length} report(s)</span></h3>
                                         <BootstrapTable
                                             rowStyle={{color:'#24B9B6'}}
                                             bootstrap4
