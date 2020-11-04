@@ -103,7 +103,6 @@ function App() {
             //alert.error("You have been banned ! You will be disconnect in 3 sec !")
             setShowBan(true)
             setInterval(function(){ logout({returnTo: window.location.origin}) }, 3000)
-            setInterval(function(){ logout({returnTo: window.location.origin}) }, 3000)
         }
 
 
@@ -258,7 +257,7 @@ function App() {
                 </header>
 
                 <Modal show={showBan} onHide={hide}>
-                    <Modal.Header closeButton>
+                    <Modal.Header>
                         <Modal.Title>BANNED</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>You have been banned ! You will be disconnected in 3 sec !</Modal.Body>

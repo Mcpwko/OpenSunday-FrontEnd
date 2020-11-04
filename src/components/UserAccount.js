@@ -3,7 +3,7 @@ import "./Place.css";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import {SubmitButton} from "./FormPlace";
 import {Formik} from "formik";
-import {Form, Button} from "react-bootstrap";
+import {Form, Button, Modal} from "react-bootstrap";
 import * as Yup from "yup";
 import styled from 'styled-components';
 import ConfirmDialog from "../components-reusable/ConfirmDialog";
@@ -92,6 +92,7 @@ export default function UserAccount(props) {
     const [reports, setReports] = useState([]);
     const [sortedReports, setSortedReports] = useState([]);
     const [places, setPlaces] = useState([]);
+    const [showDelete,setShowDelete] = useState(false);
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
 
@@ -184,10 +185,9 @@ export default function UserAccount(props) {
         });
 
         // Tell the user
-        alert.success("The account has been successfully deleted");
-
-        // Unlog the user
-        authContext.logout({returnTo: window.location.origin});
+        setShowDelete(true);
+        //Redirect user
+        setInterval(function(){ authContext.logout({returnTo: window.location.origin})}, 3000)
 
 
     }
@@ -233,13 +233,20 @@ export default function UserAccount(props) {
 
         }
 
-    // const [value, setValue] = useState("");
-    //
-    // let pseudo = "test";
+        const hide = () => {
+        //Block interaction of the user
+        }
+
 
     return (
 
         <Container style={{width: "100%"}}>
+            <Modal show={showDelete} onHide={hide}>
+                <Modal.Header>
+                    <Modal.Title>Deleted</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Your account has been successfully deleted ! You will be redirected in 3 sec !</Modal.Body>
+            </Modal>
 
             <h1>Account settings</h1>
 
