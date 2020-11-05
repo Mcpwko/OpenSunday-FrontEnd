@@ -18,6 +18,10 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 import {faBan, faEdit} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
+
+
 const Container = styled.div`
   text-align: center;
   color: snow;
@@ -96,6 +100,7 @@ export default function UserAccount(props) {
     const [rowCount, setRowCount] = useState([]);
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
+    let statusTrue = true;
 
 
     function dateFormatter(cell){
@@ -114,34 +119,44 @@ export default function UserAccount(props) {
 
     }
 
-    function deleteFormatter(cell, row){
-        if(row.isForDelete == true){
-        return (
-            <div>
-                <button className="editButton" onClick={deleteClick}><FontAwesomeIcon icon={faBan}/></button>
-            </div>
-        )}
-        else
-    {
-        return(
+    function editDeleteCheck(reportSet){
 
-        <div>
-            <h3>-</h3>
-        </div>
 
-        )}
-    }
+        let editTrue = false;
+        let deleteTrue = false;
 
-    function editFormatter(cell, row){
+        reportSet.forEach((report) => {
+                if(report.isForDelete) {
+                    deleteTrue=true;
+                }
+                if(report.isForEdit){
+                    editTrue=true;
+                }
+                })
 
-        if(row.isForEdit == true){
-            return (
+        if(editTrue && deleteTrue){
+            return(
+
                 <div>
-                    <button className="editButton" onClick={editClick}><FontAwesomeIcon icon={faEdit}/></button>
+                    <Button onClick={editClick}><FontAwesomeIcon icon={faEdit}/></Button> <Button onClick={deleteClick}><FontAwesomeIcon icon={faBan}/></Button>
                 </div>
+
+            )} else if(editTrue){
+            return(
+
+                <div>
+                    <Button onClick={editClick}><FontAwesomeIcon icon={faEdit}/></Button>
+                </div>
+
             )}
-        else
-        {
+         else if(deleteTrue) {
+            return(
+
+            <div>
+                <Button onClick={deleteClick}><FontAwesomeIcon icon={faBan}/></Button>
+            </div>
+
+        )} else{
             return(
 
                 <div>
@@ -149,6 +164,27 @@ export default function UserAccount(props) {
                 </div>
 
             )}
+
+        }
+
+    async function handleClick(row) {
+
+        await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.changeStatus}${'/' + row.idReport}`,
+            authContext.getAccessTokenSilently
+        );
+
+        alert.success("The report has been processed !");
+    }
+
+    function changeStatus(cell, row){
+
+        return (
+            <div>
+                <button className="changeStatus" onClick={() => handleClick(row)}><span>❌</span></button>
+            </div>
+        )
+
     }
 
     const columns = [{
@@ -178,16 +214,9 @@ export default function UserAccount(props) {
             color: '#24B9B6'
         }
     }, {
-        dataField: 'isForEdit',
-        text: 'To edit',
-        formatter: editFormatter,
-        headerStyle: {
-            color: '#24B9B6'
-        }
-    }, {
-        dataField: 'isForDelete',
-        text: 'To delete',
-        formatter: deleteFormatter,
+        dataField: 'status',
+        text: 'Status',
+        formatter: changeStatus,
         headerStyle: {
             color: '#24B9B6'
         }
@@ -213,7 +242,8 @@ export default function UserAccount(props) {
                 `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
                 authContext.getAccessTokenSilently
             );
-            if (place != null) {
+
+            if (place != null ) {
                 setPlaces(place);
             }
 
@@ -373,30 +403,28 @@ export default function UserAccount(props) {
                             </ConfirmDialog>
                         </div>
 
-                        {/*============================== REPORT ==================================*/}
-                        {userContext.user != null && userContext.user.idUserType == 3 ? <div>
-
-                            <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
-                                {places != null ? places.map((place) =>  (
-                                    <li key={place.idPlace}>
-                                        <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: '#24B9B6', border: '1px solid #24B9B6', padding: '0.5em' }}>{place.name} | <span>{place.reportSet.length} report(s)</span></h3>
-                                        <BootstrapTable
-                                            rowStyle={{color:'#24B9B6'}}
-                                            bootstrap4
-                                            keyField='idReport'
-                                            noDataIndication={() => <NoDataIndication/>}
-                                            data={place.reportSet}
-                                            columns={columns}
-                                            defaultSorted={defaultSorted}/>
-                                    </li>
-                                )) : null}
-                            </ul>
-                        </div> : null}
-
-
                     </MyForm>
                 )}
             </Formik>
+            {/*============================== REPORT ==================================*/}
+            {userContext.user != null && userContext.user.idUserType == 3 ? <div>
+
+                <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
+                    {places != null ? places.map((place) =>  (
+                        <li key={place.idPlace}>
+                            <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: '#24B9B6', border: '1px solid #24B9B6', padding: '0.5em' }}>{place.name} | <span>{place.reportSet.length} report(s)</span> <span>{editDeleteCheck(place.reportSet)}</span></h3>
+                            <BootstrapTable
+                                rowStyle={{color:'#24B9B6'}}
+                                bootstrap4
+                                keyField='idReport'
+                                filter={filterFactory()}
+                                noDataIndication={() => <NoDataIndication/>}
+                                data={place.reportSet.filter(x => x.status==true)}
+                                columns={columns}
+                                defaultSorted={defaultSorted}/>
+                        </li>)) : null}
+                </ul>
+            </div> : null}
         </Container>
     );
 }
