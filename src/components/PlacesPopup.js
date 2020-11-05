@@ -1,10 +1,18 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Popup} from 'react-leaflet';
 import {BrowserRouter, Link} from "react-router-dom";
 import Details from "./Details";
+import {FaFontAwesome} from "react-icons/all";
+import { faRoute} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Routing from "./RoutingMachine";
 
 function PlacesPopup  (props)  {
     const data = props.data;
+
+    const getRouting = (placeLat,placeLong) => {
+        props.getRoute(placeLat,placeLong);
+    }
 
 
     return (
@@ -22,6 +30,13 @@ function PlacesPopup  (props)  {
                     className="App-link">
                     See more information
                 </Link>
+            </button>
+            <button
+                className="toolsBtn"
+                style={{margin:"20px"}}
+                onClick={() => getRouting(data.locationSet.lat,data.locationSet.long)}
+            >
+                <FontAwesomeIcon icon={faRoute}/>
             </button>
 
         </Popup>

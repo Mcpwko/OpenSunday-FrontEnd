@@ -22,7 +22,7 @@ function PlacesMarkers(props) {
             {/*{console.log(place)}*/}
 
 
-            <PlacesPopup data={place} onOpen={props.onOpen} select={props.select}/>
+            <PlacesPopup data={place} onOpen={props.onOpen} select={props.select} getRoute={props.getRoute}/>
         </Marker>
     ));
     return <Fragment>{markers}</Fragment>

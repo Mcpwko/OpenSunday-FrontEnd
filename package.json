@@ -51,7 +51,8 @@
     "simple-react-comments": "^1.1.0",
     "styled-components": "^5.2.0",
     "use-position": "^0.0.7",
-    "yup": "^0.29.3"
+    "yup": "^0.29.3",
+    "leaflet-routing-machine": "^3.2.12"
   },
   "scripts": {
     "start": "react-scripts start",

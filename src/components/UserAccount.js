@@ -126,9 +126,8 @@ export default function UserAccount(props) {
            return(
                <div><FontAwesomeIcon icon={faBan}/></div>
                );
+
         }
-
-
     }
 
     //Action for go to the place on map

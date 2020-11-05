@@ -31,6 +31,7 @@ import {useAlert} from "react-alert";
 import PlacesPopup from "../components/PlacesPopup";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import {UserContext} from "../context/UserContext";
+import Routing from "../components/RoutingMachine";
 
 const {Overlay} = LayersControl;
 
@@ -46,6 +47,11 @@ export const Modal = styled.div`
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+`;
+
+const RoutingRoad = styled.div`
+    color:black;
+
 `;
 
 function MapView(props) {
@@ -66,6 +72,9 @@ function MapView(props) {
     const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
     const [selected, setSelected] = useState(0);
+    const [mapInit,setMapInit] = useState(false);
+    const [placeLat,setPlaceLat] = useState(0);
+    const [placeLong, setPlaceLong] = useState(0);
 
     const [infoMarker, setInfoMarker] = useState();
     const [filter, setFilter] = useState(0);
@@ -73,8 +82,6 @@ function MapView(props) {
 
     const refMarker = useRef();
     const refMap = useRef();
-    const firstOverlayRef = useRef();
-    const secondOverlayRef = useRef();
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
     const alert = useAlert();
@@ -168,6 +175,20 @@ function MapView(props) {
 
         setShowForm(true)
     }
+
+
+    const saveMap = map => {
+        refMap.current = map;
+        setMapInit(true);
+    };
+
+    function getRoute (placeLat,placeLong) {
+        console.log("JOBTIEN DES ROUTES :");
+        setPlaceLat(placeLat);
+        setPlaceLong(placeLong);
+        console.log(placeLat, " " , placeLong);
+    }
+
 
 
     const closeForm = () => {
@@ -346,7 +367,7 @@ function MapView(props) {
                                    gcButton={buttonGC} data={data} closeForm={closeForm}/>
                     </Modal> : null}
                     {/*<Foursquare className="listVenues"/>*/}
-                    <Map ref={refMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
+                    <Map ref={saveMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}
                          className="mapContent">
                         <LayersControl position="topright">
                             <TileLayer
@@ -362,7 +383,7 @@ function MapView(props) {
                                         <MarkerClusterGroup>
                                             <PlacesMarkers
                                                 venues={places.filter((place) => place.typeSet.name.includes(type.name) && (filter == 1 ? place.isOpenSunday : filter == 2 ? place.isOpenSpecialDay : true))}
-                                                onOpen={showDetails} select={select}/>
+                                                onOpen={showDetails} select={select} getRoute={getRoute}/>
                                         </MarkerClusterGroup>
                                     </LayerGroup>
                                 </Overlay>
@@ -495,6 +516,7 @@ function MapView(props) {
                                 <div>WELL DONE</div>
                             </Modal>
                         </Route>
+                        {(mapInit && placeLat!=0) && <RoutingRoad><Routing map={refMap.current} placeLong={placeLong} placeLat={placeLat} userLat={latitude} userLong={longitude}/></RoutingRoad>}
                     </Map>
                 </div>
             </BrowserRouter>
