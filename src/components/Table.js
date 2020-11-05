@@ -21,23 +21,20 @@ import GetTypes, {GetAllTypes, GTypes} from "../database/GetTypes";
 
 const Container = styled.div`
     td, th, tr, table, text, tbody, thead{
-        color:white;
+        // color:white;
+        color: #e6f9ff;
     }
-    
     .selection-cell, .selection-cell-header{
         display:none;
     }
-    
     .table-hover tbody tr:hover{
         background-color:rgba(168, 249, 243, 0.19);
    }
-   
    h1{
        color: #24B9B6;
        text-align: center;
        padding:0.3em;    
    }
-   
    h3 {
         font-style: italic;
         text-align: center;
@@ -57,7 +54,7 @@ let typeFilter;
 let oSFilter;
 let oSdFilter;
 
-/** Button to clear all fitlers*/
+/** Button to clear all filters */
 const ClearButton = props => {
     const handleClick = () => {
         props.onSearch("");

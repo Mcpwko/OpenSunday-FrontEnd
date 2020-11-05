@@ -14,14 +14,15 @@ const Container = styled.div`
     margin: 0.5em;
   }
     h2 {
-    color: #e6f9ff;
     padding:0.5em;
     margin: 0.5em;
+    color: #00ace6;
   }
     h4 {
     color: #24B9B6;
     padding:0.5em;
     margin: 0.5em;
+    font-style: italic;
   }
 `
 

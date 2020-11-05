@@ -15,6 +15,9 @@ const Container = styled.div`
     padding:0.5em;
     margin: 0.5em;
   }
+  h5 {
+  color: #24B9B6;
+  }
 `
 
 export default function Home() {
@@ -64,6 +67,11 @@ export default function Home() {
                         </Carousel.Item>
 
                     </Carousel>
+
+                    <h5>By navigating on this website, you agree to our
+                        <Link to="/terms-of-use"> terms of use</Link>
+                    </h5>
+
                 </div>
 
 
@@ -75,6 +83,7 @@ export default function Home() {
                         <button className="add">Go to map</button>
                     </Link>
                 </div>
+
 
             </Container>
         </>

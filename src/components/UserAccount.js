@@ -18,8 +18,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 import {faBan, faEdit, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
+import filterFactory, {textFilter} from "react-bootstrap-table2-filter";
+import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
 import {useHistory} from "react-router-dom";
 
 const Container = styled.div`
@@ -96,53 +96,53 @@ export default function UserAccount(props) {
     const alert = useAlert();
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [places, setPlaces] = useState([]);
-    const [showDelete,setShowDelete] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [reportChange, setReportChange] = useState([false]);
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
     let history = useHistory();
 
 //Date formatter in table
-    function dateFormatter(cell){
+    function dateFormatter(cell) {
 
         return (
-            <div>{new Date(cell).getDate()}.{new Date(cell).getMonth()+1}.{new Date(cell).getFullYear()}</div>
+            <div>{new Date(cell).getDate()}.{new Date(cell).getMonth() + 1}.{new Date(cell).getFullYear()}</div>
 
         );
     }
 
     //Show edit or delete icon
-    function editDeleteFormatter(cell, row){
+    function editDeleteFormatter(cell, row) {
 
 
-       if(row.isForEdit){
-           return(
-               <div><FontAwesomeIcon icon={faEdit}/></div>
-           );
+        if (row.isForEdit) {
+            return (
+                <div><FontAwesomeIcon icon={faEdit}/></div>
+            );
 
         } else {
-           return(
-               <div><FontAwesomeIcon icon={faBan}/></div>
-               );
+            return (
+                <div><FontAwesomeIcon icon={faBan}/></div>
+            );
 
         }
     }
 
     //Action for go to the place on map
-    function  editDeleteClick(place){
+    function editDeleteClick(place) {
         history.push(`/map/${place.idPlace}`)
     }
 
     //Button for go to the place on map
-    function editDeleteCheck(reportSet, place){
-            return(
+    function editDeleteCheck(reportSet, place) {
+        return (
 
-                <div>
-                    <Button onClick={() => editDeleteClick(place)}><FontAwesomeIcon icon={faMapMarkerAlt}/></Button>
-                </div>
+            <div>
+                <Button onClick={() => editDeleteClick(place)}><FontAwesomeIcon icon={faMapMarkerAlt}/></Button>
+            </div>
 
-            )
-        }
+        )
+    }
 
     //Delete a report and reload the table
     async function handleClick(row) {
@@ -157,8 +157,8 @@ export default function UserAccount(props) {
         alert.info("Reloading data")
     }
 
-        //Button for delete the report
-    function changeStatus(cell, row){
+    //Button for delete the report
+    function changeStatus(cell, row) {
 
         return (
             <div>
@@ -195,13 +195,13 @@ export default function UserAccount(props) {
         headerStyle: {
             color: '#24B9B6'
         }
-    },{
-            text: 'Delete or Edit',
-            formatter: editDeleteFormatter,
-            headerStyle: {
-                color: '#24B9B6'
-            }
-        }, {
+    }, {
+        text: 'Delete or Edit',
+        formatter: editDeleteFormatter,
+        headerStyle: {
+            color: '#24B9B6'
+        }
+    }, {
         dataField: 'status',
         text: 'Status',
         formatter: changeStatus,
@@ -219,7 +219,7 @@ export default function UserAccount(props) {
     //If no report for the place
     const NoDataIndication = () => (
         <div className="Spinner">
-            <h1 style={{color:'#24B9B6'}}>No report</h1>
+            <h1 style={{color: '#24B9B6'}}>No report</h1>
         </div>
     )
 
@@ -233,11 +233,12 @@ export default function UserAccount(props) {
                 authContext.getAccessTokenSilently
             );
 
-            if (place != null ) {
+            if (place != null) {
                 setPlaces(place);
             }
 
         }
+
         getPlaces();
         setReportChange(false);
     }, [reportChange]);
@@ -246,8 +247,8 @@ export default function UserAccount(props) {
     async function deleteAccount() {
 
         // Delete account
-        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
-            method:'DELETE',
+        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + userContext.user.idUser}`, {
+            method: 'DELETE',
             headers: {
                 Accept: "application/json",
                 Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
@@ -257,56 +258,58 @@ export default function UserAccount(props) {
         // Tell the user
         setShowDelete(true);
         //Redirect user
-        setInterval(function(){ authContext.logout({returnTo: window.location.origin})}, 3000)
+        setInterval(function () {
+            authContext.logout({returnTo: window.location.origin})
+        }, 3000)
 
 
     }
 
     //Change the pseudo
-        const changePseudo = async (values) => {
+    const changePseudo = async (values) => {
         const token = await authContext.getAccessTokenSilently();
-            //Look if the pseudo is available
+        //Look if the pseudo is available
 
-            let check = await request(
-                `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`,
-                authContext.getAccessTokenSilently
-            );
+        let check = await request(
+            `${process.env.REACT_APP_SERVER_URL}${endpoints.checkUser}${values.pseudo}`,
+            authContext.getAccessTokenSilently
+        );
 
-            console.log(check);
+        console.log(check);
 
-            if(check==1){
-                //IF the pseudo is not available, there is an alert
-                alert.show("The pseudo "+values.pseudo+ " is not available");
+        if (check == 1) {
+            //IF the pseudo is not available, there is an alert
+            alert.show("The pseudo " + values.pseudo + " is not available");
 
-            } else {
+        } else {
 
-                //If the pseudo is available, we save it in database
+            //If the pseudo is available, we save it in database
 
-                await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/'+userContext.user.idUser}`, {
-                    method: 'PUT',
-                    headers: {
-                        Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                        'Content-Type': "application/json",
-                    }, body: JSON.stringify({
-                        idUser:userContext.user.idUser,
-                        email: userContext.user.email,
-                        pseudo: values.pseudo,
-                        createdAt: userContext.user.createdAt,
-                        status: userContext.user.status,
-                        idAuth0: userContext.user.idAuth0,
-                        idUserType: userContext.user.idUserType
-                    })
-                });
-                userContext.user.pseudo = values.pseudo;
+            await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + userContext.user.idUser}`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                    'Content-Type': "application/json",
+                }, body: JSON.stringify({
+                    idUser: userContext.user.idUser,
+                    email: userContext.user.email,
+                    pseudo: values.pseudo,
+                    createdAt: userContext.user.createdAt,
+                    status: userContext.user.status,
+                    idAuth0: userContext.user.idAuth0,
+                    idUserType: userContext.user.idUserType
+                })
+            });
+            userContext.user.pseudo = values.pseudo;
 
-                alert.success("The pseudo has been modified !");
-            }
-
+            alert.success("The pseudo has been modified !");
         }
 
-        const hide = () => {
+    }
+
+    const hide = () => {
         //Block interaction of the user
-        }
+    }
 
 
     return (
@@ -323,7 +326,7 @@ export default function UserAccount(props) {
 
             <Formik
                 initialValues={{
-                    pseudo: "GetPseudo",
+                    pseudo: "YourPseudo",
                 }}
                 validationSchema={validationSchema}
                 onSubmit={async (values, {setSubmitting, resetForm}) => {
@@ -402,26 +405,34 @@ export default function UserAccount(props) {
 
             {userContext.user != null && userContext.user.idUserType == 3 ?
                 <>
-                <div>
-                    {places && places.length > 0 ?
-                        <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
-                            {places != null ? places.map((place) =>  (
-                                <li key={place.idPlace}>
-                                    <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: '#24B9B6', border: '1px solid #24B9B6', padding: '0.5em' }}>{place.name} | <span>{place.reportSet.filter(x => x.status==true).length} report(s)</span> <span>{editDeleteCheck(place.reportSet, place)}</span></h3>
-                                    <BootstrapTable
-                                        rowStyle={{color:'#24B9B6'}}
-                                        bootstrap4
-                                        keyField='idReport'
-                                        filter={filterFactory()}
-                                        noDataIndication={() => <NoDataIndication/>}
-                                        data={place.reportSet.filter(x => x.status==true)}
-                                        columns={columns}
-                                        defaultSorted={defaultSorted}/>
-                                </li>)) : null}
-                        </ul>:<Spinner animation="border" variant="light" role="status" style={{width: "8rem", height: "8rem"}}><span
-                            className="sr-only">Loading...</span></Spinner>}
-                </div>
-                </>: null}
+                    <div>
+                        {places && places.length > 0 ?
+                            <ul style={{listStyleType: "none", padding: "0", margin: "0"}}>
+                                {places != null ? places.map((place) => (
+                                    <li key={place.idPlace}>
+                                        <h3 style={{
+                                            borderRadius: '0.25em',
+                                            textAlign: 'center',
+                                            color: '#24B9B6',
+                                            border: '1px solid #24B9B6',
+                                            padding: '0.5em'
+                                        }}>{place.name} | <span>{place.reportSet.filter(x => x.status == true).length} report(s)</span>
+                                            <span>{editDeleteCheck(place.reportSet, place)}</span></h3>
+                                        <BootstrapTable
+                                            rowStyle={{color: '#24B9B6'}}
+                                            bootstrap4
+                                            keyField='idReport'
+                                            filter={filterFactory()}
+                                            noDataIndication={() => <NoDataIndication/>}
+                                            data={place.reportSet.filter(x => x.status == true)}
+                                            columns={columns}
+                                            defaultSorted={defaultSorted}/>
+                                    </li>)) : null}
+                            </ul> : <Spinner animation="border" variant="light" role="status"
+                                             style={{width: "8rem", height: "8rem"}}><span
+                                className="sr-only">Loading...</span></Spinner>}
+                    </div>
+                </> : null}
         </Container>
     );
 }

@@ -21,6 +21,7 @@ import Places from "./pages/Places";
 import {UserContext} from "./context/UserContext";
 import {useAlert} from "react-alert";
 import {Modal} from "react-bootstrap";
+import Terms from "./pages/Terms";
 
 function App() {
     //List of all places
@@ -29,7 +30,7 @@ function App() {
     //Connected User
     let [userConnected, setUserConnected] = useState({});
 
-    let[showBan,setShowBan] = useState(false);
+    let [showBan, setShowBan] = useState(false);
 
     //Variables for Auth0
     let {
@@ -89,20 +90,21 @@ function App() {
     };
 
 
-
 //Method to get the connected user in the DB
     let getConnectedUser = async () => {
 
         let connectedUser = await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + user.name}`,
-            getAccessTokenSilently,loginWithRedirect
+            getAccessTokenSilently, loginWithRedirect
         );
         setUserConnected(connectedUser);
         //userContext.user = connectedUser;
-        if(connectedUser.status==1){
+        if (connectedUser.status == 1) {
             //alert.error("You have been banned ! You will be disconnect in 3 sec !")
             setShowBan(true)
-            setInterval(function(){ logout({returnTo: window.location.origin}) }, 3000)
+            setInterval(function () {
+                logout({returnTo: window.location.origin})
+            }, 3000)
         }
 
 
@@ -179,97 +181,104 @@ function App() {
         );
     }
 
-    const hide = () =>{
+    const hide = () => {
         //Blocking the banned user
     }
 
 
     return (
-        <UserContext.Provider value={{user:userConnected, refresh:getConnectedUser, refreshPlaces:null}}>
-        <div className="App">
-            <BrowserRouter>
+        <UserContext.Provider value={{user: userConnected, refresh: getConnectedUser, refreshPlaces: null}}>
+            <div className="App">
+                <BrowserRouter>
 
-                <Navigation auth={authUser()}/>
+                    <Navigation auth={authUser()}/>
 
-                <header className="App-header"
-                        style={{
-                            backgroundColor: themes[themeContext.theme].background,
-                            color: themes[themeContext.theme].foreground
-                        }}>
-                    {/*{isAuthenticated && (*/}
-                    {/*    <a*/}
-                    {/*        className="App-link Logout-link"*/}
-                    {/*        href="#"*/}
-                    {/*        onClick={handleLogoutClick}*/}
-                    {/*    >*/}
-                    {/*        {user.name}*/}
-                    {/*        Logout*/}
-                    {/*    </a>*/}
-                    {/*)}*/}
-                    {/*<br/>*/}
+                    <header className="App-header"
+                            style={{
+                                backgroundColor: themes[themeContext.theme].background,
+                                color: themes[themeContext.theme].foreground
+                            }}>
+                        {/*{isAuthenticated && (*/}
+                        {/*    <a*/}
+                        {/*        className="App-link Logout-link"*/}
+                        {/*        href="#"*/}
+                        {/*        onClick={handleLogoutClick}*/}
+                        {/*    >*/}
+                        {/*        {user.name}*/}
+                        {/*        Logout*/}
+                        {/*    </a>*/}
+                        {/*)}*/}
+                        {/*<br/>*/}
 
-                    <Switch>
-                        <Route
-                            /*
-                            FOR DEV FACILITIES - PLEASE CHANGE THE PATH
-                            */
-                            path="/"
-                            // path="/activities"
-                            exact
-                            render={() => (
-                                <>
+                        <Switch>
+                            <Route
+                                /*
+                                FOR DEV FACILITIES - PLEASE CHANGE THE PATH
+                                */
+                                path="/"
+                                // path="/activities"
+                                exact
+                                render={() => (
+                                    <>
 
 
-                                    <Home/>
-                                    {/*/!*<ContactForm/>*!/*/}
-                                    {/*/!*<FormPlace/>*!/*/}
-                                    {/*<a*/}
-                                    {/*    className="App-link"*/}
-                                    {/*    href="#"*/}
-                                    {/*    onClick={handleLocationsClick}*/}
-                                    {/*>*/}
-                                    {/*    Get Locations*/}
-                                    {/*</a>*/}
-                                    {/*{locations && locations.length > 0 && (*/}
-                                    {/*    <ul className="Locations-List">*/}
-                                    {/*        {locations.map((location) => (*/}
-                                    {/*            <li key={location.id}>*/}
-                                    {/*                <Link*/}
-                                    {/*                    className="App-link"*/}
-                                    {/*                    to={`/location/${location.id}`}*/}
-                                    {/*                >*/}
-                                    {/*                    {location.name}*/}
-                                    {/*                </Link>*/}
-                                    {/*            </li>*/}
-                                    {/*        ))}*/}
-                                    {/*    </ul>*/}
-                                    {/*)}*/}
-                                </>
-                            )}
-                        />
-                        <Route path="/location/:id" component={PlaceDetails}/>
-                        <Route path="/map" component={MapView} props={locations}></Route>
-                        <Route path="/about" component={About}/>
-                        <Route path="/account" component={Account}/>
-                        <Route path="/places" component={Places}/>
-                    </Switch>
+                                        <Home/>
+                                        {/*/!*<ContactForm/>*!/*/}
+                                        {/*/!*<FormPlace/>*!/*/}
+                                        {/*<a*/}
+                                        {/*    className="App-link"*/}
+                                        {/*    href="#"*/}
+                                        {/*    onClick={handleLocationsClick}*/}
+                                        {/*>*/}
+                                        {/*    Get Locations*/}
+                                        {/*</a>*/}
+                                        {/*{locations && locations.length > 0 && (*/}
+                                        {/*    <ul className="Locations-List">*/}
+                                        {/*        {locations.map((location) => (*/}
+                                        {/*            <li key={location.id}>*/}
+                                        {/*                <Link*/}
+                                        {/*                    className="App-link"*/}
+                                        {/*                    to={`/location/${location.id}`}*/}
+                                        {/*                >*/}
+                                        {/*                    {location.name}*/}
+                                        {/*                </Link>*/}
+                                        {/*            </li>*/}
+                                        {/*        ))}*/}
+                                        {/*    </ul>*/}
+                                        {/*)}*/}
+                                    </>
+                                )}
+                            />
+                            <Route path="/location/:id" component={PlaceDetails}/>
+                            <Route path="/map" component={MapView} props={locations}></Route>
+                            <Route path="/about" component={About}/>
+                            <Route path="/account" component={Account}/>
+                            <Route path="/places" component={Places}/>
+                            <Route path="/terms-of-use" component={Terms}/>
+                        </Switch>
 
-                </header>
+                    </header>
 
-                <Modal show={showBan} onHide={hide}>
-                    <Modal.Header>
-                        <Modal.Title>BANNED</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>You have been banned ! You will be disconnected in 3 sec !</Modal.Body>
-                </Modal>
+                    <Modal show={showBan} onHide={hide}>
+                        <Modal.Header>
+                            <Modal.Title>BANNED</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>You have been banned ! You will be disconnected in 3 sec !</Modal.Body>
+                    </Modal>
 
-                <footer style={{
-                    backgroundColor: themes[themeContext.theme].background,
-                    color: themes[themeContext.theme].foreground
-                }}> ©COPYRIGHT 2020 - Brice Berclaz, Mickaël Puglisi, Ludovic Sahraoui
-                </footer>
-            </BrowserRouter>
-        </div>
+                    <footer style={{
+                        backgroundColor: themes[themeContext.theme].background,
+                        color: themes[themeContext.theme].foreground
+                    }}> ©COPYRIGHT 2020 - Brice Berclaz, Mickaël Puglisi, Ludovic Sahraoui -
+                        <Link
+                            style={{paddingRight: "2em"}}
+                            to="/terms-of-use"
+                        >
+                            Terms of use
+                        </Link>
+                    </footer>
+                </BrowserRouter>
+            </div>
         </UserContext.Provider>
     );
 }
