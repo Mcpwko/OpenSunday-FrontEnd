@@ -295,6 +295,11 @@ export default function Table() {
         </div>
     );
 
+    const selectOptions = {
+        true: 'Open',
+        false: 'Close'
+    };
+
 
     /** Columns, data an filters of the table */
     const columns = [
@@ -341,22 +346,34 @@ export default function Table() {
         {
             dataField: "isOpenSunday",
             text: "Open on Sunday",
-            filter: textFilter({
+            filter: selectFilter({
                 getFilter: filter => {
                     oSFilter = filter;
                 }
+                ,options:selectOptions
             }),
-            sort: true
+            sort: true,
+            formatter:(value, row) => (
+                <span>
+            {value ? '✔' : '❌'}
+          </span>
+            )
         },
         {
             dataField: "isOpenSpecialDay",
             text: "Open on Special days",
-            filter: textFilter({
+            filter: selectFilter({
                 getFilter: filter => {
                     oSdFilter = filter;
                 }
+                ,options:selectOptions
             }),
-            sort: true
+            sort: true,
+            formatter:(value, row) => (
+                <span>
+            {value ? '✔' : '❌'}
+          </span>
+            )
         }
     ];
 
@@ -366,8 +383,8 @@ export default function Table() {
         cityFilter("");
         categoryFilter("");
         typeFilter("");
-        oSFilter("");
-        oSdFilter("");
+        oSFilter();
+        oSdFilter();
     }
 
     // const handleGetCurrentFilter = () => {
