@@ -375,10 +375,9 @@ function Details(props) {
                 Are you sure you want to delete this Place ? {props.idPlace}<br/>
                 This action cannot be undone!<br/>
             </ConfirmDialog>
-
+            <br/>
             {(!props.isVerified && userContext.user.idUserType==3) &&
             <button className="validatePlace" onClick={validatePlace}>Validate Place</button>}
-
             {(userContext.user.idUserType==3) &&
             <button className="deletePlace" onClick={() => setRemovePlace(true)}>Delete Place</button>}
         </div>

@@ -74,6 +74,38 @@
     /*margin-left: 41%;*/
 }
 
+
+.leaflet-control{
+    background-color: white;
+    scroll-behavior: smooth;
+    text-align: left;
+}
+
+.leaflet-top.leaflet-right{
+    color: black;
+}
+
+/*div.leaflet-top.leaflet-right:only-child{ display: none !important; width: 0px !important; height: 0px !important; }*/
+
+.hideRoute{
+    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
+}
+
+.closeRouting{
+    position:absolute;
+    top: 140px;
+    right:15px;
+    border-radius: 5px;
+    background-color: black;
+
+    color: white;
+    z-index: 500000;
+}
+
+
+
 @keyframes fade {
     from {
         opacity: 0.5;

@@ -25,12 +25,16 @@
 .deletePlace{
     border-radius: 5px;
     background-color: darkred;
+    border-color: darkred;
     margin-top: 20px;
+    margin-left: 10px;
+    color: white;
 
 }
 
 .deletePlace:hover{
-    background-color: darkred;
+    color: #24B9B6;
+    background: #282c34;
     text-decoration: none;
     cursor: pointer;
 }

@@ -22,7 +22,7 @@ import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context, useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {BrowserRouter, Link, Route, useLocation, Router} from 'react-router-dom';
+import {BrowserRouter, Link, Route, useLocation, Router,useHistory} from 'react-router-dom';
 import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
 import {HereLocationIcon, PlusLocationIcon, RestaurantIconLocation} from "../components/Icons";
 import styled from "styled-components";
@@ -49,11 +49,6 @@ export const Modal = styled.div`
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 `;
 
-const RoutingRoad = styled.div`
-    color:black;
-
-`;
-
 function MapView(props) {
     // const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
     const [currentLocation, setCurrentLocation] = useState({lat: 46.2333, lng: 7.35});
@@ -75,6 +70,7 @@ function MapView(props) {
     const [mapInit,setMapInit] = useState(false);
     const [placeLat,setPlaceLat] = useState(0);
     const [placeLong, setPlaceLong] = useState(0);
+    const [routingOn,setRoutingOn]=useState(false);
 
     const [infoMarker, setInfoMarker] = useState();
     const [filter, setFilter] = useState(0);
@@ -85,8 +81,21 @@ function MapView(props) {
     const authContext = useAuth0();
     const userContext = useContext(UserContext);
     const alert = useAlert();
+    const history = useHistory();
 
     const path = useLocation();
+
+    useEffect(() =>{
+        const {current={}} = refMap;
+        const {leafletElement:map } = current;
+
+        if(!routingOn && placeLong==-1){
+            map.invalidateSize()
+            history.push("/");
+            history.goBack()
+
+        }
+    },[refMap,routingOn])
 
     useEffect(() => {
         console.log(path.pathname)
@@ -183,13 +192,15 @@ function MapView(props) {
     };
 
     function getRoute (placeLat,placeLong) {
-        console.log("JOBTIEN DES ROUTES :");
         setPlaceLat(placeLat);
         setPlaceLong(placeLong);
-        console.log(placeLat, " " , placeLong);
+        setRoutingOn(true);
     }
 
-
+    function removeRouting() {
+        setRoutingOn(false);
+        setPlaceLong(-1);
+    }
 
     const closeForm = () => {
         setShowForm(false)
@@ -516,7 +527,17 @@ function MapView(props) {
                                 <div>WELL DONE</div>
                             </Modal>
                         </Route>
-                        {(mapInit && placeLat!=0) && <RoutingRoad><Routing map={refMap.current} placeLong={placeLong} placeLat={placeLat} userLat={latitude} userLong={longitude}/></RoutingRoad>}
+                        {(mapInit && routingOn) ? <>
+                            <button className="closeRouting" onClick={removeRouting}>
+                                <FontAwesomeIcon icon={faWindowClose}/>
+                            </button>
+                            <Routing
+                                map={refMap.current}
+                                placeLong={placeLong}
+                                placeLat={placeLat}
+                                userLat={latitude}
+                                userLong={longitude}/>
+                                </> : null}
                     </Map>
                 </div>
             </BrowserRouter>
