@@ -266,7 +266,7 @@ function App() {
                 <footer style={{
                     backgroundColor: themes[themeContext.theme].background,
                     color: themes[themeContext.theme].foreground
-                }}> COPYRIGHT 2020 - Brice Berclaz, Mickaël Puglisi, Ludovic Sahraoui
+                }}> ©COPYRIGHT 2020 - Brice Berclaz, Mickaël Puglisi, Ludovic Sahraoui
                 </footer>
             </BrowserRouter>
         </div>

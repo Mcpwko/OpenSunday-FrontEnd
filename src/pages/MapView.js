@@ -32,6 +32,7 @@ import PlacesPopup from "../components/PlacesPopup";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import {UserContext} from "../context/UserContext";
 import Routing from "../components/RoutingMachine";
+import {Spinner} from "react-bootstrap";
 
 const {Overlay} = LayersControl;
 
@@ -48,6 +49,8 @@ export const Modal = styled.div`
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 `;
+
+
 
 function MapView(props) {
     // const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
@@ -67,13 +70,14 @@ function MapView(props) {
     const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
     const [selected, setSelected] = useState(0);
-    const [mapInit,setMapInit] = useState(false);
-    const [placeLat,setPlaceLat] = useState(0);
+    const [mapInit, setMapInit] = useState(false);
+    const [placeLat, setPlaceLat] = useState(0);
     const [placeLong, setPlaceLong] = useState(0);
     const [routingOn,setRoutingOn]=useState(false);
 
     const [infoMarker, setInfoMarker] = useState();
     const [filter, setFilter] = useState(0);
+    const [loading, setLoading] = useState(true);
 
 
     const refMarker = useRef();
@@ -117,6 +121,12 @@ function MapView(props) {
             }
         }
     }, [path, places])
+
+    useEffect(() => {
+        if (places.length > 0) {
+            toggleLoading()
+        }
+    }, [places])
 
     const {
         latitude,
@@ -259,6 +269,12 @@ function MapView(props) {
         }
     }
 
+    const toggleLoading = () => {
+        if (loading) {
+            setLoading(false)
+        }
+    }
+
     const showDetails = () => {
         setVisible(true)
     }
@@ -349,8 +365,15 @@ function MapView(props) {
 
                     }}>Add new place
                     </button>
+
                 </div>
-                <h5>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h5>
+
+                {loading ?
+                    <Spinner animation="border" variant="light" role="status"
+                             style={{width: "2rem", height: "2rem"}}><span
+                        className="sr-only">Loading...</span></Spinner>
+                    : null}
+                {/*<h5>{"Draggable -> lat:" + marker.lat + " - lng:" + marker.lng}</h5>*/}
 
                 <div className="mapTab">
                     {/*TEST DU ROUTING POUR LES PLACES*/}

@@ -29,7 +29,9 @@ export function GetAllTypes() {
     return typesDB;
 }
 
-function GetTypes() {
+// Formik place
+export default function GetTypes() {
+
 
     const typesDB = GetAllTypes();
 
@@ -49,5 +51,24 @@ function GetTypes() {
 
 }
 
-export default GetTypes;
+// Formik table
+export function GTypes() {
+    const typesDB = GetAllTypes();
+    return (
+        <>
+            <option value="">Choose a type*</option>
+            {typesDB
+                .sort((a, b) => a.name > b.name ? 1 : -1)
+                .map((typeDB) => (
+                    <option value={typeDB.name} key={typeDB.idType}>
+                        {typeDB.name}
+                    </option>
+                ))}
+        </>
+    )
+}
+
+
+
+
 

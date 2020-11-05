@@ -29,16 +29,16 @@ export function GetAllCategories() {
     return categoriesDB;
 }
 
-function GetCategories(props) {
+export default function GetCategories(props) {
 
     const categoriesDB = GetAllCategories();
-
 
     // Default - Return values/options for a select in Formik
     return (
         <>
             <option value="">Choose a category*</option>
             {categoriesDB
+                .filter(x => x.idType == props)
                 .sort((a, b) => a.name > b.name ? 1 : -1)
                 .map((categoryDB) => (
                     <option value={categoryDB.idCategory} key={categoryDB.idCategory}>
@@ -47,8 +47,21 @@ function GetCategories(props) {
                 ))}
         </>
     )
-
-
 }
 
-export default GetCategories;
+export function GCats(props) {
+    const categoriesDB = GetAllCategories();
+    return (
+        <>
+            <option value="">Choose a category*</option>
+            {categoriesDB
+                .filter(x => x.name == props)
+                .sort((a, b) => a.name > b.name ? 1 : -1)
+                .map((categoryDB) => (
+                    <option value={categoryDB.name} key={categoryDB.idCategory}>
+                        {categoryDB.name}
+                    </option>
+                ))}
+        </>
+    )
+}

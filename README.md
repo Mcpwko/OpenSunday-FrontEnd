@@ -1,4 +1,11 @@
-# 1 - OpenSunday: Front-end
+![Library](https://img.shields.io/badge/library-React-%2361dafb)
+![PackageManager](https://img.shields.io/badge/package%20manager-Yarn-%232c8ebb)
+![Language](https://img.shields.io/github/languages/top/Mcpwko/OpenSunday-FrontEnd)
+![Contributors](https://img.shields.io/github/contributors/Mcpwko/OpenSunday-FrontEnd)
+![LastCommit](https://img.shields.io/github/last-commit/Mcpwko/OpenSunday-FrontEnd)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+# OpenSunday: Front-end
 
 This project is part of the "645-1 - School's option 3" module at the HES-SO Valais-Wallis.
 
@@ -22,7 +29,10 @@ To be completed.
 ## Notes :
 * The project has been developed in English
 
-# 2 - React information
+## License
+[MIT](https://choosealicense.com/licenses/mit/) :octocat:
+
+# React information
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {Button, Col, Form} from 'react-bootstrap';
-import {Field, Formik} from 'formik';
+import {Field, Formik, useFormikContext, useField} from 'formik';
 import * as Yup from 'yup';
 import "./FormPlace.css";
 import axios from "axios";
@@ -209,6 +209,30 @@ let validationSchema = Yup.object().shape({
 //     }
 // );
 
+const FieldCategory = (props) => {
+
+    const {values, touched, submitForm, setFieldValue} = useFormikContext();
+    const [field, meta] = useField(props);
+    const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+
+        if (values.type == "") {
+            setDisabled(true)
+        } else {
+            setDisabled(false);
+        }
+
+    }, [values.type]);
+
+    return (
+        <>
+            <Form.Control {...props} {...field} disabled={disabled}>
+                {GetCategories(values.type)}
+            </Form.Control>
+        </>
+    )
+};
 
 export const FormPlace = (props) => {
     // const [showForm, setShowForm] = useState(false);
@@ -236,6 +260,9 @@ export const FormPlace = (props) => {
 
     let myZip = "";
     let myCity = "";
+
+    const [isCatEnable, setIsCatEnable] = useState(true);
+
 
     /** Add with marker popup proposition */
     // if props.data changes
@@ -347,6 +374,7 @@ export const FormPlace = (props) => {
                 :
                 <h1>Add a new place</h1>
             }
+
             <h5 style={{color: "#DEDEDE"}}>* = mandatory</h5>
 
             <Formik
@@ -378,9 +406,9 @@ export const FormPlace = (props) => {
                     //POST place to DB
 
                     /** PUT **/
-                    if(modification){
+                    if (modification) {
                         console.log("FORM EDIT");
-                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.places}${'/'+props.place.idPlace}`, {
+                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.places}${'/' + props.place.idPlace}`, {
                             method: 'PUT',
                             headers: {
                                 // Accept: "application/json",
@@ -410,36 +438,35 @@ export const FormPlace = (props) => {
                         userContext.refreshPlaces();
                         alert.success("The place has been modified !");
 
-                    }else{
+                    } else {
                         console.log("FORM POST");
-                    /**POST **/
+                        /**POST **/
                         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertPlace}`, {
-                        method: 'POST',
-                        headers: {
-                           Accept: "application/json",
-                           Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                       'Content-Type': "application/json",
-                       }, body: JSON.stringify({
-                          name: values.name, description: values.description,
-                            email: values.email,
-                            phoneNumber: values.phoneNumber,
-                            isOpenSunday: values.openSunday,
-                            isOpenSpecialDay: values.openSunday,
-                            isVerified: false,
-                            isAdvertised: false,
-                            lat: values.lat,
-                            Long: values.long,
-                            address: values.address,
-                            zip: values.zip, city: values.city,
-                            idRegion: values.region, idCategory: values.category,
-                            idType: values.type
-                         })
-                     });
+                            method: 'POST',
+                            headers: {
+                                Accept: "application/json",
+                                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                                'Content-Type': "application/json",
+                            }, body: JSON.stringify({
+                                name: values.name, description: values.description,
+                                email: values.email,
+                                phoneNumber: values.phoneNumber,
+                                isOpenSunday: values.openSunday,
+                                isOpenSpecialDay: values.openSunday,
+                                isVerified: false,
+                                isAdvertised: false,
+                                lat: values.lat,
+                                Long: values.long,
+                                address: values.address,
+                                zip: values.zip, city: values.city,
+                                idRegion: values.region, idCategory: values.category,
+                                idType: values.type
+                            })
+                        });
 
                         alert.success("The place has been added !");
                         userContext.refreshPlaces();
                     }
-
 
 
                     resetForm();
@@ -460,6 +487,7 @@ export const FormPlace = (props) => {
                       setFieldValue,
                   }) => (
                     <MyForm onSubmit={handleSubmit} className="mx-auto">
+                        {/*<AutoChange/>*/}
                         {/*{visible ? null : <InitializeForm/>}*/}
                         {add ? <Button style={{display: "none"}}
                                        ref={simulateProps}
@@ -491,8 +519,8 @@ export const FormPlace = (props) => {
 
                                                     setLatitude(props.place.locationSet.lat)
                                                     setLongitude(props.place.locationSet.long)
-                                                        setFieldValue('lat', props.place.locationSet.lat)
-                                                        setFieldValue('long', props.place.locationSet.long)
+                                                    setFieldValue('lat', props.place.locationSet.lat)
+                                                    setFieldValue('long', props.place.locationSet.long)
 
                                                     setFieldValue('type', props.place.typeSet.idType)
                                                     setFieldValue('category', props.place.categorySet.idCategory)
@@ -581,19 +609,21 @@ export const FormPlace = (props) => {
 
                         <Form.Group controlId="formCategory">
                             <Form.Label className="labelField">Category of place:</Form.Label>
-                            <Form.Control
+                            {/**Field Category - Select in function of the type selected otherwise disabled*/}
+                            <FieldCategory
                                 as="select"
                                 name="category"
                                 value={values.category}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 className={touched.category && errors.category ? "has-error" : null}>
+                                {/*disabled={isCatEnable}*/}
 
-                                {GetCategories()}
+                                {/*{GetCategories()}*/}
                                 {/*<option value="">Select a category of place</option>*/}
                                 {/*<option value="restaurant">Restaurant</option>*/}
 
-                            </Form.Control>
+                            </FieldCategory>
                             {touched.category && errors.category ? (
                                 <div className="error-message">{errors.category}</div>
                             ) : null}
