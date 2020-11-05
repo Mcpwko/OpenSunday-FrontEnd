@@ -17,7 +17,7 @@ import Select from "react-select";
 import {useAlert} from "react-alert";
 import {motion} from "framer-motion"
 import {Formik, useField, useFormikContext} from "formik";
-import GetTypes, {GTypes} from "../database/GetTypes";
+import GetTypes, {GetAllTypes, GTypes} from "../database/GetTypes";
 
 const Container = styled.div`
     td, th, tr, table, text, tbody, thead{
@@ -31,6 +31,21 @@ const Container = styled.div`
     .table-hover tbody tr:hover{
         background-color:rgba(168, 249, 243, 0.19);
    }
+   
+   h1{
+       color: #24B9B6;
+       text-align: center;
+       padding:0.3em;    
+   }
+   
+   h3 {
+        font-style: italic;
+        text-align: center;
+        font-size: 1em;
+        font-weight: 400;
+        padding: 0.8em;
+        color: #00ace6;
+  }
 `;
 
 const {SearchBar} = Search;
@@ -201,105 +216,25 @@ export default function Table() {
         )
     };
 
-    const FormSelect = () => (
-        <div>
-            <h1>Sign Up</h1>
-            <Formik
-                initialValues={{
-                    type: '',
-                    category: '',
-                }}
-                onSubmit={async (values) => {
-                    await new Promise((r) => setTimeout(r, 500));
-                    alert(JSON.stringify(values, null, 2));
-                }}
-            >
-                {({
-                      values,
-                      errors,
-                      touched,
-                      handleChange,
-                      handleBlur,
-                      handleSubmit,
-                      isSubmitting,
-                      setFieldValue,
-                  }) => (
-                    <div width={"50%"}>
-                        <Form.Row style={{marginBottom: "1em"}}>
-                            <Col>
-                                <Form.Label className="show">Type of place:</Form.Label>
-                                <FieldType
-                                    as="select"
-                                    name="type"
-                                    value={values.type}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-
-                                    // className={touched.type && errors.type ? "has-error" : null}>
-                                >
-
-
-                                </FieldType>
-                                {/*{touched.type && errors.type ? (*/}
-                                {/*    <div className="error-message">{errors.type}</div>*/}
-                                {/*) : null}*/}
-                                {/*</Form.Group>*/}
-                            </Col>
-
-
-                            <Col>
-                                <Form.Label className="show">Category of place:</Form.Label>
-                                {/**Field Category - Select in function of the type selected otherwise disabled*/}
-                                <FieldCategory
-                                    as="select"
-                                    name="category"
-                                    value={values.category}
-                                    onChange={handleChange}
-                                    // onBlur={handleBlur}
-                                    // className={touched.category && errors.category ? "has-error" : null}
-                                    disabled={isCatEnable}
-                                >
-
-
-                                    {/*{GetCategories()}*/}
-                                    {/*<option value="">Select a category of place</option>*/}
-                                    {/*<option value="restaurant">Restaurant</option>*/}
-
-                                </FieldCategory>
-                                {/*{touched.category && errors.category ? (*/}
-                                {/*    <div className="error-message">{errors.category}</div>*/}
-                                {/*) : null}*/}
-                            </Col>
-                        </Form.Row>
-                    </div>
-                )}
-
-
-                {/*<Form>*/}
-                {/*    <label htmlFor="firstName">First Name</label>*/}
-                {/*    <Field id="firstName" name="firstName" placeholder="Jane" />*/}
-
-                {/*    <label htmlFor="lastName">Last Name</label>*/}
-                {/*    <Field id="lastName" name="lastName" placeholder="Doe" />*/}
-
-                {/*    <label htmlFor="email">Email</label>*/}
-                {/*    <Field*/}
-                {/*        id="email"*/}
-                {/*        name="email"*/}
-                {/*        placeholder="jane@acme.com"*/}
-                {/*        type="email"*/}
-                {/*    />*/}
-                {/*    <button type="submit">Submit</button>*/}
-                {/*</Form>*/}
-            </Formik>
-        </div>
-    );
 
     const selectOptions = {
         true: 'Open',
         false: 'Close'
     };
 
+    const typeOption = optionType();
+
+    function optionType() {
+        let x = GetAllTypes()
+        let fil = []
+
+        x.map((typeDB) => (
+            fil.push({label: typeDB.name, value: typeDB.name})
+        ))
+
+        return fil;
+
+    };
 
     /** Columns, data an filters of the table */
     const columns = [
@@ -326,10 +261,8 @@ export default function Table() {
         {
             dataField: "typeSet.name",
             text: "Type",
-            filter: textFilter({
-                getFilter: filter => {
-                    typeFilter = filter;
-                }
+            filter: selectFilter({
+                options: typeOption
             }),
             sort: true
         },
@@ -350,10 +283,10 @@ export default function Table() {
                 getFilter: filter => {
                     oSFilter = filter;
                 }
-                ,options:selectOptions
+                , options: selectOptions
             }),
             sort: true,
-            formatter:(value, row) => (
+            formatter: (value, row) => (
                 <span>
             {value ? '✔' : '❌'}
           </span>
@@ -366,10 +299,10 @@ export default function Table() {
                 getFilter: filter => {
                     oSdFilter = filter;
                 }
-                ,options:selectOptions
+                , options: selectOptions
             }),
             sort: true,
-            formatter:(value, row) => (
+            formatter: (value, row) => (
                 <span>
             {value ? '✔' : '❌'}
           </span>
@@ -382,28 +315,18 @@ export default function Table() {
         nameFilter("");
         cityFilter("");
         categoryFilter("");
-        typeFilter("");
+        typeFilter();
         oSFilter();
         oSdFilter();
     }
 
-    // const handleGetCurrentFilter = () => {
-    //     console.log(node.filterContext.currFilters);
-    // }
-
-    // function handleChange(value, source) {
-    //     if (source === "type") {
-    //         setValueType(value)
-    //     }
-    //     if (source === "cat") {
-    //         setValueCat(value)
-    //     }
-    // }
 
     function handleClick() {
-        let x = valueType;
-        typeFilter(x);
+        oSFilter("true");
+        oSdFilter("true");
     };
+
+    // const CaptionElement = () => <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: 'purple', border: '1px solid purple', padding: '0.5em' }}>Component as Header</h3>;
 
 
     return (
@@ -421,25 +344,12 @@ export default function Table() {
                 <h3>Click on a row to show the place on the map</h3>
             </motion.div>
 
-            {/*<Select*/}
-            {/*    options={types}*/}
-            {/*    value={valueType}*/}
-            {/*    onChange={value => handleChange(value, "type")}*/}
-            {/*    // defaultValue={{ label: 2002, value: 2002 }}*/}
-            {/*/>*/}
-            {/*/!**Categories*!/*/}
-            {/*/!*{console.log(categories.name)}*!/*/}
-            {/*{console.log(categories)}*/}
-            {/*<Select*/}
-            {/*    options={optionsSelect}*/}
-            {/*    value={valueCat}*/}
-            {/*    onChange={value => handleChange(value, "cat")}*/}
-            {/*    // defaultValue={{ label: 2002, value: 2002 }}*/}
-            {/*/>*/}
-            {/*{categories && categories.length > 0 && (*/}
-            <FormSelect></FormSelect>
-            {/*)}*/}
+            {/*<button style={{display:"flex", textAlign:"center"}}className="btn btn-lg btn-primary" onClick={handleClick}>Apply filter: only open on Sundays and*/}
+            {/*    special days</button>*/}
+
+
             {places && places.length > 0 ? (
+
                 <ToolkitProvider
                     bootstrap4
                     keyField="name"
@@ -449,9 +359,7 @@ export default function Table() {
                 >
                     {props => (
                         <div>
-                            {/**Types*/}
 
-                            {/*<MySearch></MySearch>*/}
                             <SearchBar
                                 {...props.searchProps}
                                 style={{width: "400px", height: "40px"}}
@@ -460,11 +368,9 @@ export default function Table() {
                                 {...props.searchProps}
                                 clearAllFilter={clearAllFilter}
                             />
-                            {/*{console.log("DD%" + ddt)}*/}
-                            {/*{console.log("TYPES=>" + types)}*/}
 
                             <BootstrapTable
-                                // ref={ n => node = n }
+
                                 {...props.baseProps}
                                 filter={filterFactory()}
                                 noDataIndication="No data found"
@@ -473,6 +379,9 @@ export default function Table() {
                                 condensed
                                 pagination={paginationFactory()}
                                 selectRow={selectRow}
+                                bordered={false}
+
+
                                 // headerWrapperClasses="thead-dark"
                                 // classes="table-striped table-hover"
                             />
@@ -485,9 +394,6 @@ export default function Table() {
             }}><span
                 className="sr-only">Loading...</span></Spinner>}
 
-            {/*{node != undefined &&*/}
-            <button className="btn btn-lg btn-primary" onClick={handleClick}> filter columns by 0</button>
-            {/*}*/}
 
         </Container>
     );

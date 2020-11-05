@@ -16,13 +16,11 @@ import Rating from "@material-ui/lab/Rating";
 import {FormReview} from "./FormReview";
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
-import {faBan, faEdit} from "@fortawesome/free-solid-svg-icons";
+import {faBan, faEdit, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import {useHistory} from "react-router-dom";
-import {faArrowAltCircleUp} from "@fortawesome/free-solid-svg-icons/faArrowAltCircleUp";
-
 
 const Container = styled.div`
   text-align: center;
@@ -52,14 +50,14 @@ const Container = styled.div`
     border-radius: 8px;
     padding:0.3em;
   }
-  h2{
+  h2 {
     text-align: center;
     font-size: 1em;
     font-weight: 400;
     padding: 0.8em;
     color: #24B9B6;
   }
-  sub{
+  sub {
     color: darkred;
     background: grey;
     text-align: center;
@@ -137,15 +135,13 @@ export default function UserAccount(props) {
 
     //Button for go to the place on map
     function editDeleteCheck(reportSet, place){
-
             return(
 
                 <div>
-                    <Button onClick={() => editDeleteClick(place)}><FontAwesomeIcon icon={faArrowAltCircleUp}/></Button>
+                    <Button onClick={() => editDeleteClick(place)}><FontAwesomeIcon icon={faMapMarkerAlt}/></Button>
                 </div>
 
             )
-
         }
 
     //Delete a report and reload the table
