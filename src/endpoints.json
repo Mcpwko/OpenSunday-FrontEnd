@@ -14,5 +14,5 @@
   "report": "/api/reports",
   "banUser": "/api/users/Ban/",
   "verifyPlace":"/api/places/Verify/",
-  "changeStatus": "/api/reports/Validate"
+  "changeStatus": "/api/reports/validate/"
 }

@@ -243,7 +243,8 @@ function Details(props) {
                                                     isForDelete: values.choice === 'IsForDelete',
                                                     isForEdit: values.choice === 'IsForEdit',
                                                     idUser: userContext.user.idUser,
-                                                    idPlace: props.idPlace
+                                                    idPlace: props.idPlace,
+                                                    status: true
                                                 }
                                             ),
                                         });
