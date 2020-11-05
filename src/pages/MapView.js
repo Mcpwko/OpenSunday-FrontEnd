@@ -1,34 +1,24 @@
-import React, {Fragment, useContext, useEffect, useRef, useState} from 'react';
-import {Map, TileLayer, Marker, Popup, LayersControl, LayerGroup} from 'react-leaflet';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {LayerGroup, LayersControl, Map, Marker, Popup, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Markers from '../components/VenueMarkers';
-import Foursquare from "../utils/foursquare";
 import Control from '@skyeer/react-leaflet-custom-control';
 import L from 'leaflet';
 import "./MapView.css";
-import {
-    faCertificate, faCheckCircle,
-    faCross, faEdit,
-    faHome,
-    faMapMarkerAlt,
-    faSearch,
-    faWindowClose
-} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faMapMarkerAlt, faWindowClose} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Search from "react-leaflet-search";
 import {usePosition} from 'use-position';
 import {FormPlace} from "../components/FormPlace";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
-import {Auth0Context, useAuth0} from "@auth0/auth0-react";
+import {useAuth0} from "@auth0/auth0-react";
 import PlacesMarkers from '../components/PlacesMarkers';
-import {BrowserRouter, Link, Route, useLocation, Router,useHistory} from 'react-router-dom';
-import {FiHome, FiChevronRight, FiSearch, FiSettings, FiFilter} from "react-icons/fi";
-import {HereLocationIcon, PlusLocationIcon, RestaurantIconLocation} from "../components/Icons";
+import {BrowserRouter, Route, useHistory, useLocation} from 'react-router-dom';
+import {HereLocationIcon, PlusLocationIcon} from "../components/Icons";
 import styled from "styled-components";
 import Details from "../components/Details";
 import {useAlert} from "react-alert";
-import PlacesPopup from "../components/PlacesPopup";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import {UserContext} from "../context/UserContext";
 import Routing from "../components/RoutingMachine";
