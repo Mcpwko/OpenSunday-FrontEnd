@@ -1,7 +1,7 @@
-import React, {useContext, useState} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 import UserAccount from "../components/UserAccount";
-import { ThemeContext, themes } from '../context/ThemeContext';
+import {ThemeContext} from '../context/ThemeContext';
 
 /* Navbar component to switch theme */
 class ThemeManager extends React.Component {
@@ -12,7 +12,7 @@ class ThemeManager extends React.Component {
                     type="button"
                     title="Switch Theme"
                     onClick={this.context.toggleTheme}
-                    style={{borderRadius:"50%"}}
+                    style={{borderRadius: "50%"}}
                 >
                     {/* Remove the current theme value from the button text */}
                     <span>💡</span>
@@ -26,7 +26,6 @@ class ThemeManager extends React.Component {
 ThemeManager.contextType = ThemeContext;
 
 export default function Account(props) {
-
 
 
     return (

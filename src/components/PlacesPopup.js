@@ -1,26 +1,22 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {Popup} from 'react-leaflet';
-import {BrowserRouter, Link} from "react-router-dom";
-import Details from "./Details";
-import {FaFontAwesome} from "react-icons/all";
-import { faRoute} from "@fortawesome/free-solid-svg-icons";
+import {Link} from "react-router-dom";
+import {faRoute} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import Routing from "./RoutingMachine";
 
-function PlacesPopup  (props)  {
+function PlacesPopup(props) {
     const data = props.data;
 
-    const getRouting = (placeLat,placeLong) => {
-        props.getRoute(placeLat,placeLong);
+    const getRouting = (placeLat, placeLong) => {
+        props.getRoute(placeLat, placeLong);
     }
-
 
     return (
         <Popup>
             <h1 className='popup-text'>{data.name}</h1>
             <div>{data.locationSet.address}</div>
-            <div>{data.typeSet.name && "Type : "+ data.typeSet.name}</div>
-            <div>{data.categorySet.name!=null &&  "Category : " + data.categorySet.name}</div>
+            <div>{data.typeSet.name && "Type : " + data.typeSet.name}</div>
+            <div>{data.categorySet.name != null && "Category : " + data.categorySet.name}</div>
             <br/>
             <button className="toolsBtn">
                 <Link
@@ -33,8 +29,8 @@ function PlacesPopup  (props)  {
             </button>
             <button
                 className="toolsBtn"
-                style={{margin:"20px"}}
-                onClick={() => getRouting(data.locationSet.lat,data.locationSet.long)}
+                style={{margin: "20px"}}
+                onClick={() => getRouting(data.locationSet.lat, data.locationSet.long)}
             >
                 <FontAwesomeIcon icon={faRoute}/>
             </button>

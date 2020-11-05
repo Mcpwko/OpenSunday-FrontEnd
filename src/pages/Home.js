@@ -2,7 +2,6 @@ import React from "react";
 import Carousel from 'react-bootstrap/Carousel'
 import "./Home.css";
 import {Link} from "react-router-dom";
-import {NavLink} from "reactstrap";
 import styled from "styled-components";
 
 const Container = styled.div`

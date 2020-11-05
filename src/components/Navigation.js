@@ -1,6 +1,3 @@
-/**
- * Javascript file for handling the navigation bar
- */
 import React, {useContext, useEffect, useState} from 'react';
 import {
     Collapse,
@@ -14,9 +11,8 @@ import {
 } from 'reactstrap';
 import {Link} from "react-router-dom";
 import logo from '../assets/Logo.png';
-import {ThemeContext, themes} from "../context/ThemeContext";
 
-
+/** Navigation bar */
 const Navigation = (props) => {
     const [acn1, setAcn1] = useState('active') // assumes link 1 is default active
     const [acn2, setAcn2] = useState('')
@@ -37,9 +33,6 @@ const Navigation = (props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
-
-
-    let themeContext = useContext(ThemeContext);
 
     return (
         <div id="navigationBar">

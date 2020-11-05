@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import "./Place.css";
-import {Auth0Context, useAuth0} from "@auth0/auth0-react";
+import {useAuth0} from "@auth0/auth0-react";
 import {SubmitButton} from "./FormPlace";
 import {Formik} from "formik";
-import {Form, Button, Modal, Spinner} from "react-bootstrap";
+import {Button, Form, Modal, Spinner} from "react-bootstrap";
 import * as Yup from "yup";
 import styled from 'styled-components';
 import ConfirmDialog from "../components-reusable/ConfirmDialog";
@@ -11,15 +11,10 @@ import {useAlert} from "react-alert";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {UserContext} from "../context/UserContext";
-import moment from "moment";
-import Rating from "@material-ui/lab/Rating";
-import {FormReview} from "./FormReview";
 import BootstrapTable from 'react-bootstrap-table-next';
-import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 import {faBan, faEdit, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import filterFactory, {textFilter} from "react-bootstrap-table2-filter";
-import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
+import filterFactory from "react-bootstrap-table2-filter";
 import {useHistory} from "react-router-dom";
 
 const Container = styled.div`

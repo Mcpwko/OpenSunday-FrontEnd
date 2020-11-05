@@ -1,5 +1,5 @@
 
-.listReviews{
+.listReviews {
     border-top: 2px ridge;
 }
 
@@ -15,7 +15,6 @@
     width: 30px;
     font-size: 10px;
 }
-
 
 .buttonBan:hover,
 .buttonBan:focus {

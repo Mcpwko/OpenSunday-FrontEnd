@@ -41,7 +41,6 @@ export const Modal = styled.div`
 `;
 
 
-
 function MapView(props) {
     // const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
     const [currentLocation, setCurrentLocation] = useState({lat: 46.2333, lng: 7.35});
@@ -63,7 +62,7 @@ function MapView(props) {
     const [mapInit, setMapInit] = useState(false);
     const [placeLat, setPlaceLat] = useState(0);
     const [placeLong, setPlaceLong] = useState(0);
-    const [routingOn,setRoutingOn]=useState(false);
+    const [routingOn, setRoutingOn] = useState(false);
 
     const [infoMarker, setInfoMarker] = useState();
     const [filter, setFilter] = useState(0);
@@ -79,17 +78,17 @@ function MapView(props) {
 
     const path = useLocation();
 
-    useEffect(() =>{
-        const {current={}} = refMap;
-        const {leafletElement:map } = current;
+    useEffect(() => {
+        const {current = {}} = refMap;
+        const {leafletElement: map} = current;
 
-        if(!routingOn && placeLong==-1){
+        if (!routingOn && placeLong == -1) {
             map.invalidateSize()
             history.push("/");
             history.goBack()
 
         }
-    },[refMap,routingOn])
+    }, [refMap, routingOn])
 
     useEffect(() => {
         console.log(path.pathname)
@@ -191,7 +190,7 @@ function MapView(props) {
         setMapInit(true);
     };
 
-    function getRoute (placeLat,placeLong) {
+    function getRoute(placeLat, placeLong) {
         setPlaceLat(placeLat);
         setPlaceLong(placeLong);
         setRoutingOn(true);
@@ -550,7 +549,7 @@ function MapView(props) {
                                 placeLat={placeLat}
                                 userLat={latitude}
                                 userLong={longitude}/>
-                                </> : null}
+                        </> : null}
                     </Map>
                 </div>
             </BrowserRouter>

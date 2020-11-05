@@ -6,15 +6,14 @@ import MarkerPopup from './MarkerPopup';
 const VenueMarkers = (props) => {
     let venues = Array.from(props);
 
-    if(venues == null){
+    if (venues == null) {
         return;
     }
 
     const markers = venues.map((venue, index) => (
         <Marker
             key={index}
-            //position={venue.geometry}
-            position={venue.location.latitude+", "+venue.location.longitude}
+            position={venue.location.latitude + ", " + venue.location.longitude}
             icon={RestaurantIconLocation}
         >
             <MarkerPopup data={venue}/>

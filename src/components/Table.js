@@ -1,23 +1,19 @@
-import React, {Fragment, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory, {selectFilter, textFilter} from "react-bootstrap-table2-filter";
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
-import {Button, Col, Form, Spinner} from "react-bootstrap";
+import {Button, Form, Spinner} from "react-bootstrap";
 import styled from 'styled-components';
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
-import GetCategories, {GCats, GetAllCategories} from "../database/GetCategories";
+import GetCategories from "../database/GetCategories";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {useHistory} from "react-router-dom";
-import {Marker} from "react-leaflet";
-import {switchIcon} from "./Icons";
-import PlacesPopup from "./PlacesPopup";
-import Select from "react-select";
 import {useAlert} from "react-alert";
 import {motion} from "framer-motion"
-import {Formik, useField, useFormikContext} from "formik";
-import GetTypes, {GetAllTypes, GTypes} from "../database/GetTypes";
+import {useField, useFormikContext} from "formik";
+import GetTypes, {GetAllTypes} from "../database/GetTypes";
 
 const Container = styled.div`
     td, th, tr, table, text, tbody, thead{

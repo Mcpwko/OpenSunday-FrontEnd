@@ -1,9 +1,7 @@
-import React, {Fragment, useEffect} from 'react';
-import {Marker, Popup} from 'react-leaflet';
-import {BarLocationIcon, switchIcon} from './Icons';
+import React, {Fragment} from 'react';
+import {Marker} from 'react-leaflet';
+import {switchIcon} from './Icons';
 import PlacesPopup from "./PlacesPopup";
-import {Link} from "react-router-dom";
-import MarkerClusterGroup from "react-leaflet-markercluster";
 
 function PlacesMarkers(props) {
 
@@ -18,10 +16,6 @@ function PlacesMarkers(props) {
 
             icon={switchIcon(place.typeSet.name)}
         >
-            {/*{console.log(place.types.idType)}*/}
-            {/*{console.log(place)}*/}
-
-
             <PlacesPopup data={place} onOpen={props.onOpen} select={props.select} getRoute={props.getRoute}/>
         </Marker>
     ));

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Rating from "@material-ui/lab/Rating";
 import {Auth0Context} from "@auth0/auth0-react";
 import endpoints from "../endpoints.json";
@@ -6,9 +6,7 @@ import styled from "styled-components";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import Box from "@material-ui/core/Box";
-import {Modal, Button,Form,Col} from "react-bootstrap";
-import {Modal as Mod} from "../pages/MapView"
-import request from "../utils/request";
+import {Button, Form, Modal} from "react-bootstrap";
 import {useAlert} from "react-alert";
 import {UserContext} from "../context/UserContext";
 
@@ -30,15 +28,15 @@ export function FormReview(props) {
     const userContext = useContext(UserContext);
     const authContext = useContext(Auth0Context);
 
-    function toggleModal(){
+    function toggleModal() {
         setShow(show ? false : true);
     }
 
     function showModal() {
-        if(!show)
-            if(userContext.user.pseudo!=null){
+        if (!show)
+            if (userContext.user.pseudo != null) {
                 setShow(true);
-            }else{
+            } else {
                 alert.error("You don't have a pseudo yet !");
                 alert.error("Please complete your profile in 'My Account' ! ");
             }
@@ -74,7 +72,7 @@ export function FormReview(props) {
                             <Formik
                                 initialValues={{
                                     comment: "",
-                                    rate:""
+                                    rate: ""
                                 }}
                                 validationSchema={validationSchema}
                                 onSubmit={async (values, {setSubmitting, resetForm}) => {
@@ -82,34 +80,39 @@ export function FormReview(props) {
                                     setSubmitting(true);
                                     //POST Review into the DB
 
-                                        if(userContext.user.reviewSet.filter(x => x.idPlace == props.place.idPlace).length < 1) {
+                                    if (userContext.user.reviewSet.filter(x => x.idPlace == props.place.idPlace).length < 1) {
 
-                                            await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertReview}`, {
-                                                method: 'POST',
-                                                headers: {
-                                                    Accept: "application/json",
-                                                    Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
-                                                    'Content-Type': "application/json"
-                                                },
-                                                body: JSON.stringify({
-                                                        rate: rating,
-                                                        comment: values.comment,
-                                                        idUser: userContext.user.idUser,
-                                                        idPlace: props.place.idPlace
-                                                    }
-                                                ),
-                                            });
-                                            props.addReview();
-                                            userContext.refreshPlaces();
-                                            userContext.user.reviewSet.push({rate:rating,comment:values.comment,idUser:userContext.user.idUser,idPlace:props.place.idPlace});
-                                            setRating(0);
-                                            resetForm();
-                                            setSubmitting(false);
-                                            toggleModal();
-                                            alert.success("Your comment has been published !");
-                                        } else {
-                                            alert.error("You already post a review for this place");
-                                        }
+                                        await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.insertReview}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                Accept: "application/json",
+                                                Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
+                                                'Content-Type': "application/json"
+                                            },
+                                            body: JSON.stringify({
+                                                    rate: rating,
+                                                    comment: values.comment,
+                                                    idUser: userContext.user.idUser,
+                                                    idPlace: props.place.idPlace
+                                                }
+                                            ),
+                                        });
+                                        props.addReview();
+                                        userContext.refreshPlaces();
+                                        userContext.user.reviewSet.push({
+                                            rate: rating,
+                                            comment: values.comment,
+                                            idUser: userContext.user.idUser,
+                                            idPlace: props.place.idPlace
+                                        });
+                                        setRating(0);
+                                        resetForm();
+                                        setSubmitting(false);
+                                        toggleModal();
+                                        alert.success("Your comment has been published !");
+                                    } else {
+                                        alert.error("You already post a review for this place");
+                                    }
 
 
                                 }}
@@ -140,7 +143,8 @@ export function FormReview(props) {
                                                 rows={2}
                                             />
                                             {touched.comment && errors.comment ? (
-                                                <div style={{color:"red"}} className="error-message">{errors.comment}</div>
+                                                <div style={{color: "red"}}
+                                                     className="error-message">{errors.comment}</div>
                                             ) : null}
                                         </Form.Group>
 
@@ -154,7 +158,7 @@ export function FormReview(props) {
 
                                         {/*============================== SUBMIT BUTTON ==================================*/}
                                         <Modal.Footer>
-                                            <Button variant="secondary"  onClick={toggleModal}>
+                                            <Button variant="secondary" onClick={toggleModal}>
                                                 Close
                                             </Button>
                                             <Button variant="primary" type="submit" disabled={isSubmitting}>
@@ -168,7 +172,7 @@ export function FormReview(props) {
                         </Modal.Body>
 
                     </Modal>
-                </button>: null}
+                </button> : null}
         </div>
 
 

@@ -1,25 +1,26 @@
 import React, {useContext, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faEdit} from "@fortawesome/free-solid-svg-icons";
-import {withRouter, useLocation, useHistory} from 'react-router-dom';
+import {useHistory, useLocation, withRouter} from 'react-router-dom';
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {Auth0Context} from "@auth0/auth0-react";
 import Rating from "@material-ui/lab/Rating";
 import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
 import Reviews from "./Reviews";
-import {Modal, Button,Form,Col} from "react-bootstrap";
+import {Button, Col, Form, Modal} from "react-bootstrap";
 import {Formik} from "formik";
 import {Modal as Mod} from "../pages/MapView"
-import {FormPlace, SubmitButton} from "./FormPlace";
+import {FormPlace} from "./FormPlace";
 import * as Yup from "yup";
 import styled from "styled-components";
 import {useAlert} from "react-alert";
 import "./Details.css";
 import {
     EmailIcon,
-    EmailShareButton, FacebookIcon, FacebookShareButton,
+    EmailShareButton,
+    FacebookIcon,
+    FacebookShareButton,
     TwitterIcon,
     TwitterShareButton,
     WhatsappIcon,
@@ -68,9 +69,9 @@ function Details(props) {
 
     function showModal() {
         console.log("PSEUDO : " + userContext.user.pseudo)
-        if(userContext.user.pseudo!=null){
+        if (userContext.user.pseudo != null) {
             setShow(true);
-        }else{
+        } else {
             alert.error("You don't have a pseudo yet !");
             alert.error("Please complete your profile in 'My Account' ! ");
         }
@@ -88,7 +89,7 @@ function Details(props) {
         let place = await request(`${process.env.REACT_APP_SERVER_URL}${endpoints.verifyPlace}${props.idPlace}`,
             authContext.getAccessTokenSilently
         );
-        if(place!=null){
+        if (place != null) {
             alert.success(props.name + " has been verified !")
             userContext.refreshPlaces();
         }
@@ -96,7 +97,7 @@ function Details(props) {
 
     const deletePlace = async () => {
         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.placesRoad}${props.idPlace}`, {
-            method:'DELETE',
+            method: 'DELETE',
             headers: {
                 Accept: "application/json",
                 Authorization: `Bearer ${await authContext.getAccessTokenSilently()}`,
@@ -140,19 +141,19 @@ function Details(props) {
             <h1>
                 {props.name}
                 {props.isVerified && <FontAwesomeIcon icon={faCheckCircle}/>}
-                {(!props.isVerified || userContext.user.idUserType ==3) &&
+                {(!props.isVerified || userContext.user.idUserType == 3) &&
 
-                    <button onClick={() => {
-                        if(userContext.user.pseudo!=null){
-                            setShowForm(true)
-                        }else{
-                            alert.error("You don't have a pseudo yet !");
-                            alert.error("Please complete your profile in 'My Account' ! ");
-                        }
+                <button onClick={() => {
+                    if (userContext.user.pseudo != null) {
+                        setShowForm(true)
+                    } else {
+                        alert.error("You don't have a pseudo yet !");
+                        alert.error("Please complete your profile in 'My Account' ! ");
+                    }
 
-                    }}>
-                        <FontAwesomeIcon icon={faEdit}/>
-                    </button>}
+                }}>
+                    <FontAwesomeIcon icon={faEdit}/>
+                </button>}
 
 
             </h1>
@@ -220,7 +221,7 @@ function Details(props) {
                             <Formik
                                 initialValues={{
                                     comment: "",
-                                    choice:""
+                                    choice: ""
                                 }}
                                 validationSchema={validationSchema}
                                 onSubmit={async (values, {setSubmitting, resetForm}) => {
@@ -229,7 +230,7 @@ function Details(props) {
                                     //POST Report into the DB
                                     console.log(userContext.reportChange)
 
-                                    if(userContext.user.reportSet.filter(x => x.idPlace == props.idPlace).length < 1) {
+                                    if (userContext.user.reportSet.filter(x => x.idPlace == props.idPlace).length < 1) {
 
                                         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.report}`, {
                                             method: 'POST',
@@ -249,13 +250,19 @@ function Details(props) {
                                             ),
                                         });
 
-                                        userContext.user.reportSet.push({comment:values.comment, isForDelete:values.choice === 'IsForDelete', isForEdit:values.choice === 'IsForEdit', idUser:userContext.user.idUser, idPlace: props.idPlace});
+                                        userContext.user.reportSet.push({
+                                            comment: values.comment,
+                                            isForDelete: values.choice === 'IsForDelete',
+                                            isForEdit: values.choice === 'IsForEdit',
+                                            idUser: userContext.user.idUser,
+                                            idPlace: props.idPlace
+                                        });
 
                                         resetForm();
                                         setSubmitting(false);
                                         hideModal();
                                         alert.success("Your report has been submitted !");
-                                    }else {
+                                    } else {
                                         alert.error("You already report this place !")
                                     }
                                 }}
@@ -286,7 +293,8 @@ function Details(props) {
                                                 rows={2}
                                             />
                                             {touched.comment && errors.comment ? (
-                                                <div style={{color:"red"}} className="error-message">{errors.comment}</div>
+                                                <div style={{color: "red"}}
+                                                     className="error-message">{errors.comment}</div>
                                             ) : null}
                                         </Form.Group>
 
@@ -296,7 +304,8 @@ function Details(props) {
 
                                         <Form.Row>
                                             <Col>
-                                                <Form.Label className={"show"}>Any error on the information ?</Form.Label>
+                                                <Form.Label className={"show"}>Any error on the information
+                                                    ?</Form.Label>
                                                 <Form.Check
                                                     type="radio"
                                                     name="choice"
@@ -306,7 +315,8 @@ function Details(props) {
                                                 />
                                             </Col>
                                             <Col>
-                                                <Form.Label className={"show"}>This place doesn't exist anymore ?</Form.Label>
+                                                <Form.Label className={"show"}>This place doesn't exist anymore
+                                                    ?</Form.Label>
                                                 <Form.Check
                                                     type="radio"
                                                     name="choice"
@@ -317,11 +327,11 @@ function Details(props) {
                                             </Col>
                                         </Form.Row>
                                         {touched.choice && errors.choice ? (
-                                            <div style={{color:"red"}} className="error-message">{errors.choice}</div>
+                                            <div style={{color: "red"}} className="error-message">{errors.choice}</div>
                                         ) : null}
                                         {/*============================== SUBMIT BUTTON ==================================*/}
                                         <Modal.Footer>
-                                            <Button variant="secondary"  onClick={hideModal}>
+                                            <Button variant="secondary" onClick={hideModal}>
                                                 Close
                                             </Button>
                                             <Button variant="primary" type="submit" disabled={isSubmitting}>
@@ -342,21 +352,21 @@ function Details(props) {
                 title={"OpenSunday : " + props.name}
                 className="Demo__some-network__share"
             >
-                <WhatsappIcon size={32} round />
+                <WhatsappIcon size={32} round/>
             </WhatsappShareButton>
             <FacebookShareButton
                 url={window.location.href}
                 title={"OpenSunday : " + props.name}
                 className="Demo__some-network__share"
             >
-                <FacebookIcon size={32} round />
+                <FacebookIcon size={32} round/>
             </FacebookShareButton>
             <TwitterShareButton
                 url={window.location.href}
                 title={"OpenSunday : " + props.name}
                 className="Demo__some-network__share"
             >
-                <TwitterIcon size={32} round />
+                <TwitterIcon size={32} round/>
             </TwitterShareButton>
             <EmailShareButton
                 url={window.location.href}
@@ -376,9 +386,9 @@ function Details(props) {
                 This action cannot be undone!<br/>
             </ConfirmDialog>
             <br/>
-            {(!props.isVerified && userContext.user.idUserType==3) &&
+            {(!props.isVerified && userContext.user.idUserType == 3) &&
             <button className="validatePlace" onClick={validatePlace}>Validate Place</button>}
-            {(userContext.user.idUserType==3) &&
+            {(userContext.user.idUserType == 3) &&
             <button className="deletePlace" onClick={() => setRemovePlace(true)}>Delete Place</button>}
         </div>
     )

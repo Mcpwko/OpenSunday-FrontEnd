@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
 import {useAuth0} from "@auth0/auth0-react";
-import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
+import {Link} from "react-router-dom";
 import Table from "../components/Table"
 
 export default function Places(props) {
@@ -37,30 +37,9 @@ export default function Places(props) {
 
     return (
         <div className="place">
-        {/*<div>*/}
-            {/*<div className="filters"></div>*/}
-            {/*<select>*/}
-            {/*    {GetTypes()}*/}
-            {/*</select>*/}
-            {/*<select>*/}
-            {/*    {GetCategories()}*/}
-            {/*</select>*/}
-
-            {/*<div className="buttonsMap">*/}
-            {/*    <button className="add" onClick={handleLocationsClick}>Get places</button>*/}
-            {/*</div>*/}
-
 
             <Table></Table>
-            {/*<TableWithDDL></TableWithDDL>*/}
 
-            {/*<a*/}
-            {/*    className="App-link"*/}
-            {/*    href="#"*/}
-            {/*    onClick={handleLocationsClick}*/}
-            {/*>*/}
-            {/*    Get Locations*/}
-            {/*</a>*/}
             {locations && locations.length > 0 && (
                 <ul className="Locations-List">
                     {locations.map((location) => (

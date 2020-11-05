@@ -45,7 +45,7 @@
 
 }
 
-.controlSection{
+.controlSection {
     color: black;
     border-radius: 4px;
     border-color: unset;
@@ -75,35 +75,34 @@
 }
 
 
-.leaflet-control{
+.leaflet-control {
     background-color: white;
     scroll-behavior: smooth;
     text-align: left;
 }
 
-.leaflet-top.leaflet-right{
+.leaflet-top.leaflet-right {
     color: black;
 }
 
 /*div.leaflet-top.leaflet-right:only-child{ display: none !important; width: 0px !important; height: 0px !important; }*/
 
-.hideRoute{
+.hideRoute {
     display: none !important;
     width: 0px !important;
     height: 0px !important;
 }
 
-.closeRouting{
-    position:absolute;
+.closeRouting {
+    position: absolute;
     top: 140px;
-    right:15px;
+    right: 15px;
     border-radius: 5px;
     background-color: black;
 
     color: white;
     z-index: 500000;
 }
-
 
 
 @keyframes fade {

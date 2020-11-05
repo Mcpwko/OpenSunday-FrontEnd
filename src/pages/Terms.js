@@ -1,6 +1,5 @@
 import React from "react";
 import LogoHES from "../assets/HESLOGO.png"; // with import
-import {motion} from "framer-motion"
 import styled from "styled-components";
 
 const Container = styled.div`
