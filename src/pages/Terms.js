@@ -44,12 +44,9 @@ font-size:75%;
   }
 `
 
-
 export default function Terms() {
     return (
-
         <Container>
-
             <h1>Terms of use</h1>
 
             <h2>Security <span>🛡️</span></h2>
@@ -82,8 +79,6 @@ export default function Terms() {
 
             <h4>Boosted by:</h4>
             <img class="center" width="200px" height="60px" src={LogoHES} alt="Logo HES-SO Valais-Wallis"></img>
-
-
         </Container>
 
     );

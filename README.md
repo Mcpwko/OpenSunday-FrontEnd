@@ -10,24 +10,7 @@
 This project is part of the "645-1 - School's option 3" module at the HES-SO Valais-Wallis.
 
 ## Description and goal
-To be completed.
-
-## Functionalities
-### Connect or create an account
-To be completed.
-
-### Add a place
-You can add a place by:
-* Drag a pin of the location and enter the information
-* Search a location with leaflet and add necessary information
-* Manually enter the information and location and get the coordinates
-
-### Rate a place and see ratings
-To be completed.
-
-
-## Notes :
-* The project has been developed in English
+The aim of this project is to create an interactive map showing the places that are open on Sundays and public holidays. To achieve this, we have used Leaflet and OpenStreetMap to create a map and have the appropriate features and plugins.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/) :octocat:

@@ -474,7 +474,6 @@ export const FormPlace = (props) => {
                         >
                         </Button> : null}
 
-                        {/**NE PAS SUPPRIMER*/}
                         {/** Reset the form when you click on "add a new place" */}
                         {reset ?
                             <Button style={{display: "none"}} type="reset" ref={simulateReset}/>
