@@ -44,9 +44,10 @@ function Details(props) {
     const [show, setShow] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [removePlace, setRemovePlace] = useState(false);
-
+    /*Context */
     const userContext = useContext(UserContext);
     const authContext = useContext(Auth0Context);
+    /*Hooks*/
     const alert = useAlert();
     const history = useHistory();
     const path = useLocation();
@@ -68,7 +69,6 @@ function Details(props) {
 
 
     function showModal() {
-        console.log("PSEUDO : " + userContext.user.pseudo)
         if (userContext.user.pseudo != null) {
             setShow(true);
         } else {
@@ -110,12 +110,8 @@ function Details(props) {
 
     }
 
-
-    //let history = useHistory();
-
     function handleClick() {
         props.onClose();
-        //history.push("/map");
     }
 
 
@@ -127,8 +123,6 @@ function Details(props) {
             .required("Choose an option !")
     });
 
-
-    let place = props.place;
 
     return (
         <div className={`listVenues ${props.onOpen ? "in" : ""}`}>

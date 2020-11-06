@@ -42,7 +42,6 @@ export const Modal = styled.div`
 
 
 function MapView(props) {
-    // const [currentLocation, setCurrentLocation] = useState({lat: 46, lng: 7.5333});
     const [currentLocation, setCurrentLocation] = useState({lat: 46.2333, lng: 7.35});
     const [marker, setMarker] = useState({lat: 46.3, lng: 7.5333});
     const [zoom, setZoom] = useState(12);
@@ -50,33 +49,44 @@ function MapView(props) {
     const [draggable, setDraggable] = useState(true);
     const [visible, setVisible] = useState(false);
     const [viewport, setViewPort] = useState({
-        // center: [45.3, 7.5333],
         center: [46.2333, 7.35],
         zoom: 12,
     });
     const [types, setTypes] = useState([]);
     const [places, setPlaces] = useState([]);
-    const [collapsed, setCollapsed] = useState(true);
     const [buttonGC, setButtonGC] = useState(false);
     const [selected, setSelected] = useState(0);
     const [mapInit, setMapInit] = useState(false);
     const [placeLat, setPlaceLat] = useState(0);
     const [placeLong, setPlaceLong] = useState(0);
     const [routingOn, setRoutingOn] = useState(false);
-
     const [infoMarker, setInfoMarker] = useState();
     const [filter, setFilter] = useState(0);
     const [loading, setLoading] = useState(true);
-
-
+    const [showHere, setShowHere] = useState(false);
+    const [showForm, setShowForm] = useState(false);
+    const [data, setData] = useState({
+        name: '',
+        address: '',
+        zip: '',
+        city: ''
+    })
+    /*Context*/
+    const userContext = useContext(UserContext);
+    /*Hooks*/
     const refMarker = useRef();
     const refMap = useRef();
     const authContext = useAuth0();
-    const userContext = useContext(UserContext);
     const alert = useAlert();
     const history = useHistory();
-
     const path = useLocation();
+    const {
+        latitude,
+        longitude,
+        timestamp,
+        accuracy,
+        error,
+    } = usePosition();
 
     useEffect(() => {
         const {current = {}} = refMap;
@@ -117,15 +127,6 @@ function MapView(props) {
         }
     }, [places])
 
-    const {
-        latitude,
-        longitude,
-        timestamp,
-        accuracy,
-        error,
-    } = usePosition();
-
-    const [showHere, setShowHere] = useState(false);
 
     /** Show the marker of the user position */
     useEffect(() => {
@@ -142,13 +143,6 @@ function MapView(props) {
         }
     }, [error]); // Execute only if latitude has changed
 
-
-    const [data, setData] = useState({
-        name: '',
-        address: '',
-        zip: '',
-        city: ''
-    })
 
     /** Tell the user to activate geolocation if he want to see himself on the map*/
     useEffect(() => {
@@ -285,29 +279,9 @@ function MapView(props) {
     //Get middle position of the visible map
     const getMapCenter = () => {
         const center = refMap.current;
-        // console.log(center.leafletElement.getCenter().toString());
         setMarker(center.leafletElement.getCenter())
     }
 
-    const [showForm, setShowForm] = useState(false);
-    // const [showLatLong, setShowLatLong] = useState(false);
-
-    // const toggleCoordinates = (props) => {
-    //     setShowLatLong(props)
-    //
-    //     if(showLatLong){
-    //
-    //     }
-    //     else{
-    //
-    //     }
-    //
-    //     toggleDraggable()
-    // }
-
-    // const displayForm = () => {
-    //     setShowForm(true)
-    // }
 
     const refresh = () => {
         setTimeout(function () {
@@ -377,8 +351,6 @@ function MapView(props) {
                                     )}
                                     onOpen={visible}
                                     onClose={toggleSideBar}
-                                    /* Pass the new method for toggling to the Book */
-                                    // toggleLike={handleToggleLike}
                                 /> : null
                         )}
                     />
@@ -489,12 +461,6 @@ function MapView(props) {
 
                         </Search>
                         <Markers venues={data.venues}/>
-                        {/*ANCIEN LISTE POUR AFFICHER LES MARKERS DE LA DB*/}
-                        {/*{places === null ? null : <PlacesMarkers venues={places} onOpen={showDetails} select={select}/>}*/}
-
-                        {/*Marker to show the location of the user*/}
-                        {/*{console.log("lat:" + latitude)}*/}
-                        {/*{console.log(error)}*/}
                         {showHere ? <Marker
                             icon={HereLocationIcon}
                             position={[latitude, longitude]}

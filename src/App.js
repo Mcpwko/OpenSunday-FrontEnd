@@ -1,19 +1,14 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./App.css";
-import {Auth0Context, useAuth0} from "@auth0/auth0-react";
+import {useAuth0} from "@auth0/auth0-react";
 import request from "./utils/request";
 import endpoints from "./endpoints";
 import Loading from "./components-reusable/Loading";
 import {BrowserRouter, Link, Switch, Route} from "react-router-dom";
-import PlaceDetails from "./pages/PlaceDetails";
 import Navigation from "./components/Navigation";
 import MapView from './pages/MapView';
 import About from "./pages/About";
-// import {FormPlace} from "./components/FormPlace"
-// import {GetLocation} from "./components/GetLocation"
 import moment from "moment";
-import {forEach} from "react-bootstrap/ElementChildren";
-import {get} from "leaflet/src/dom/DomUtil";
 import Account from "./pages/Account";
 import Home from "./pages/Home";
 import {ThemeContext, themes} from "./context/ThemeContext";
@@ -26,12 +21,10 @@ import Terms from "./pages/Terms";
 function App() {
     //List of all places
     let [locations, setLocations] = useState([]);
-
     //Connected User
     let [userConnected, setUserConnected] = useState({});
-
     let [showBan, setShowBan] = useState(false);
-
+    /*Hooks*/
     //Variables for Auth0
     let {
         loading,
@@ -41,7 +34,7 @@ function App() {
         isAuthenticated,
         user,
     } = useAuth0();
-    const alert = useAlert();
+    /*Context*/
     const themeContext = useContext(ThemeContext);
     const userContext = useContext(UserContext);
 
@@ -56,26 +49,6 @@ function App() {
 
     }, [isAuthenticated]);
 
-
-    // const [isOpen, setIsOpen] = useState(false);
-    //
-    // const toggle = () => setIsOpen(!isOpen);
-
-    //Handle click for "Get Locations" button
-    let handleLocationsClick = async (e) => {
-        e.preventDefault();
-        let locations = await request(
-            `${process.env.REACT_APP_SERVER_URL}${endpoints.places}`,
-            getAccessTokenSilently,
-            loginWithRedirect
-        );
-
-
-        if (locations && locations.length > 0) {
-            console.log(locations);
-            setLocations(locations);
-        }
-    };
     //Handle click on "Login" to open Auth0 Popup Login
     let handleLoginClick = async (e) => {
         e.preventDefault();
@@ -98,9 +71,7 @@ function App() {
             getAccessTokenSilently, loginWithRedirect
         );
         setUserConnected(connectedUser);
-        //userContext.user = connectedUser;
         if (connectedUser.status == 1) {
-            //alert.error("You have been banned ! You will be disconnect in 3 sec !")
             setShowBan(true)
             setInterval(function () {
                 logout({returnTo: window.location.origin})
@@ -177,7 +148,6 @@ function App() {
                     </a>
                 }
             </div>
-            // <br/>
         );
     }
 
@@ -198,58 +168,22 @@ function App() {
                                 backgroundColor: themes[themeContext.theme].background,
                                 color: themes[themeContext.theme].foreground
                             }}>
-                        {/*{isAuthenticated && (*/}
-                        {/*    <a*/}
-                        {/*        className="App-link Logout-link"*/}
-                        {/*        href="#"*/}
-                        {/*        onClick={handleLogoutClick}*/}
-                        {/*    >*/}
-                        {/*        {user.name}*/}
-                        {/*        Logout*/}
-                        {/*    </a>*/}
-                        {/*)}*/}
-                        {/*<br/>*/}
 
                         <Switch>
                             <Route
                                 /*
-                                FOR DEV FACILITIES - PLEASE CHANGE THE PATH
+                                FOR HOME
                                 */
                                 path="/"
-                                // path="/activities"
                                 exact
                                 render={() => (
                                     <>
 
 
                                         <Home/>
-                                        {/*/!*<ContactForm/>*!/*/}
-                                        {/*/!*<FormPlace/>*!/*/}
-                                        {/*<a*/}
-                                        {/*    className="App-link"*/}
-                                        {/*    href="#"*/}
-                                        {/*    onClick={handleLocationsClick}*/}
-                                        {/*>*/}
-                                        {/*    Get Locations*/}
-                                        {/*</a>*/}
-                                        {/*{locations && locations.length > 0 && (*/}
-                                        {/*    <ul className="Locations-List">*/}
-                                        {/*        {locations.map((location) => (*/}
-                                        {/*            <li key={location.id}>*/}
-                                        {/*                <Link*/}
-                                        {/*                    className="App-link"*/}
-                                        {/*                    to={`/location/${location.id}`}*/}
-                                        {/*                >*/}
-                                        {/*                    {location.name}*/}
-                                        {/*                </Link>*/}
-                                        {/*            </li>*/}
-                                        {/*        ))}*/}
-                                        {/*    </ul>*/}
-                                        {/*)}*/}
                                     </>
                                 )}
                             />
-                            <Route path="/location/:id" component={PlaceDetails}/>
                             <Route path="/map" component={MapView} props={locations}></Route>
                             <Route path="/about" component={About}/>
                             <Route path="/account" component={Account}/>

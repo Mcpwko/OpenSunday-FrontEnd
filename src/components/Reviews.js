@@ -15,9 +15,12 @@ function Reviews(props) {
     const [removeReviewDialog, setRemoveReviewDialog] = useState(false);
     const [id, setId] = useState(0);
     const [banUserDialog, setBanUserDialog] = useState(false);
+    /*Context*/
     const authContext = useContext(Auth0Context);
     const userContext = useContext(UserContext);
+    /*Hooks*/
     const alert = useAlert();
+    //Variable
     const idPlace = props.idPlace;
 
     useEffect(() => {
@@ -58,18 +61,6 @@ function Reviews(props) {
         userContext.refresh();
         alert.success("The review has been removed !");
         setId(0);
-    }
-
-
-    const showReviewForm = (props) => {
-
-        setShowForm(true)
-        console.log(showForm);
-    }
-
-
-    const closeForm = () => {
-        setShowForm(false)
     }
 
 

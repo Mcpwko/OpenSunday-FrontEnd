@@ -88,13 +88,16 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function UserAccount(props) {
-    const alert = useAlert();
+    ;
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [places, setPlaces] = useState([]);
     const [showDelete, setShowDelete] = useState(false);
     const [reportChange, setReportChange] = useState([false]);
-    const authContext = useAuth0();
+    /*Context*/
     const userContext = useContext(UserContext);
+    /*Hooks*/
+    const authContext = useAuth0();
+    const alert = useAlert()
     let history = useHistory();
 
 //Date formatter in table

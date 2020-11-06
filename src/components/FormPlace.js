@@ -372,7 +372,7 @@ export const FormPlace = (props) => {
                 validationSchema={validationSchema}
                 onSubmit={async (values, {setSubmitting, resetForm}) => {
                     // When button submits form and form is in the process of submitting, submit button is disabled
-                    setSubmitting(true);
+                    //setSubmitting(true);
 
                     // As we do not work with values for latitude and longitude we have to set them with our respective states
                     values.lat = latitude;

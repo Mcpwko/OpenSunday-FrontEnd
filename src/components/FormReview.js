@@ -41,13 +41,6 @@ export function FormReview(props) {
 
     };
 
-    //let history = useHistory();
-
-    function handleClick() {
-        props.onClose();
-        //history.push("/map");
-    }
-
 
     let validationSchema = Yup.object().shape({
         comment: Yup.string()
