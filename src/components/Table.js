@@ -2,18 +2,16 @@ import React, {useContext, useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory, {selectFilter, textFilter} from "react-bootstrap-table2-filter";
 import ToolkitProvider, {Search} from "react-bootstrap-table2-toolkit";
-import {Button, Form, Spinner} from "react-bootstrap";
+import {Button, Spinner} from "react-bootstrap";
 import styled from 'styled-components';
 import {Auth0Context} from "@auth0/auth0-react";
 import request from "../utils/request";
 import endpoints from "../endpoints.json";
-import GetCategories from "../database/GetCategories";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {useHistory} from "react-router-dom";
 import {useAlert} from "react-alert";
 import {motion} from "framer-motion"
-import {useField, useFormikContext} from "formik";
-import GetTypes, {GetAllTypes} from "../database/GetTypes";
+import {GetAllTypes} from "../database/GetTypes";
 
 const Container = styled.div`
     td, th, tr, table, text, tbody, thead{
@@ -38,6 +36,15 @@ const Container = styled.div`
         font-weight: 400;
         padding: 0.8em;
         color: #00ace6;
+  }
+  a {
+        background:black;
+  }
+  .page-item.active .page-link{
+        background-color: #24B9B6;
+  }
+  .page-link{
+        color: #24B9B6;
   }
 `;
 
@@ -82,17 +89,6 @@ export default function Table() {
     let history = useHistory();
     const alert = useAlert();
 
-    const [categories, setTypes] = useState([]);
-    const [types, setCategories] = useState([]);
-
-    const [valueType, setValueType] = useState([]);
-    const [valueCat, setValueCat] = useState([]);
-
-    const [isCatEnable, setIsCatEnable] = useState(false);
-
-    //Ref API to Table
-    // let node;
-
     /** Retrieve places for the table, types and categories for the selects */
     useEffect(() => {
         alert.info("Loading data")
@@ -111,35 +107,7 @@ export default function Table() {
             }
         }
 
-        // async function getCategories() {
-        //     let categories = await request(
-        //         `${process.env.REACT_APP_SERVER_URL}${endpoints.categories}`,
-        //         authContext.getAccessTokenSilently,
-        //         authContext.loginWithRedirect
-        //     );
-        //
-        //     if (categories && categories.length > 0) {
-        //         setCategories(categories)
-        //     }
-        // }
-
-        // async function getTypes() {
-        //     let types = await request(
-        //         `${process.env.REACT_APP_SERVER_URL}${endpoints.types}`,
-        //         authContext.getAccessTokenSilently,
-        //         authContext.loginWithRedirect
-        //     );
-        //
-        //     if (types && types.length > 0) {
-        //         setTypes(types)
-        //     }
-        // }
-
         getPlaces();
-        // getCategories()
-        //     .then(getTypes())
-        //     .then(getPlaces())
-        //     .then()
 
     }, []);
 
@@ -201,7 +169,11 @@ export default function Table() {
             dataField: "typeSet.name",
             text: "Type",
             filter: selectFilter({
-                options: typeOption
+                // options: typeOption
+                getFilter: filter => {
+                    typeFilter = filter;
+                }
+                , options: typeOption
             }),
             sort: true
         },
@@ -259,15 +231,6 @@ export default function Table() {
         oSdFilter();
     }
 
-
-    function handleClick() {
-        oSFilter("true");
-        oSdFilter("true");
-    };
-
-    // const CaptionElement = () => <h3 style={{ borderRadius: '0.25em', textAlign: 'center', color: 'purple', border: '1px solid purple', padding: '0.5em' }}>Component as Header</h3>;
-
-
     return (
         <Container>
             <motion.div
@@ -283,12 +246,7 @@ export default function Table() {
                 <h3>Click on a row to show the place on the map</h3>
             </motion.div>
 
-            {/*<button style={{display:"flex", textAlign:"center"}}className="btn btn-lg btn-primary" onClick={handleClick}>Apply filter: only open on Sundays and*/}
-            {/*    special days</button>*/}
-
-
             {places && places.length > 0 ? (
-
                 <ToolkitProvider
                     bootstrap4
                     keyField="name"
@@ -298,7 +256,6 @@ export default function Table() {
                 >
                     {props => (
                         <div>
-
                             <SearchBar
                                 {...props.searchProps}
                                 style={{width: "400px", height: "40px"}}
@@ -307,9 +264,7 @@ export default function Table() {
                                 {...props.searchProps}
                                 clearAllFilter={clearAllFilter}
                             />
-
                             <BootstrapTable
-
                                 {...props.baseProps}
                                 filter={filterFactory()}
                                 noDataIndication="No data found"
@@ -319,10 +274,6 @@ export default function Table() {
                                 pagination={paginationFactory()}
                                 selectRow={selectRow}
                                 bordered={false}
-
-
-                                // headerWrapperClasses="thead-dark"
-                                // classes="table-striped table-hover"
                             />
                         </div>
                     )}
@@ -332,8 +283,6 @@ export default function Table() {
                 height: "8rem"
             }}><span
                 className="sr-only">Loading...</span></Spinner>}
-
-
         </Container>
     );
 }
