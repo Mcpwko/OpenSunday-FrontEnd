@@ -156,60 +156,6 @@ export default function Table() {
         }
     };
 
-    const FieldCategory = (props) => {
-        const {values, touched, submitForm, setFieldValue} = useFormikContext();
-        const [field, meta] = useField(props);
-        const [disabled, setDisabled] = useState(true);
-
-        useEffect(() => {
-            if (values.type == "") {
-                setDisabled(true)
-            } else {
-                setDisabled(false);
-            }
-
-            // console.log("VT="+values.type)
-        }, [values.type]);
-
-        return (
-            <>
-                <Form.Control {...props} {...field} disabled={disabled}>
-                    {/*<Form.Control {...props} {...field}>*/}
-                    {GetCategories(values.type)}
-                    {/*{GCats(values.type)}*/}
-                </Form.Control>
-            </>
-        )
-    };
-
-    const FieldType = (props) => {
-        const {values, touched, submitForm, setFieldValue} = useFormikContext();
-        const [field, meta] = useField(props);
-
-        useEffect(() => {
-
-            // setValueType(values.type)
-            console.log("VT=" + values.type)
-            console.log(values)
-            console.log(meta)
-            console.log(field)
-            console.log(touched)
-
-
-        }, [values.type]);
-
-        return (
-            <>
-                <Form.Control {...props} {...field}>
-                    {/*<Form.Control {...props} {...field}>*/}
-                    {GetTypes()}
-                    {/*{GTypes()}*/}
-                </Form.Control>
-            </>
-        )
-    };
-
-
     const selectOptions = {
         true: 'Open',
         false: 'Close'

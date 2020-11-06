@@ -290,7 +290,7 @@ function MapView(props) {
     }
 
     const [showForm, setShowForm] = useState(false);
-    const [showLatLong, setShowLatLong] = useState(false);
+    // const [showLatLong, setShowLatLong] = useState(false);
 
     // const toggleCoordinates = (props) => {
     //     setShowLatLong(props)
@@ -387,7 +387,7 @@ function MapView(props) {
                         <span id="close" onClick={closeForm}>&times;</span>
                         {/*{console.log("LOG FORM-INFOMARKER // data ==================>" + infoMarker.address.amenity)}*/}
                         <FormPlace latitude={marker.lat} longitude={marker.lng}
-                                   gcButton={buttonGC} data={data} closeForm={closeForm}/>
+                                   gcButton={buttonGC} data={data} closeForm={closeForm} modification={false}/>
                     </Modal> : null}
                     {/*<Foursquare className="listVenues"/>*/}
                     <Map ref={saveMap} center={currentLocation} viewport={viewport} zoom={zoom} minZoom={4}

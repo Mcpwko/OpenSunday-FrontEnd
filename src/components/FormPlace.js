@@ -122,7 +122,7 @@ const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?
  */
 let validationSchema = Yup.object().shape({
     name: Yup.string()
-        .max(20, "Must be 20 characters or less")
+        .max(30, "Must be 30 characters or less")
         .required("A name for the place is required"),
     type: Yup.string()
         .required("Type is required"),
@@ -202,32 +202,27 @@ const FieldCategory = (props) => {
 };
 
 export const FormPlace = (props) => {
-    const [latitude, setLatitude] = useState(props.latitude);
-    const [longitude, setLongitude] = useState(props.longitude);
-
-    // Boolean to toggle the edit mode
-    const [modification, setModification] = useState(false);
-
-    //Boolean when edition is from a search with info in the popup
-    const [add, setAdd] = useState(false);
-
-    // // Retrieve the array to modify
-    // const [placeEdit, setPlaceEdit] = useState([]);
-
-    const [visible, setVisible] = useState(props.gcButton);
-    const [errorGC, setErrorGC] = useState(false);
-
-    // const [zipCity, setZipCity] = useState([]);
-
+    /** Contexts */
     const authContext = useContext(Auth0Context);
     const userContext = useContext(UserContext);
     const alert = useAlert();
 
+    /** States */
+    const [latitude, setLatitude] = useState(props.latitude);
+    const [longitude, setLongitude] = useState(props.longitude);
+
+    // Boolean to toggle the edit mode
+    const [modification, setModification] = useState(props.modification);
+
+    //Boolean when edition is from a search with info in the popup
+    const [add, setAdd] = useState(false);
+    const [errorGC, setErrorGC] = useState(false);
+
+    const [visible, setVisible] = useState(props.gcButton);
+    const [reset, setReset] = useState(props.gcButton);
+
     let myZip = "";
     let myCity = "";
-
-    // const [isCatEnable, setIsCatEnable] = useState(true);
-
 
     /** Add with marker popup proposition */
     // if props.data changes
@@ -257,12 +252,10 @@ export const FormPlace = (props) => {
         }
     }, [props.place]); // Execute only if place has changed
 
-
     const url = "https://us1.locationiq.com/v1/search.php?key=pk.a9fb192a815fa6985b189ffe5138383b&q=";
     const endUrl = "&format=json";
     const reverseUrl = "https://us1.locationiq.com/v1/reverse.php?key=pk.a9fb192a815fa6985b189ffe5138383b&"
     const reverseEndUrl = "&normalizeaddress=1&format=json";
-    // let add = "Ch.%20des%20An%C3%A9mones%206%2C%203960%20Sierre"
 
     // API - locationiq.com - 5000 requests/day - 2 requests / second
     async function SearchPosition(adr, city, zip) {
@@ -287,39 +280,65 @@ export const FormPlace = (props) => {
 
     // API - locationiq.com - 5000 requests/day - 2 requests / second
     async function SearchLocation(lat, long) {
+        // console.log("I AM IN SEARCHPOSTION" + modification)
+        if (!modification) {
 
-        const requestAddress = encodeURI("lat=" + lat + "&lon=" + long);
+            const requestAddress = encodeURI("lat=" + lat + "&lon=" + long);
 
-        const request = reverseUrl + requestAddress + reverseEndUrl;
+            const request = reverseUrl + requestAddress + reverseEndUrl;
 
-        const response = await axios.get(request)
-            .catch(err => console.log(err))
+            const response = await axios.get(request)
+                .catch(err => console.log(err))
 
-        // If an error occurs, the latitude and longitude are not modified
-        if (response !== undefined) {
+            // If an error occurs, the latitude and longitude are not modified
+            if (response !== undefined) {
 
-            const data = response.data;
+                const data = response.data;
 
-            myZip = data.address.postcode;
-            myCity = data.address.city;
-        }
-        // No error handling necessary, if it does not found anything: nothing changes
-        else {
+                myZip = data.address.postcode;
+                myCity = data.address.city;
+            }
+            // No error handling necessary, if it does not found anything: nothing changes
+            else {
+            }
+
         }
     }
 
-
-    function simulateClick(e) {
-        if (e !== null) {
-            e.click()
-            console.log("CLICKED ;)");
+    function simulateReset(e) {
+        if (visible) {
+            if (e !== null) {
+                e.click()
+                console.log("Fct: simulateReset");
+                setReset(false);
+            }
         }
     }
 
     function simulateProps(e) {
-        if (e !== null) {
+        if (add) {
+            if (e !== null) {
+                e.click()
+                console.log("Fct: simulateProps");
+            }
+        }
+    }
+
+
+    function simulateModif(e) {
+        if (modification) {
+            if (e !== null) {
+                e.click()
+                console.log("Fct: simulateModif");
+            }
+        }
+    }
+
+    function simulateSearchLocation(e) {
+        // if(modification)
+        if (e !== null && !modification) {
             e.click()
-            console.log("CLICKED ON PROPS ;)");
+            console.log("Fct: simulateSearchLocation");
         }
     }
 
@@ -443,27 +462,33 @@ export const FormPlace = (props) => {
                         {add ? <Button style={{display: "none"}}
                                        ref={simulateProps}
                                        onClick={() => {
-                                           setFieldValue('name', props.data.name)
-                                           setFieldValue('address', props.data.address)
-                                           setFieldValue('zip', props.data.zip)
-                                           setFieldValue('city', props.data.city)
+                                           if (values.address === "") {
+                                               // if (!modification) {
+                                               setFieldValue('name', props.data.name)
+                                               setFieldValue('address', props.data.address)
+                                               setFieldValue('zip', props.data.zip)
+                                               setFieldValue('city', props.data.city)
+                                               // }
+                                           }
                                        }}
                         >
                         </Button> : null}
 
-                        {/** Reset the form */}
-                        {visible ?
-                            <SubmitButton style={{display: "none"}} type="reset" ref={simulateClick}/>
+                        {/**NE PAS SUPPRIMER*/}
+                        {/** Reset the form when you click on "add a new place" */}
+                        {reset ?
+                            <Button style={{display: "none"}} type="reset" ref={simulateReset}/>
                             : null}
 
                         {modification ? <Button style={{display: "none"}}
-                                                ref={simulateProps}
+                                                ref={simulateModif}
                                                 onClick={() => {
                                                     setFieldValue('name', props.place.name)
                                                     setFieldValue('description', props.place.description)
 
-                                                    myCity = props.place.locationSet.citySet.name;
-                                                    myZip = props.place.locationSet.citySet.npa;
+                                                    // myCity = props.place.locationSet.citySet.name;
+                                                    // myZip = props.place.locationSet.citySet.npa;
+
 
                                                     setLatitude(props.place.locationSet.lat)
                                                     setLongitude(props.place.locationSet.long)
@@ -473,6 +498,8 @@ export const FormPlace = (props) => {
                                                     setFieldValue('type', props.place.typeSet.idType)
                                                     setFieldValue('category', props.place.categorySet.idCategory)
                                                     setFieldValue('region', props.place.locationSet.regionSet.idRegion)
+                                                    setFieldValue('city', props.place.locationSet.citySet.name)
+                                                    setFieldValue('zip', props.place.locationSet.citySet.npa)
 
                                                     //optional
                                                     setFieldValue('address', props.place.locationSet.address)
@@ -488,19 +515,17 @@ export const FormPlace = (props) => {
                         </Button> : null}
 
                         {visible ? null :
-                            <div className="buttons">
-                                <GetButton variant="secondary" type="button" ref={simulateClick}
-                                           style={{display: "none"}}
-                                           onClick={() => {
-                                               SearchLocation(latitude, longitude)
-                                                   .then(() => setFieldValue('zip', myZip))
-                                                   .then(() => setFieldValue('city', myCity))
-                                           }
-                                           }
-                                >
-                                    Get zip and city
-                                </GetButton>
-                            </div>
+                            <GetButton variant="secondary" type="button" ref={simulateSearchLocation}
+                                       style={{display: "none"}}
+                                       onClick={() => {
+                                           SearchLocation(latitude, longitude)
+                                               .then(() => setFieldValue('zip', myZip))
+                                               .then(() => setFieldValue('city', myCity))
+                                       }
+                                       }
+                            >
+                                Get zip and city
+                            </GetButton>
                         }
 
                         <Form.Group controlId="formName">

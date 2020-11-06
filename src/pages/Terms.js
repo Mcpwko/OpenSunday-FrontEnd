@@ -68,7 +68,8 @@ export default function Terms() {
             the latest technological innovations to ensure the privacy of your information.
 
             <h2>Cookies <span>🍪</span></h2>
-            We do not store cookie. If you want to offer some we will happily eat them ! <span>🍪🙋‍♂</span>
+            We do not store cookies. The domain administrator and Auth0 may store cookies for your authentication and
+            session. If you want to offer some we will gladly eat them ! <span>🍪🙋‍♂</span>
 
             <h2>Shelf life <span>⏳</span></h2>
             The 'personal' data mentioned will be kept until you have withdrawn from the property.
