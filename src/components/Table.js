@@ -10,13 +10,13 @@ import endpoints from "../endpoints.json";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import {useHistory} from "react-router-dom";
 import {useAlert} from "react-alert";
-import {motion} from "framer-motion"
 import {GetAllTypes} from "../database/GetTypes";
 
 const Container = styled.div`
     td, th, tr, table, text, tbody, thead{
-        // color:white;
         color: #e6f9ff;
+        width: 100%
+        height:100%
     }
     .selection-cell, .selection-cell-header{
         display:none;
@@ -27,14 +27,11 @@ const Container = styled.div`
    h1{
        color: #24B9B6;
        text-align: center;
-       padding:0.3em;    
    }
    h3 {
         font-style: italic;
         text-align: center;
-        font-size: 1em;
-        font-weight: 400;
-        padding: 0.8em;
+        font-size: 1.4em;
         color: #00ace6;
   }
   a {
@@ -233,18 +230,9 @@ export default function Table() {
 
     return (
         <Container>
-            <motion.div
-                animate={{scale: 1.5}}
-                transition={{duration: 2}}
-            >
-                <h1>Places search</h1>
-            </motion.div>
-            <motion.div
-                animate={{scale: 1.5}}
-                transition={{duration: 5}}
-            >
-                <h3>Click on a row to show the place on the map</h3>
-            </motion.div>
+            <h1>Places search</h1>
+
+            <h3>Click on a row to show the place on the map</h3>
 
             {places && places.length > 0 ? (
                 <ToolkitProvider
