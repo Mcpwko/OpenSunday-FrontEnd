@@ -13,8 +13,6 @@ import {UserContext} from "../context/UserContext";
 const MyForm = styled(Form)`
   width: 80%;
   text-align: left;
-  // padding-top: 2em;
-  // padding-bottom: 2em;
   @media(min-width: 786px) {
     width: 50%;
   }

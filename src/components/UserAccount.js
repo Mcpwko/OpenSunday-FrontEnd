@@ -108,18 +108,14 @@ export default function UserAccount(props) {
 
     //Show edit or delete icon
     function editDeleteFormatter(cell, row) {
-
-
         if (row.isForEdit) {
             return (
                 <div><FontAwesomeIcon icon={faEdit}/></div>
             );
-
         } else {
             return (
                 <div><FontAwesomeIcon icon={faBan}/></div>
             );
-
         }
     }
 
@@ -131,17 +127,14 @@ export default function UserAccount(props) {
     //Button for go to the place on map
     function editDeleteCheck(reportSet, place) {
         return (
-
             <div>
                 <Button onClick={() => editDeleteClick(place)}><FontAwesomeIcon icon={faMapMarkerAlt}/></Button>
             </div>
-
         )
     }
 
     //Delete a report and reload the table
     async function handleClick(row) {
-
         await request(
             `${process.env.REACT_APP_SERVER_URL}${endpoints.changeStatus}${row.idReport}`,
             authContext.getAccessTokenSilently
@@ -154,13 +147,11 @@ export default function UserAccount(props) {
 
     //Button for delete the report
     function changeStatus(cell, row) {
-
         return (
             <div>
                 <button className="changeStatus" onClick={() => handleClick(row)}><span>❌</span></button>
             </div>
         )
-
     }
 
     //Columns of the table
@@ -240,7 +231,6 @@ export default function UserAccount(props) {
 
     //Delete account
     async function deleteAccount() {
-
         // Delete account
         await fetch(`${process.env.REACT_APP_SERVER_URL}${endpoints.user}${'/' + userContext.user.idUser}`, {
             method: 'DELETE',
@@ -256,8 +246,6 @@ export default function UserAccount(props) {
         setInterval(function () {
             authContext.logout({returnTo: window.location.origin})
         }, 3000)
-
-
     }
 
     //Change the pseudo
@@ -306,9 +294,7 @@ export default function UserAccount(props) {
         //Block interaction of the user
     }
 
-
     return (
-
         <Container style={{width: "100%"}}>
             <Modal show={showDelete} onHide={hide}>
                 <Modal.Header>
@@ -397,7 +383,6 @@ export default function UserAccount(props) {
                 )}
             </Formik>
             {/*============================== REPORT ==================================*/}
-
             {userContext.user != null && userContext.user.idUserType == 3 ?
                 <>
                     <div>

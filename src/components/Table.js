@@ -36,12 +36,19 @@ const Container = styled.div`
   }
   a {
         background:black;
+        color:white;
   }
   .page-item.active .page-link{
         background-color: #24B9B6;
   }
   .page-link{
         color: #24B9B6;
+  }
+  dropdown-item{
+        color:white;
+  }
+  .dropdown-menu{
+            background-color:black;
   }
 `;
 

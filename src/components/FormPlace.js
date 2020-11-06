@@ -62,8 +62,6 @@ const Container = styled.div`
     opacity:0.95;
     background:#282c34;
     margin-top:2em;
-    // padding-left:5px;
-    // padding-right:5px;
   }
   sub{
     color: darkred;
@@ -73,7 +71,8 @@ const Container = styled.div`
   .col{
     text-align:center;
   }
-input[type=checkbox] {
+  
+  input[type=checkbox] {
     border-radius: 50%
     
     /* Double-sized Checkboxes */
@@ -178,8 +177,8 @@ let validationSchema = Yup.object().shape({
 
 const FieldCategory = (props) => {
 
-    const {values, touched, submitForm, setFieldValue} = useFormikContext();
-    const [field, meta] = useField(props);
+    const {values} = useFormikContext();
+    const [field] = useField(props);
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
@@ -441,11 +440,9 @@ export const FormPlace = (props) => {
                         alert.success("The place has been added !");
                         userContext.refreshPlaces();
                     }
-
                     resetForm();
                     setSubmitting(false);
                     props.closeForm();
-
                 }}
             >
                 {({

@@ -1,14 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    NavbarText
-} from 'reactstrap';
+import React, {useState} from 'react';
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarText, NavbarToggler, NavItem, NavLink} from 'reactstrap';
 import {Link} from "react-router-dom";
 import logo from '../assets/Logo.png';
 
